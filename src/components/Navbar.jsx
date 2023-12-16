@@ -35,15 +35,16 @@ export const Navbar = () => {
           <>
             <div className="flex justify-center">
               <div className="relative flex h-20 w-full max-w-7xl items-center justify-between px-14">
-                <div className="absolute inset-y-0 right-0 flex items-center sm:hidden">
+                <div className="absolute inset-y-0 right-0 flex items-center lg:hidden">
                   {/* Mobile menu button*/}
                   <Disclosure.Button className="hover: relative inline-flex items-center justify-center rounded-md p-2 hover:text-primary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                     <span className="absolute -inset-0.5" />
                     <span className="sr-only">Open main menu</span>
 
-                    <button className="mr-6 rounded-full bg-[#333] p-1">
+                    <div className="mr-6 rounded-full bg-[#333] p-1">
                       <MoonIcon />
-                    </button>
+                    </div>
+
                     {open ? (
                       <p className="block h-6 w-6 bg-white" aria-hidden="true">
                         X
@@ -59,7 +60,7 @@ export const Navbar = () => {
                 </div>
                 <h1 className="font-heading text-2xl font-bold">Allfitra {'{}'}</h1>
                 <div className="flex flex-shrink-0 items-center">
-                  <div className="hidden sm:ml-6 sm:block ">
+                  <div className="hidden sm:ml-6 lg:block ">
                     <div className="flex gap-4 space-x-4">
                       {navigation.map((item, i) => (
                         <div
