@@ -1,4 +1,14 @@
-import { CssLogo, HtmlLogo, JavascriptLogo } from '@/assets/images/ImagesProject';
+import {
+  AndroidLogo,
+  BootstrapLogo,
+  CssLogo,
+  HtmlLogo,
+  JavascriptLogo,
+  KotlinLogo,
+  LaravelLogo,
+  ReactLogo,
+  TailwindLogo,
+} from '@/assets/images/ImagesProject';
 import { GithubIcon, GlobeIcon } from 'lucide-react';
 
 export const ProjectData = {
@@ -9,17 +19,17 @@ export const ProjectData = {
       projects: [
         {
           id: 1,
-          name: 'Personal project',
+          name: 'AiVents (Portal Event Information)',
           description:
-            'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nam aliquam quasi nostrum recusandae quod, totam est unde excepturi necessitatibus nisi sint dicta similique debitis. Eum sunt sapiente nobis itaque excepturi?',
+            'a website that displays event information in the Jakarta area. Here users can find out information about events that are taking place or will take place so that they can organize plans to visit the event.',
           tools: {
-            html: {
-              name: 'HTML',
-              logo: HtmlLogo,
+            react: {
+              name: 'React',
+              logo: ReactLogo,
             },
-            css: {
-              name: 'CSS',
-              logo: CssLogo,
+            tailwind: {
+              name: 'tailwind',
+              logo: TailwindLogo,
             },
             javascript: {
               name: 'Javascript',
@@ -28,12 +38,12 @@ export const ProjectData = {
           },
           action: [
             {
-              href: '#',
+              href: 'https://github.com/allfitra/aiVents',
               icon: GithubIcon,
               label: 'Github',
             },
             {
-              href: '#',
+              href: 'https://ai-vents.vercel.app/',
               icon: GlobeIcon,
               label: 'Globe',
             },
@@ -41,9 +51,9 @@ export const ProjectData = {
         },
         {
           id: 2,
-          name: 'Destimate',
+          name: 'Calculator',
           description:
-            'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nam aliquam quasi nostrum recusandae quod, totam est unde excepturi necessitatibus nisi sint dicta similique debitis. Eum sunt sapiente nobis itaque excepturi?',
+            'Simple calculator as a means of training logic and advanced stages of learning javascript, with website functions in the form of providing convenience in performing mathematical operations.',
           tools: {
             html: {
               name: 'HTML',
@@ -60,9 +70,78 @@ export const ProjectData = {
           },
           action: [
             {
-              href: '#',
+              href: 'https://github.com/allfitra/Calculator',
               icon: GithubIcon,
               label: 'Github',
+            },
+            {
+              href: 'https://allfitra.github.io/Calculator/',
+              icon: GlobeIcon,
+              label: 'Globe',
+            },
+          ],
+        },
+        {
+          id: 3,
+          name: 'Detik Finance Clone - Landing Page',
+          description:
+            'a clone website of the detik.com finance landing page, aims to train in making a suitable appearance and deepen the use of style and design for a website appearance.',
+          tools: {
+            html: {
+              name: 'HTML',
+              logo: HtmlLogo,
+            },
+            css: {
+              name: 'CSS',
+              logo: CssLogo,
+            },
+            bootstrap: {
+              name: 'Bootstrap',
+              logo: BootstrapLogo,
+            },
+          },
+          action: [
+            {
+              href: 'https://github.com/allfitra/Detikcom_FrontendDesignAssignment_Alfitra-Fadjri',
+              icon: GithubIcon,
+              label: 'Github',
+            },
+            {
+              href: 'https://allfitra.github.io/Detikcom_FrontendDesignAssignment_Alfitra-Fadjri/',
+              icon: GlobeIcon,
+              label: 'Globe',
+            },
+          ],
+        },
+        {
+          id: 4,
+          name: 'Personal Portofolio',
+          description:
+            'A website that aims to display personal biodata, as well as a showcase for skills and expertise that is made as attractive as possible so that it is easy to access and use.',
+          tools: {
+            react: {
+              name: 'React',
+              logo: ReactLogo,
+            },
+            tailwind: {
+              name: 'tailwind',
+              logo: TailwindLogo,
+            },
+            javascript: {
+              name: 'Javascript',
+              logo: JavascriptLogo,
+            },
+          },
+          action: [
+            {
+              href: 'https://github.com/allfitra/Portofolio',
+              icon: GithubIcon,
+              label: 'Github',
+            },
+            {
+              href: '/',
+              icon: GlobeIcon,
+              label: 'Globe',
             },
           ],
         },
@@ -73,28 +152,145 @@ export const ProjectData = {
       projects: [
         {
           id: 1,
-          name: 'Project 1',
-          description: 'This is my first project',
+          name: 'Destimate - Landing Page',
+          description:
+            'A platform for travelers to implement carbon emission usage transparency features for each user-selected destination trip, this website serves as a bridge for users between the Destimate basic website and mobile app.',
+          tools: {
+            react: {
+              name: 'React',
+              logo: ReactLogo,
+            },
+            tailwind: {
+              name: 'tailwind',
+              logo: TailwindLogo,
+            },
+            javascript: {
+              name: 'Javascript',
+              logo: JavascriptLogo,
+            },
+          },
+          action: [
+            {
+              href: 'https://github.com/Capstone-Tim-02/sustain-tour-frontend-landing-page',
+              icon: GithubIcon,
+              label: 'Github',
+            },
+            {
+              href: 'https://destimate.netlify.app/',
+              icon: GlobeIcon,
+              label: 'Globe',
+            },
+          ],
         },
         {
           id: 2,
-          name: 'Project 2',
-          description: 'This is my second project',
+          name: 'Destimate - CMS',
+          description:
+            'The CMS Destimate is a web application designed to effectively manage content for the Destimate mobile application and serves as a centralized platform for organizing and updating related to tours and user account settings.',
+          tools: {
+            react: {
+              name: 'React',
+              logo: ReactLogo,
+            },
+            tailwind: {
+              name: 'tailwind',
+              logo: TailwindLogo,
+            },
+            javascript: {
+              name: 'Javascript',
+              logo: JavascriptLogo,
+            },
+          },
+          action: [
+            {
+              href: 'https://github.com/Capstone-Tim-02/sustain-tour-frontend-cms',
+              icon: GithubIcon,
+              label: 'Github',
+            },
+            {
+              href: 'https://cms-destimate.netlify.app/login',
+              icon: GlobeIcon,
+              label: 'Globe',
+            },
+          ],
         },
         {
           id: 3,
-          name: 'Project 3',
-          description: 'This is my third project',
+          name: 'Ketemu Enak',
+          description:
+            'KetemuEnak-FE is a website that aims to be an exciting culinary event discovery platform designed to connect food enthusiasts, event organizers, and local businesses in Greater Jakarta.',
+          tools: {
+            react: {
+              name: 'React',
+              logo: ReactLogo,
+            },
+            tailwind: {
+              name: 'tailwind',
+              logo: TailwindLogo,
+            },
+            javascript: {
+              name: 'Javascript',
+              logo: JavascriptLogo,
+            },
+          },
+          action: [
+            {
+              href: 'https://github.com/KetemuEnak/KetemuEnak-FE',
+              icon: GithubIcon,
+              label: 'Github',
+            },
+            {
+              href: 'https://ketemu-enak.vercel.app/',
+              icon: GlobeIcon,
+              label: 'Globe',
+            },
+          ],
         },
         {
           id: 4,
-          name: 'Project 4',
-          description: 'This is my fourth project',
+          name: 'Open Desa',
+          description:
+            'a mobile application that helps provide information related to villages in Indonesia with features in the form of a means of connecting and information containers for village communities.',
+          tools: {
+            android: {
+              name: 'android',
+              logo: AndroidLogo,
+            },
+            kotlin: {
+              name: 'kotlin',
+              logo: KotlinLogo,
+            },
+          },
+          action: [
+            {
+              href: 'https://github.com/allfitra/OpenDesaProject',
+              icon: GithubIcon,
+              label: 'Github',
+            },
+          ],
         },
         {
           id: 5,
-          name: 'Project 5',
-          description: 'This is my fifth project',
+          name: 'Kueku - Website',
+          description:
+            'an e-commerce website dedicated to the sale of cakes both privately and in partnership with cake merchants.',
+          tools: {
+            laravel: {
+              name: 'laravel',
+              logo: LaravelLogo,
+            },
+            bootstrap: {
+              name: 'bootstrap',
+              logo: BootstrapLogo,
+            },
+          },
+          action: [
+            {
+              href: 'https://github.com/allfitra/Kueku-Website',
+              icon: GithubIcon,
+              label: 'Github',
+            },
+          ],
         },
       ],
     },

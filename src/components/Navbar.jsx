@@ -1,35 +1,45 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Disclosure } from '@headlessui/react';
 
 import burgerButton from '@/assets/images/burger-button.png';
 import { MoonIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
 export const Navbar = () => {
+  const location = useLocation();
   const [isHovered, setIsHovered] = useState(null);
   const [navigation, setNavigation] = useState([
-    { name: 'Home', href: '/', current: true },
-    { name: 'Education and Certificate', href: '/education', current: false },
-    { name: 'Experience', href: '/experience', current: false },
-    { name: 'Project', href: '/project', current: false },
-    { name: 'Contact', href: '/contact', current: false },
+    { name: 'Home', href: '/', current: location.pathname === '/' },
+    {
+      name: 'Education and Certificate',
+      href: '/education',
+      current: location.pathname === '/education',
+    },
+    { name: 'Experience', href: '/experience', current: location.pathname === '/experience' },
+    { name: 'Project', href: '/project', current: location.pathname === '/project' },
+    { name: 'Contact', href: '/contact', current: location.pathname === '/contact' },
   ]);
 
-  const handleItemClick = (clickedItem) => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(1, 0);
+  }, [pathname]);
+
+  useEffect(() => {
     const updatedNavigation = navigation.map((item) => ({
       ...item,
-      current: item.name === clickedItem.name,
-      href: `${item.href}`,
+      current: location.pathname === item.href,
     }));
     setNavigation(updatedNavigation);
-  };
+  }, [location]);
 
   return (
-    <nav className={`container sticky top-0 mb-6 max-w-none bg-[#1D1D1D] px-6 shadow-md`}>
+    <nav className={`container fixed top-0 z-20 max-w-none bg-[#1D1D1D] px-6 shadow-md`}>
       <Disclosure as="nav">
         {({ open }) => (
           <>
@@ -73,9 +83,8 @@ export const Navbar = () => {
                           <Link
                             key={item.name}
                             to={item.href}
-                            onClick={() => handleItemClick(item)}
                             className={classNames(
-                              item.current && ' font-bold',
+                              item.current && 'text-lg font-bold',
                               'rounded-md px-2 py-2 font-heading text-base '
                             )}
                             aria-current={item.current ? 'page' : undefined}

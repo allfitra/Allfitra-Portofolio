@@ -1,9 +1,23 @@
-import HtmlLogo from './html-logo.png';
-import CssLogo from './css-logo.png';
-import JavascriptLogo from './javascript-logo.png';
-import ReactLogo from './react-logo.png';
-import NodejsLogo from './nodejs-logo.png';
-import TailwindLogo from './tailwind-logo.png';
+import AndroidLogo from './android-logo.png';
 import BootstrapLogo from './bootstrap-logo.png';
+import CssLogo from './css-logo.png';
+import HtmlLogo from './html-logo.png';
+import JavascriptLogo from './javascript-logo.png';
+import KotlinLogo from './kotlin-logo.png';
+import LaravelLogo from './laravel-logo.png';
+import NodejsLogo from './nodejs-logo.png';
+import ReactLogo from './react-logo.png';
+import TailwindLogo from './tailwind-logo.png';
 
-export { HtmlLogo, CssLogo, JavascriptLogo, ReactLogo, NodejsLogo, TailwindLogo, BootstrapLogo };
+export {
+  AndroidLogo,
+  HtmlLogo,
+  CssLogo,
+  JavascriptLogo,
+  LaravelLogo,
+  ReactLogo,
+  NodejsLogo,
+  TailwindLogo,
+  BootstrapLogo,
+  KotlinLogo,
+};
