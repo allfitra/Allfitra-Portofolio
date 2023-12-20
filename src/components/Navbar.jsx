@@ -84,7 +84,7 @@ export const Navbar = () => {
                             key={item.name}
                             to={item.href}
                             className={classNames(
-                              item.current && 'text-lg font-bold',
+                              item.current && 'font-bold',
                               'rounded-md px-2 py-2 font-heading text-base '
                             )}
                             aria-current={item.current ? 'page' : undefined}
@@ -111,7 +111,7 @@ export const Navbar = () => {
                     href={item.href}
                     onClick={() => handleItemClick(item)}
                     className={classNames(
-                      item.current ? ' font-bold' : 'hover:font-bold',
+                      item.current ? 'text-lg font-bold' : 'hover:font-bold',
                       'block rounded-md px-3 py-2 font-heading text-base '
                     )}
                     aria-current={item.current ? 'page' : undefined}

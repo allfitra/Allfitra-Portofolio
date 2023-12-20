@@ -6,7 +6,7 @@ import { Fade, Zoom } from 'react-awesome-reveal';
 export const ProjectPage = () => {
   return (
     <MainLayout title="Project">
-      <div className="my-[20px]">
+      <div className="my-[20px] overflow-y-hidden">
         <Fade direction="down">
           <h1 className="text-center font-serif text-4xl font-bold">{ProjectData.title}</h1>
         </Fade>
