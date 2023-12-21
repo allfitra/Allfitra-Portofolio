@@ -47,13 +47,12 @@ export const Navbar = () => {
               <div className="relative flex h-20 w-full max-w-7xl items-center justify-between px-14">
                 <div className="absolute inset-y-0 right-0 flex items-center lg:hidden">
                   {/* Mobile menu button*/}
+                  <div className="mr-6 rounded-full bg-[#333]">
+                    <MoonIcon />
+                  </div>
                   <Disclosure.Button className="hover: relative inline-flex items-center justify-center rounded-md p-2 hover:text-primary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                     <span className="absolute -inset-0.5" />
                     <span className="sr-only">Open main menu</span>
-
-                    <div className="mr-6 rounded-full bg-[#333] p-1">
-                      <MoonIcon />
-                    </div>
 
                     {open ? (
                       <p className="block h-6 w-6 bg-white" aria-hidden="true">
@@ -102,7 +101,7 @@ export const Navbar = () => {
               </div>
             </div>
 
-            <Disclosure.Panel className="sm:hidden">
+            <Disclosure.Panel className="lg:hidden">
               <div className="space-y-1 px-2 pb-3 pt-2">
                 {navigation.map((item) => (
                   <Disclosure.Button

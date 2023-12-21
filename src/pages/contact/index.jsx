@@ -1,17 +1,19 @@
 import { PhotoContact } from '@/assets/images/ImagesContact';
 import { MainLayout } from '@/components/Layouts';
 import { GithubIcon, InstagramIcon, LinkedinIcon, MailsIcon, TwitterIcon } from 'lucide-react';
-import { Fade } from 'react-awesome-reveal';
+import { Fade, Zoom } from 'react-awesome-reveal';
 import { Link } from 'react-router-dom';
 
 export const ContactPage = () => {
   return (
     <MainLayout title="Contact">
-      <div className="row my-[40px] flex justify-center">
+      <div className="row my-[40px] -mt-0 flex flex-col justify-center md:mt-10 md:flex-row">
         <img className="max-h-[450px] rounded-xl" src={PhotoContact} alt="my Profile" />
-        <div className="flex max-w-xl flex-col items-center gap-8 px-8 py-10 text-center">
-          <h1 className="text-5xl font-bold">Contact Me 📞.</h1>
-          <p className="text-xl font-bold">
+        <div className="flex max-w-xl flex-col items-center gap-5 px-8 py-10 text-center md:gap-8">
+          <Zoom>
+            <h1 className="text-3xl font-bold md:text-5xl">Contact Me 📞.</h1>
+          </Zoom>
+          <p className="text-base font-bold md:text-xl">
             You can contact me at the contact listed below.
             <br />I will respond quickly to your message.
           </p>

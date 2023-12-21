@@ -8,7 +8,7 @@ import { Fade, Zoom } from 'react-awesome-reveal';
 export const HomePage = () => {
   return (
     <MainLayout title="Home">
-      <div className="row my-[80px] flex justify-center">
+      <div className="row my-[80px] flex flex-col-reverse justify-center md:flex-row">
         <div className="flex max-w-xl flex-col gap-6 px-8">
           <h1 className="text-6xl font-bold">Hello 👋.</h1>
           <h1 className="text-xl font-bold">
@@ -31,7 +31,9 @@ export const HomePage = () => {
           </button>
         </div>
         <Zoom>
-          <img className="h-80 w-80 rounded-full" src={Photo} alt="my Profile" />
+          <div className="-mt-16 flex justify-center md:mt-0">
+            <img className="mb-10 h-80 w-80 rounded-full" src={Photo} alt="my Profile" />
+          </div>
         </Zoom>
       </div>
     </MainLayout>
