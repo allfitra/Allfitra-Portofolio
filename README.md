@@ -1,6 +1,6 @@
 # My Portofolio || Alfitra Fadjri
 
-<img src="./public/home-display.png" alt="Home-Display" height="200"/>
+<img src="./public/display-home.png" alt="Home-Display" height="200"/>
 
 ## About
 
