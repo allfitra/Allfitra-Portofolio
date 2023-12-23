@@ -15,7 +15,7 @@ export const Navbar = () => {
   const [navigation, setNavigation] = useState([
     { name: 'Home', href: '/', current: location.pathname === '/' },
     {
-      name: 'Education and Certificate',
+      name: 'Education',
       href: '/education',
       current: location.pathname === '/education',
     },
@@ -67,7 +67,9 @@ export const Navbar = () => {
                     )}
                   </Disclosure.Button>
                 </div>
-                <h1 className="font-heading text-2xl font-bold">Allfitra {'{}'}</h1>
+                <Link to={'/'}>
+                  <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1>
+                </Link>
                 <div className="flex flex-shrink-0 items-center">
                   <div className="hidden sm:ml-6 lg:block ">
                     <div className="flex gap-4 space-x-4">
