@@ -24,7 +24,7 @@ export const HomePage = () => {
           <button className="flex items-start">
             <Link
               to="/contact"
-              className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-md hover:shadow-black"
+              className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-md hover:shadow-black"
             >
               Contact Me
             </Link>
@@ -46,7 +46,7 @@ function SosmedIcon() {
       <div className="flex flex-row items-end gap-3 text-sm text-white sm:ml-auto xl:gap-5">
         <Fade direction="left" delay={10}>
           <a href="https://github.com/allfitra" target="_blank" className="cursor-pointer">
-            <div className="rounded-full bg-[#333] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#fff]">
+            <div className="rounded-full bg-[#333] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#222]">
               <GithubIcon className="h-7 w-7 xl:h-8 xl:w-8" />
             </div>
           </a>
@@ -55,22 +55,22 @@ function SosmedIcon() {
             target="_blank"
             className="cursor-pointer"
           >
-            <div className="rounded-full bg-[#0e76a8] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#fff]">
+            <div className="rounded-full bg-[#0e76a8] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#222]">
               <LinkedinIcon className="h-7 w-7 xl:h-8 xl:w-8" />
             </div>
           </a>
           <a href="mailto:alfitrafadjri00@gmail.com" target="_blank" className="cursor-pointer">
-            <div className="rounded-full bg-[#ea4335] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#fff]">
+            <div className="rounded-full bg-[#ea4335] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#222]">
               <MailsIcon className="h-7 w-7 xl:h-8 xl:w-8" />
             </div>
           </a>
           <a href="https://twitter.com/Allfitra00" target="_blank" className="cursor-pointer">
-            <div className="rounded-full bg-[#00acee] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#fff]">
+            <div className="rounded-full bg-[#00acee] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#222]">
               <TwitterIcon className="h-7 w-7 xl:h-8 xl:w-8" />
             </div>
           </a>
           <a href="https://www.instagram.com/allfitra_" target="_blank" className="cursor-pointer">
-            <div className="transform rounded-full bg-[#e4405f] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#fff]">
+            <div className="transform rounded-full bg-[#e4405f] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#222]">
               <InstagramIcon className="h-7 w-7 xl:h-8 xl:w-8" />
             </div>
           </a>

@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { Disclosure } from '@headlessui/react';
 
 import burgerButton from '@/assets/images/burger-button.png';
-import { MoonIcon } from 'lucide-react';
+import { MoonIcon, SunIcon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { themes } from '@/utils/theme';
+import { useTheme } from '@/utils/themeContext';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -25,6 +27,7 @@ export const Navbar = () => {
   ]);
 
   const { pathname } = useLocation();
+  const { theme, changeTheme } = useTheme();
 
   useEffect(() => {
     window.scrollTo(1, 0);
@@ -39,7 +42,10 @@ export const Navbar = () => {
   }, [location]);
 
   return (
-    <nav className={`container fixed top-0 z-20 max-w-none bg-[#1D1D1D] px-6 shadow-md`}>
+    <nav
+      className={`container fixed top-0 z-20 max-w-none bg-[#1D1D1D] px-6 shadow-md`}
+      style={theme === 'dark' ? themes.dark : themes.light}
+    >
       <Disclosure as="nav">
         {({ open }) => (
           <>
@@ -47,8 +53,12 @@ export const Navbar = () => {
               <div className="relative flex h-20 w-full max-w-7xl items-center justify-between px-14">
                 <div className="absolute inset-y-0 right-0 flex items-center lg:hidden">
                   {/* Mobile menu button*/}
-                  <div className="mr-6 rounded-full bg-[#333]">
-                    <MoonIcon />
+                  <div
+                    onClick={changeTheme}
+                    className="mr-6 rounded-full p-1.5"
+                    style={{ backgroundColor: theme === 'dark' ? '#333' : '#ccc' }}
+                  >
+                    {theme === 'dark' ? <MoonIcon /> : <SunIcon color="black" />}
                   </div>
                   <Disclosure.Button className="hover: relative inline-flex items-center justify-center rounded-md p-2 hover:text-primary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                     <span className="absolute -inset-0.5" />
@@ -94,9 +104,23 @@ export const Navbar = () => {
                           </Link>
                         </div>
                       ))}
-                      <button className="mt-1 rounded-full bg-[#333] p-1">
-                        <MoonIcon />
-                      </button>
+                      {theme === 'dark' ? (
+                        <button
+                          onClick={changeTheme}
+                          className="rounded-full p-1.5 pr-12 transition duration-300"
+                          style={{ backgroundColor: '#333' }}
+                        >
+                          <MoonIcon />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={changeTheme}
+                          className="translate-x-5 rounded-full p-1.5 pl-12 transition duration-300"
+                          style={{ backgroundColor: '#ccc' }}
+                        >
+                          <SunIcon color="black" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -133,26 +157,21 @@ const backgroundButton = [
   {
     boxShadow: '0 2px 10px #2ab0ee',
     backgroundColor: '#2ab0ee',
-    color: '#ffffff',
   },
   {
     boxShadow: '0 2px 10px #eb6559',
     backgroundColor: '#eb6559',
-    color: '#ffffff',
   },
   {
     boxShadow: '0 2px 10px #f7b908',
     backgroundColor: '#f7b908',
-    color: '#ffffff',
   },
   {
     boxShadow: '0 2px 10px #e44160',
     backgroundColor: '#e44160',
-    color: '#ffffff',
   },
   {
     boxShadow: '0 1px 10px #47a148',
     backgroundColor: '#47a148',
-    color: '#ffffff',
   },
 ];
