@@ -2,8 +2,10 @@ import { GraduationImg } from '@/assets/images/ImagesEducation';
 import { MainLayout } from '@/components/Layouts';
 import { Fade, Zoom } from 'react-awesome-reveal';
 import { educations } from './data/database';
+import { useTheme } from '@/utils/themeContext';
 
 export const EducationPage = () => {
+  const { theme } = useTheme();
   return (
     <MainLayout title="Education">
       <div className="row mb-16 mt-5 flex flex-col justify-center md:flex-row">
@@ -19,7 +21,14 @@ export const EducationPage = () => {
             <Fade direction="down">
               <h1 className="text-5xl font-bold">Education.</h1>
             </Fade>
-            <hr className="mt-2" />
+            <hr
+              className="mt-2"
+              style={
+                theme === 'dark'
+                  ? { borderColor: '#fff', borderWidth: '1.5px' }
+                  : { borderColor: '#000', borderWidth: '1.5px' }
+              }
+            />
           </div>
           <div className="-mx-12 md:mx-0">
             <h2 className="mb-5 ml-3 text-left text-3xl font-bold md:ml-0">Degrees Received</h2>
@@ -38,8 +47,12 @@ export const EducationPage = () => {
 };
 
 const EducationCard = ({ education }) => {
+  const { theme } = useTheme();
   return (
-    <div className=" max-w-[700px] rounded-xl bg-[#ff2f6dcb] shadow-md shadow-[#ff2f6dcb] hover:shadow-lg hover:shadow-[#ff2f6dcb]">
+    <div
+      className=" max-w-[700px] rounded-xl bg-[#ff2f6dcb] shadow-md shadow-[#ff2f6dcb] hover:shadow-lg hover:shadow-[#ff2f6dcb]"
+      style={{ color: theme === 'dark' ? '#fff' : '#000' }}
+    >
       <div className="flex px-6 py-4">
         <img src={education.icon} alt="logo-unj" className="mr-5 h-10 w-10 md:h-16 md:w-16" />
         <div className="flex w-full flex-col gap-4">
@@ -52,7 +65,10 @@ const EducationCard = ({ education }) => {
           </div>
         </div>
       </div>
-      <div className="rounded-b-xl bg-black p-5 text-right">
+      <div
+        className="rounded-b-xl p-5 text-right "
+        style={{ backgroundColor: theme === 'dark' ? '#000' : '#303030' }}
+      >
         <button className="rounded-md bg-[#ff2f6dcb] px-10 py-3 opacity-90 hover:opacity-100">
           <a
             href="https://www.unj.ac.id/"

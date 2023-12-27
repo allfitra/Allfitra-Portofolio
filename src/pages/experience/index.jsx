@@ -6,25 +6,34 @@ import 'react-vertical-timeline-component/style.min.css';
 
 import { experiences } from './data/database';
 import { Fade } from 'react-awesome-reveal';
+import { useTheme } from '@/utils/themeContext';
+import { themes } from '@/utils/theme';
 
 export const ExperiencePage = () => {
+  const { theme } = useTheme();
   return (
     <MainLayout title="Experience">
       <Fade direction="down">
-        <div className="mt-3 text-center font-serif">
-          <h2 className="xs:text-[50px] text-[40px] font-black text-white sm:text-[60px] lg:text-[50px] lg:leading-[60px]">
+        <div
+          className="mt-3 text-center font-serif"
+          style={theme === 'dark' ? themes.dark : themes.light}
+        >
+          <h2 className="xs:text-[50px] text-[40px] font-black sm:text-[60px] lg:text-[50px] lg:leading-[60px]">
             Work Experience.
           </h2>
-          <p className="xs:text-[20px] text-[16px] font-medium text-[#dfd9ff] sm:text-[26px] lg:text-[25px] lg:leading-[40px]">
+          <p
+            className="xs:text-[20px] text-[16px] font-medium sm:text-[26px] lg:text-[25px] lg:leading-[40px]"
+            style={{ color: theme === 'dark' ? '#dfd9ff' : '#383450' }}
+          >
             What I have done so far
           </p>
         </div>
       </Fade>
 
       <div className="mb-10 mt-10 flex flex-col">
-        <VerticalTimeline>
+        <VerticalTimeline lineColor={theme === 'dark' ? '#fff' : '#000'}>
           {experiences.map((experience, index) => (
-            <ExperienceCard key={index} experience={experience} />
+            <ExperienceCard key={index} experience={experience} theme={theme} />
           ))}
         </VerticalTimeline>
       </div>
@@ -32,14 +41,12 @@ export const ExperiencePage = () => {
   );
 };
 
-const ExperienceCard = ({ experience }) => {
+const ExperienceCard = ({ experience, theme }) => {
   return (
     <VerticalTimelineElement
-      contentStyle={{
-        background: '#2A3A5B',
-        color: '#fff',
-      }}
+      contentStyle={{ background: '#2A3A5B', color: '#fff' }}
       contentArrowStyle={{ borderRight: '7px solid  #232631' }}
+      dateClassName={theme === 'dark' ? 'text-white' : 'text-black font-semi'}
       date={experience.date}
       iconStyle={{ background: experience.iconBg }}
       icon={
