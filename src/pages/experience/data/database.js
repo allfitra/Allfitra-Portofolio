@@ -1,6 +1,18 @@
-import { AlterraLogo, DtsLogo, GifLogo } from '@/assets/images/ImagesExperience';
+import { AlterraLogo, DtsLogo, GifLogo, SiemensLogo } from '@/assets/images/ImagesExperience';
 
 export const experiences = [
+  {
+    title: 'Information Technology Specialist',
+    company_name: 'Siemens',
+    type_job: 'Internship',
+    icon: SiemensLogo,
+    iconBg: '#f7b908',
+    date: 'Jan 2024 - Present',
+    points: [
+      'Design and develop internal applications using Angular CLI and .NET.',
+      'Carry out administrative work for the IT division, such as managing user accounts, managing IT assets, and providing technical support to users.',
+    ],
+  },
   {
     title: 'Frontend Engineer',
     company_name: 'Alterra Academy',

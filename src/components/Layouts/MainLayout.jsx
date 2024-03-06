@@ -12,7 +12,7 @@ export const MainLayout = ({ title, children }) => {
 
       <div className="pt-28" style={theme === 'dark' ? themes.dark : themes.light}>
         <Navbar />
-        <div className="mx-auto flex max-w-7xl flex-col overflow-hidden xl:overflow-visible">
+        <div className="mx-auto flex min-h-[90vh] max-w-7xl flex-col overflow-hidden xl:overflow-visible">
           <div className=" px-5 lg:px-8">{children}</div>
         </div>
         <Footer />
