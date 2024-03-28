@@ -49,6 +49,7 @@ export const ProjectPage = () => {
                             Object.values(project.tools).map((tool, i) => (
                               <div key={i}>
                                 <img
+                                  title={tool.name}
                                   src={tool.logo}
                                   alt={`Logo ` + tool.name}
                                   className="h-8 w-8 xl:h-11 xl:w-11"
