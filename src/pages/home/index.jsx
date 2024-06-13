@@ -31,8 +31,8 @@ export const HomePage = () => {
           </button>
         </div>
         <Zoom>
-          <div className="-mt-16 flex justify-center md:mt-0">
-            <img className="mb-10 h-80 w-80 rounded-full" src={Photo} alt="my Profile" />
+          <div className="-mt-16 flex justify-center md:-mt-5">
+            <img className="mb-10 h-[400px] w-[400px] rounded-full" src={Photo} alt="my Profile" />
           </div>
         </Zoom>
       </div>
