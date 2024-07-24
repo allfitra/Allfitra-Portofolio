@@ -10,15 +10,16 @@ export const HomePage = () => {
     <MainLayout title="Home">
       <div className="row my-[80px] flex flex-col-reverse justify-center md:flex-row">
         <div className="flex max-w-xl flex-col gap-6 px-8">
-          <h1 className="text-6xl font-bold">Hello 👋.</h1>
+          <h1 className="text-5xl font-bold">Hello 👋.</h1>
           <h1 className="text-xl font-bold">
             I'm
             <span className="text-[#E3405F]"> Alfitra Fadjri, </span>
-            Frontend Developer.
+            as Software Engineer.
           </h1>
-          <p className="text-lg font-bold">
-            I'm a tech enthusiast 🔥, I have experience in the development of Web Applications,
-            Mobile Applications, and Team Work.
+          <p className="text-justify text-[16px] leading-7">
+            I'm a tech enthusiast 🔥, with a solid background in web and application development. I
+            am a socially active person and have had experience in various bootcamps and
+            internships.
           </p>
           <SosmedIcon />
           <button className="flex items-start">
