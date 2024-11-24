@@ -6,6 +6,7 @@ import { MoonIcon, SunIcon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { themes } from '@/utils/theme';
 import { useTheme } from '@/utils/themeContext';
+import { logoName } from '@/assets/Content';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -81,7 +82,7 @@ export const Navbar = () => {
                   {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
                   <img
                     className="ml-7 mt-4 h-[150px] w-[200px]"
-                    src="src/assets/Content/Allfitra.png"
+                    src={logoName}
                     alt="Allfitra Logos"
                   />
                 </Link>
