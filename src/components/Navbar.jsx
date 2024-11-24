@@ -78,7 +78,12 @@ export const Navbar = () => {
                   </Disclosure.Button>
                 </div>
                 <Link to={'/'}>
-                  <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1>
+                  {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
+                  <img
+                    className="ml-7 mt-4 h-[150px] w-[200px]"
+                    src="src/assets/Content/Allfitra.png"
+                    alt="Allfitra Logos"
+                  />
                 </Link>
                 <div className="flex flex-shrink-0 items-center">
                   <div className="hidden sm:ml-6 lg:block ">
