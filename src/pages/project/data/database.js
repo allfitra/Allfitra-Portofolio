@@ -21,7 +21,7 @@ export const ProjectData = {
           id: 1,
           name: 'AiVents (Portal Event Information)',
           description:
-            'a website that displays event information in the Jakarta area. Here users can find out information about events that are taking place or will take place so that they can organize plans to visit the event.',
+            'A website that displays event information in the Jakarta area. Here users can find out information about events that are taking place or will take place so that they can organize plans to visit the event.',
           tools: {
             react: {
               name: 'React',
@@ -51,7 +51,7 @@ export const ProjectData = {
         },
         {
           id: 2,
-          name: 'Calculator',
+          name: 'Simple Calculator',
           description:
             'Simple calculator as a means of training logic and advanced stages of learning javascript, with website functions in the form of providing convenience in performing mathematical operations.',
           tools: {
@@ -85,7 +85,7 @@ export const ProjectData = {
           id: 3,
           name: 'Detik Finance Clone - Landing Page',
           description:
-            'a clone website of the detik.com finance landing page, aims to train in making a suitable appearance and deepen the use of style and design for a website appearance.',
+            'A clone website of the detik.com finance landing page, aims to train in making a suitable appearance and deepen the use of style and design for a website appearance.',
           tools: {
             html: {
               name: 'HTML',
@@ -250,7 +250,7 @@ export const ProjectData = {
           id: 4,
           name: 'Open Desa',
           description:
-            'a mobile application that helps provide information related to villages in Indonesia with features in the form of a means of connecting and information containers for village communities.',
+            'A mobile application that helps provide information related to villages in Indonesia with features in the form of a means of connecting and information containers for village communities.',
           tools: {
             android: {
               name: 'android',
@@ -273,7 +273,7 @@ export const ProjectData = {
           id: 5,
           name: 'Kueku - Website',
           description:
-            'an e-commerce website dedicated to the sale of cakes both privately and in partnership with cake merchants.',
+            'An e-commerce website dedicated to the sale of cakes both privately and in partnership with cake merchants.',
           tools: {
             laravel: {
               name: 'laravel',

@@ -51,7 +51,7 @@ export const Navbar = () => {
         {({ open }) => (
           <>
             <div className="flex justify-center">
-              <div className="relative flex h-20 w-full max-w-7xl items-center justify-between px-14">
+              <div className="relative flex h-20 w-full max-w-7xl items-center justify-between md:px-14">
                 <div className="absolute inset-y-0 right-0 flex items-center lg:hidden">
                   {/* Mobile menu button*/}
                   <div
@@ -81,7 +81,7 @@ export const Navbar = () => {
                 <Link to={'/'}>
                   {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
                   <img
-                    className="ml-7 mt-4 h-[150px] w-[200px]"
+                    className="ml-0 mt-4 h-[150px] w-[200px] xl:ml-7"
                     src={logoName}
                     alt="Allfitra Logos"
                   />
