@@ -7,7 +7,7 @@ export const experiences = [
     type_job: 'Internship',
     icon: SiemensLogo,
     iconBg: '#f7b908',
-    date: 'Jan 2024 - Present',
+    date: 'Jan 2024 - Dec 2024',
     points: [
       'Design and develop internal applications using Angular CLI and .NET.',
       'Carry out administrative work for the IT division, such as managing user accounts, managing IT assets, and providing technical support to users.',
