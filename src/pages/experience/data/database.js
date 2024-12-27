@@ -2,15 +2,16 @@ import { AlterraLogo, DtsLogo, GifLogo, SiemensLogo } from '@/assets/images/Imag
 
 export const experiences = [
   {
-    title: 'Information Technology Specialist',
+    title: 'IT Developer and Team Support',
     company_name: 'Siemens',
     type_job: 'Internship',
     icon: SiemensLogo,
     iconBg: '#f7b908',
     date: 'Jan 2024 - Dec 2024',
     points: [
-      'Design and develop internal applications using Angular CLI and .NET.',
-      'Carry out administrative work for the IT division, such as managing user accounts, managing IT assets, and providing technical support to users.',
+      'Successfully develop several web applications for the ASEAN region using Angular ang .NET Core, leveraging Microsoft SQL Server as the Database. Integrated applications with Azure AD for the authentication and access management.',
+      'Carry out administrative work for the IT division, such as managing Purchase Requisition, Expanse Claims, and Travel Requisition.',
+      'Manage asset management for IT goods, and organize data collection on the use of goods by users.',
     ],
   },
   {
