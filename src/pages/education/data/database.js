@@ -2,10 +2,10 @@ import { UnjLogo } from '@/assets/images/ImagesEducation';
 
 export const educations = [
   {
-    degree: 'Bachelor in Computer Science (S.Kom)',
-    school: 'Jakarta State University',
+    degree: 'Sarjana Komputer (S.Kom)',
+    school: 'State University of Jakarta',
     icon: UnjLogo,
-    date: '2020 - Present',
+    date: 'September 2020 - December 2024',
     points: [],
   },
 ];
