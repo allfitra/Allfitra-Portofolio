@@ -4,6 +4,10 @@ import { MainLayout } from '@/components/Layouts';
 import { GithubIcon, InstagramIcon, LinkedinIcon, MailsIcon, TwitterIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Fade, Zoom } from 'react-awesome-reveal';
+import { homeData } from './data/database';
+import DecryptedText from '@/utils/FramerMotion/decrypted-text';
+import Orb from '@/utils/OrbAnimation/orb-animation';
+import RotatingText from '@/utils/FramerMotion/rotating-text';
 
 export const HomePage = () => {
   return (
@@ -13,13 +17,18 @@ export const HomePage = () => {
           <h1 className="text-5xl font-bold">Hello 👋.</h1>
           <h1 className="text-xl font-bold">
             I'm
-            <span className="text-[#E3405F]"> Alfitra Fadjri, </span>
-            as Software Engineer.
+            <span className="text-[#E3405F]"> {homeData.name}, </span>
+            as {homeData.title}.
           </h1>
           <p className="text-justify text-[16px] leading-7">
-            I'm a tech enthusiast 🔥, with a solid background in web and application development. I
-            am a socially active person and have had experience in various bootcamps and
-            internships.
+            <DecryptedText
+              text={homeData.description}
+              className="revealed"
+              animateOn="view"
+              characters="!@#$%^&*?"
+              speed={100}
+              maxIterations={15}
+            />
           </p>
           <SosmedIcon />
           <button className="flex items-start">
@@ -32,8 +41,13 @@ export const HomePage = () => {
           </button>
         </div>
         <Zoom>
-          <div className="-mt-16 flex justify-center md:-mt-5">
-            <img className="mb-10 h-[400px] w-[400px] rounded-full" src={Photo} alt="my Profile" />
+          <div className="relative mt-[-50px] h-[400px] w-[400px]">
+            <div className="absolute inset-0 ml-[25px] mt-[35px] h-[350px] w-[350px] object-cover">
+              <img className="rounded-full" src={Photo} alt="my Profile" />
+            </div>
+            <div className="absolute inset-0 h-[100%] w-[100%] object-cover">
+              <Orb hoverIntensity={0.3} rotateOnHover={true} hue={0} forceHoverState={false} />
+            </div>
           </div>
         </Zoom>
       </div>
