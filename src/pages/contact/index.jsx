@@ -3,6 +3,7 @@ import { MainLayout } from '@/components/Layouts';
 import { GithubIcon, InstagramIcon, LinkedinIcon, MailsIcon, TwitterIcon } from 'lucide-react';
 import { Fade, Zoom } from 'react-awesome-reveal';
 import { Link } from 'react-router-dom';
+import Magnet from '@/utils/FramerMotion/magnetic-item';
 
 export const ContactPage = () => {
   return (
@@ -18,15 +19,17 @@ export const ContactPage = () => {
             <br />I will respond quickly to your message.
           </p>
           <SosmedIcon />
-          <button className="flex items-start">
-            <Link
-              to="https://drive.google.com/file/d/1D9Akj6m5_zLwzpEz5klb1ZaN3VPBjgh0/view?usp=sharing"
-              target="_blank"
-              className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white duration-200 hover:-translate-x-1 hover:-translate-y-1.5 hover:shadow-md hover:shadow-[#ccc]"
-            >
-              Get my CV
-            </Link>
-          </button>
+          <Magnet padding={150} disabled={false} magnetStrength={10}>
+            <button className="flex items-start">
+              <Link
+                to="https://drive.google.com/file/d/1D9Akj6m5_zLwzpEz5klb1ZaN3VPBjgh0/view?usp=sharing"
+                target="_blank"
+                className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white hover:shadow-md hover:shadow-[#ccc]"
+              >
+                Get my CV
+              </Link>
+            </button>
+          </Magnet>
         </div>
       </div>
     </MainLayout>

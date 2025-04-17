@@ -7,7 +7,7 @@ import { Fade, Zoom } from 'react-awesome-reveal';
 import { homeData } from './data/database';
 import DecryptedText from '@/utils/FramerMotion/decrypted-text';
 import Orb from '@/utils/OrbAnimation/orb-animation';
-import RotatingText from '@/utils/FramerMotion/rotating-text';
+import Magnet from '@/utils/FramerMotion/magnetic-item';
 
 export const HomePage = () => {
   return (
@@ -31,14 +31,16 @@ export const HomePage = () => {
             />
           </p>
           <SosmedIcon />
-          <button className="flex items-start">
-            <Link
-              to="/contact"
-              className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-md hover:shadow-black"
-            >
-              Contact Me
-            </Link>
-          </button>
+          <Magnet padding={150} disabled={false} magnetStrength={10}>
+            <button className="flex items-start">
+              <Link
+                to="/contact"
+                className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white hover:shadow-md hover:shadow-black"
+              >
+                Contact Me
+              </Link>
+            </button>
+          </Magnet>
         </div>
         <Zoom>
           <div className="relative mt-[-50px] h-[400px] w-[400px]">
