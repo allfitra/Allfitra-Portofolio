@@ -22,7 +22,7 @@ export const ContactPage = () => {
           <Magnet padding={150} disabled={false} magnetStrength={10}>
             <button className="flex items-start">
               <Link
-                to="https://drive.google.com/file/d/1D9Akj6m5_zLwzpEz5klb1ZaN3VPBjgh0/view?usp=sharing"
+                to="https://drive.google.com/file/d/1VZOmVHjTqlTTovaIMP8g4Ztg_tm81cxi/view?usp=sharing"
                 target="_blank"
                 className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white hover:shadow-md hover:shadow-[#ccc]"
               >
