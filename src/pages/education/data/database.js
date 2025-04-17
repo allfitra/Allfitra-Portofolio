@@ -5,7 +5,7 @@ export const educations = [
     degree: 'Sarjana Komputer (S.Kom)',
     school: 'State University of Jakarta',
     icon: UnjLogo,
-    date: '2020 - 2024',
+    date: 'Sep 2020 - Feb 2025',
     points: [],
   },
 ];

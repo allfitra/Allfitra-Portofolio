@@ -8,6 +8,8 @@ import LaravelLogo from './laravel-logo.png';
 import NodejsLogo from './nodejs-logo.png';
 import ReactLogo from './react-logo.png';
 import TailwindLogo from './tailwind-logo.png';
+import PythonLogo from './python-logo.png';
+import SeleniumLogo from './selenium-logo.png';
 
 export {
   AndroidLogo,
@@ -20,4 +22,7 @@ export {
   TailwindLogo,
   BootstrapLogo,
   KotlinLogo,
+  PythonLogo,
+  SeleniumLogo,
+  // Add more images as needed
 };
