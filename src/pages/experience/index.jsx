@@ -60,7 +60,10 @@ const ExperienceCard = ({ experience, theme }) => {
         </div>
       }
     >
-      <SpotlightCard className="m-[-22px] cursor-crosshair" spotlightColor="rgba(0, 229, 255, 0.2)">
+      <SpotlightCard
+        className="m-[-15px] cursor-crosshair md:m-[-22px]"
+        spotlightColor="rgba(0, 229, 255, 0.2)"
+      >
         <div>
           <h3 className="text-[24px] font-bold text-white">{experience.title}</h3>
           <p className="text-secondary text-[16px] font-semibold" style={{ margin: 0 }}>

@@ -1,16 +1,29 @@
-import { PhotoContact } from '@/assets/images/ImagesContact';
 import { MainLayout } from '@/components/Layouts';
-import { GithubIcon, InstagramIcon, LinkedinIcon, MailsIcon, TwitterIcon } from 'lucide-react';
-import { Fade, Zoom } from 'react-awesome-reveal';
+import { InstagramIcon, LinkedinIcon, MailsIcon } from 'lucide-react';
+import { Zoom } from 'react-awesome-reveal';
 import { Link } from 'react-router-dom';
 import Magnet from '@/utils/FramerMotion/magnetic-item';
 import GlassIcons from '@/utils/FramerMotion/glass-icon';
+import StackImages from '@/utils/Animation/stack-images';
+import { stackImagesData } from './data/database';
 
 export const ContactPage = () => {
+  console.log(stackImagesData);
+
   return (
     <MainLayout title="Contact">
-      <div className="row my-[40px] -mt-0 flex flex-col justify-center md:mt-10 md:flex-row">
-        <img className="max-h-[450px] rounded-xl" src={PhotoContact} alt="my Profile" />
+      <div className="row my-[40px] -mt-0 flex flex-col justify-center md:flex-row">
+        <div className="mx-10">
+          {/* <img className="max-h-[450px] rounded-xl" src={PhotoContact} alt="my Profile" /> */}
+          <StackImages
+            randomRotation={true}
+            sensitivity={120}
+            sendToBackOnClick={false}
+            cardDimensions={{ width: 300, height: 400 }}
+            cardsData={stackImagesData}
+            // animationConfig={{ stiffness: 200, damping: 10 }}
+          />
+        </div>
         <div className="flex max-w-xl flex-col items-center gap-5 px-8 py-10 text-center md:gap-8">
           <Zoom>
             <h1 className="text-3xl font-bold md:text-5xl">Contact Me 📞.</h1>

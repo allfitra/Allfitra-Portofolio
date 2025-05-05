@@ -3,7 +3,7 @@ import { Photo } from '@/assets/images/ImagesHome';
 import { MainLayout } from '@/components/Layouts';
 import { GithubIcon, InstagramIcon, LinkedinIcon, MailsIcon, TwitterIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Fade, Zoom } from 'react-awesome-reveal';
+import { Zoom } from 'react-awesome-reveal';
 import { homeData } from './data/database';
 import DecryptedText from '@/utils/FramerMotion/decrypted-text';
 import Orb from '@/utils/OrbAnimation/orb-animation';

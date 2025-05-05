@@ -43,7 +43,7 @@ const SpotlightCard = ({
       onBlur={handleBlur}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative overflow-hidden md:rounded-3xl md:p-3 ${className}`}
+      className={`relative overflow-hidden p-3 md:rounded-3xl ${className}`}
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 ease-in-out"

@@ -1,6 +1,21 @@
-import { AlterraLogo, DtsLogo, GifLogo, SiemensLogo } from '@/assets/images/ImagesExperience';
+import {
+  AlterraLogo,
+  DtsLogo,
+  GifLogo,
+  SiemensLogo,
+  DnaLogo,
+} from '@/assets/images/ImagesExperience';
 
 export const experiences = [
+  {
+    title: 'Frontend Developer',
+    company_name: 'PT. Digital Nayaka Abinaya',
+    type_job: 'Fulltime',
+    icon: DnaLogo,
+    iconBg: '#CF1050',
+    date: 'April 2025 - Present',
+    points: ['On Progress'],
+  },
   {
     title: 'IT Developer and Team Support',
     company_name: 'Siemens',
@@ -17,7 +32,7 @@ export const experiences = [
   {
     title: 'Frontend Engineer',
     company_name: 'Alterra Academy',
-    type_job: '',
+    type_job: 'Bootcamp',
     icon: AlterraLogo,
     iconBg: '#CF1050',
     date: 'Aug 2023 - Dec 2023',
