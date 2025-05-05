@@ -100,7 +100,10 @@ function SosmedIcon() {
   ];
   return (
     <div style={{ position: 'relative' }} className="flex justify-center md:justify-end">
-      <GlassIcons items={items} className="grid-cols-5 gap-[15px] md:grid-cols-5 md:gap-[30px]" />
+      <GlassIcons
+        items={items}
+        className="max-w-[370px] grid-cols-5 gap-[15px] md:grid-cols-5 md:gap-[30px]"
+      />
     </div>
   );
 }
