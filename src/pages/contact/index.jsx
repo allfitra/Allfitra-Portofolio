@@ -44,18 +44,21 @@ function SosmedIcon() {
       label: 'LinkedIn',
       color: '#0e76a8',
       link: 'https://www.linkedin.com/in/alfitra-fadjri/',
+      customClass: 'h-[4em] w-[4em]',
     },
     {
       icon: <MailsIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
       label: 'Email',
       color: '#ea4335',
       link: 'mailto:alfitrafadjri00@gmail.com',
+      customClass: 'h-[4em] w-[4em]',
     },
     {
       icon: <InstagramIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
       label: 'Instagram',
       color: '#e4405f',
       link: 'https://www.instagram.com/allfitra_',
+      customClass: 'h-[4em] w-[4em]',
     },
   ];
   return (

@@ -46,7 +46,7 @@ export const HomePage = () => {
           </Magnet>
         </div>
         <Zoom>
-          <div className="relative mt-[-50px] h-[400px] w-[400px]">
+          <div className="relative ml-[-20px] mt-[-50px] h-[400px] w-[400px] md:ml-0">
             <div className="absolute inset-0 ml-[25px] mt-[35px] h-[350px] w-[350px] object-cover">
               <img className="rounded-full" src={Photo} alt="my Profile" />
             </div>
@@ -100,7 +100,7 @@ function SosmedIcon() {
   ];
   return (
     <div style={{ position: 'relative' }} className="flex justify-center md:justify-end">
-      <GlassIcons items={items} className="grid-cols-5 md:grid-cols-5 md:gap-[30px]" />
+      <GlassIcons items={items} className="grid-cols-5 gap-[15px] md:grid-cols-5 md:gap-[30px]" />
     </div>
   );
 }

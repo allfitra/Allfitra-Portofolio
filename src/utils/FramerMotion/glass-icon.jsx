@@ -27,7 +27,7 @@ const GlassIcons = ({ items, className }) => {
           onClick={() => window.open(item.link)}
           type="button"
           aria-label={item.label}
-          className={`group relative h-[4em] w-[4em] bg-transparent outline-none [-webkit-tap-highlight-color:transparent] [perspective:24em] [transform-style:preserve-3d] ${
+          className={`group relative bg-transparent outline-none [-webkit-tap-highlight-color:transparent] [perspective:24em] [transform-style:preserve-3d] ${
             item.customClass || ''
           }`}
         >
