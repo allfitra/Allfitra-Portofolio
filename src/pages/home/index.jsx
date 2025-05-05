@@ -8,11 +8,12 @@ import { homeData } from './data/database';
 import DecryptedText from '@/utils/FramerMotion/decrypted-text';
 import Orb from '@/utils/OrbAnimation/orb-animation';
 import Magnet from '@/utils/FramerMotion/magnetic-item';
+import GlassIcons from '@/utils/FramerMotion/glass-icon';
 
 export const HomePage = () => {
   return (
     <MainLayout title="Home">
-      <div className="row my-[80px] flex flex-col-reverse justify-center md:flex-row">
+      <div className="row my-[50px] flex flex-col-reverse justify-center md:flex-row">
         <div className="flex max-w-xl flex-col gap-6 px-8">
           <h1 className="text-5xl font-bold">Hello 👋.</h1>
           <h1 className="text-xl font-bold">
@@ -32,14 +33,16 @@ export const HomePage = () => {
           </p>
           <SosmedIcon />
           <Magnet padding={150} disabled={false} magnetStrength={10}>
-            <button className="flex items-start">
-              <Link
-                to="/contact"
-                className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white hover:shadow-md hover:shadow-black"
-              >
-                Contact Me
-              </Link>
-            </button>
+            <div className="flex justify-center md:justify-start">
+              <button className="mb-6 md:mt-4">
+                <Link
+                  to="/contact"
+                  className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white hover:shadow-md hover:shadow-black"
+                >
+                  Contact Me
+                </Link>
+              </button>
+            </div>
           </Magnet>
         </div>
         <Zoom>
@@ -58,41 +61,46 @@ export const HomePage = () => {
 };
 
 function SosmedIcon() {
+  const items = [
+    {
+      icon: <GithubIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
+      label: 'Github',
+      color: '#333',
+      link: '',
+      customClass: 'h-[3em] w-[3em]',
+    },
+    {
+      icon: <LinkedinIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
+      label: 'LinkedIn',
+      color: '#0e76a8',
+      link: 'https://www.linkedin.com/in/alfitra-fadjri/',
+      customClass: 'h-[3em] w-[3em]',
+    },
+    {
+      icon: <MailsIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
+      label: 'Email',
+      color: '#ea4335',
+      link: 'mailto:alfitrafadjri00@gmail.com',
+      customClass: 'h-[3em] w-[3em]',
+    },
+    {
+      icon: <TwitterIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
+      label: 'Twitter',
+      color: '#00acee',
+      link: 'https://twitter.com/Allfitra00',
+      customClass: 'h-[3em] w-[3em]',
+    },
+    {
+      icon: <InstagramIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
+      label: 'Instagram',
+      color: '#e4405f',
+      link: 'https://www.instagram.com/allfitra_',
+      customClass: 'h-[3em] w-[3em]',
+    },
+  ];
   return (
-    <div className="ml-5 flex flex-row-reverse sm:flex-col-reverse md:ml-0">
-      <div className="flex flex-row items-end gap-3 text-sm text-white sm:ml-auto xl:gap-5">
-        <Fade direction="left" delay={10}>
-          <a href="https://github.com/allfitra" target="_blank" className="cursor-pointer">
-            <div className="rounded-full bg-[#333] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#222]">
-              <GithubIcon className="h-7 w-7 xl:h-8 xl:w-8" />
-            </div>
-          </a>
-          <a
-            href="https://www.linkedin.com/in/alfitra-fadjri/"
-            target="_blank"
-            className="cursor-pointer"
-          >
-            <div className="rounded-full bg-[#0e76a8] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#222]">
-              <LinkedinIcon className="h-7 w-7 xl:h-8 xl:w-8" />
-            </div>
-          </a>
-          <a href="mailto:alfitrafadjri00@gmail.com" target="_blank" className="cursor-pointer">
-            <div className="rounded-full bg-[#ea4335] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#222]">
-              <MailsIcon className="h-7 w-7 xl:h-8 xl:w-8" />
-            </div>
-          </a>
-          <a href="https://twitter.com/Allfitra00" target="_blank" className="cursor-pointer">
-            <div className="rounded-full bg-[#00acee] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#222]">
-              <TwitterIcon className="h-7 w-7 xl:h-8 xl:w-8" />
-            </div>
-          </a>
-          <a href="https://www.instagram.com/allfitra_" target="_blank" className="cursor-pointer">
-            <div className="transform rounded-full bg-[#e4405f] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#222]">
-              <InstagramIcon className="h-7 w-7 xl:h-8 xl:w-8" />
-            </div>
-          </a>
-        </Fade>
-      </div>
+    <div style={{ position: 'relative' }} className="flex justify-center md:justify-end">
+      <GlassIcons items={items} className="grid-cols-5 md:grid-cols-5 md:gap-[30px]" />
     </div>
   );
 }

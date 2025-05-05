@@ -4,6 +4,7 @@ import { GithubIcon, InstagramIcon, LinkedinIcon, MailsIcon, TwitterIcon } from 
 import { Fade, Zoom } from 'react-awesome-reveal';
 import { Link } from 'react-router-dom';
 import Magnet from '@/utils/FramerMotion/magnetic-item';
+import GlassIcons from '@/utils/FramerMotion/glass-icon';
 
 export const ContactPage = () => {
   return (
@@ -37,45 +38,29 @@ export const ContactPage = () => {
 };
 
 function SosmedIcon() {
+  const items = [
+    {
+      icon: <LinkedinIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
+      label: 'LinkedIn',
+      color: '#0e76a8',
+      link: 'https://www.linkedin.com/in/alfitra-fadjri/',
+    },
+    {
+      icon: <MailsIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
+      label: 'Email',
+      color: '#ea4335',
+      link: 'mailto:alfitrafadjri00@gmail.com',
+    },
+    {
+      icon: <InstagramIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
+      label: 'Instagram',
+      color: '#e4405f',
+      link: 'https://www.instagram.com/allfitra_',
+    },
+  ];
   return (
-    <div className="">
-      <div className="flex flex-row items-center gap-3 text-sm text-white sm:ml-auto xl:gap-5">
-        <Fade direction="left">
-          <a href="https://github.com/allfitra" target="_blank" className="cursor-pointer">
-            <div className="rounded-full bg-[#333] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#000]">
-              <GithubIcon className="h-7 w-7 xl:h-8 xl:w-8" />
-            </div>
-          </a>
-          <a
-            href="https://www.linkedin.com/in/alfitra-fadjri/"
-            target="_blank"
-            className="cursor-pointer"
-          >
-            <div className="rounded-full bg-[#0e76a8] p-2 transition duration-200 hover:-translate-y-1.5 hover:translate-x-1 hover:shadow-md hover:shadow-[#000]">
-              <LinkedinIcon className="h-7 w-7 xl:h-8 xl:w-8" />
-            </div>
-          </a>
-        </Fade>
-        <Fade direction="bottom">
-          <a href="mailto:alfitrafadjri00@gmail.com" target="_blank" className="cursor-pointer">
-            <div className="rounded-full bg-[#ea4335] p-2 transition duration-200 hover:-translate-y-1.5 hover:shadow-md hover:shadow-[#000]">
-              <MailsIcon className="h-7 w-7 xl:h-8 xl:w-8" />
-            </div>
-          </a>
-        </Fade>
-        <Fade direction="right">
-          <a href="https://twitter.com/Allfitra00" target="_blank" className="cursor-pointer">
-            <div className="rounded-full bg-[#00acee] p-2 transition duration-200 hover:-translate-x-1 hover:-translate-y-1.5 hover:shadow-md hover:shadow-[#000]">
-              <TwitterIcon className="h-7 w-7 xl:h-8 xl:w-8" />
-            </div>
-          </a>
-          <a href="https://www.instagram.com/allfitra_" target="_blank" className="cursor-pointer">
-            <div className="transform rounded-full bg-[#e4405f] p-2 transition duration-200 hover:-translate-x-1 hover:-translate-y-1.5 hover:shadow-md hover:shadow-[#000]">
-              <InstagramIcon className="h-7 w-7 xl:h-8 xl:w-8" />
-            </div>
-          </a>
-        </Fade>
-      </div>
+    <div style={{ position: 'relative' }}>
+      <GlassIcons items={items} />
     </div>
   );
 }
