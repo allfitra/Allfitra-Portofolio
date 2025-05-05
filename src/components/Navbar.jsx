@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Disclosure } from '@headlessui/react';
 
 import burgerButton from '@/assets/images/burger-button.png';
 import { MoonIcon, SunIcon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { themes } from '@/utils/theme';
 import { useTheme } from '@/utils/themeContext';
-import { logoName } from '@/assets/Content';
+import {
+  logoName,
+  homeIcon,
+  educationIcon,
+  experienceIcon,
+  projectIcon,
+  contactIcon,
+} from '@/assets/Content';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -16,15 +22,31 @@ export const Navbar = () => {
   const location = useLocation();
   const [isHovered, setIsHovered] = useState(null);
   const [navigation, setNavigation] = useState([
-    { name: 'Home', href: '/', current: location.pathname === '/' },
+    { name: 'Home', href: '/', current: location.pathname === '/', icon: homeIcon },
     {
       name: 'Education',
       href: '/education',
       current: location.pathname === '/education',
+      icon: educationIcon,
     },
-    { name: 'Experience', href: '/experience', current: location.pathname === '/experience' },
-    { name: 'Project', href: '/project', current: location.pathname === '/project' },
-    { name: 'Contact', href: '/contact', current: location.pathname === '/contact' },
+    {
+      name: 'Experience',
+      href: '/experience',
+      current: location.pathname === '/experience',
+      icon: experienceIcon,
+    },
+    {
+      name: 'Project',
+      href: '/project',
+      current: location.pathname === '/project',
+      icon: projectIcon,
+    },
+    {
+      name: 'Contact',
+      href: '/contact',
+      current: location.pathname === '/contact',
+      icon: contactIcon,
+    },
   ]);
 
   const { pathname } = useLocation();
@@ -64,7 +86,7 @@ export const Navbar = () => {
                 {navigation.map((item, i) => (
                   <div
                     key={item.name}
-                    style={isHovered === i ? backgroundButton[i] : {}}
+                    style={isHovered === i || item.current ? backgroundButton[i] : {}}
                     className="rounded p-1.5 transition duration-300 ease-in-out"
                     onMouseEnter={() => setIsHovered(i)}
                     onMouseLeave={() => setIsHovered(null)}
@@ -107,7 +129,7 @@ export const Navbar = () => {
 
       {/* Mobile Navbar */}
       <nav className="mt-50 fixed bottom-2 left-0 z-50 w-full bg-none px-3 lg:hidden">
-        <div className="mb-[-20px] flex justify-center">
+        <div className="mb-[-15px] flex justify-center">
           <div>
             {theme === 'dark' ? (
               <button
@@ -129,17 +151,17 @@ export const Navbar = () => {
           </div>
         </div>
         <div
-          className={`flex justify-center rounded-full border-t border-black dark:border-gray-200 ${
+          className={`flex justify-center rounded-full border-t border-black pt-2 dark:border-gray-200 ${
             theme === 'dark'
               ? 'bg-white bg-opacity-70 text-black'
               : 'bg-black bg-opacity-70 text-white'
           }`}
         >
-          <div className="relative flex h-16 w-full max-w-7xl items-center justify-around">
+          <div className="relative flex h-16 w-full items-center justify-around">
             {navigation.map((item, i) => (
               <div
                 key={item.name}
-                style={isHovered === i ? backgroundButton[i] : {}}
+                // style={isHovered === i ? backgroundButton[i] : {}}
                 className="rounded-full p-1 transition duration-300 ease-in-out"
                 onMouseEnter={() => setIsHovered(i)}
                 onMouseLeave={() => setIsHovered(null)}
@@ -151,10 +173,16 @@ export const Navbar = () => {
                     item.current && 'font-bold',
                     'rounded-full px-2 py-2 font-heading text-base'
                   )}
-                  style={item.current ? backgroundButton[i] : {}}
                   aria-current={item.current ? 'page' : undefined}
                 >
-                  {item.name}
+                  <div
+                    className={`rounded-xl p-1 ${
+                      theme === 'dark' ? 'bg-black bg-opacity-50' : 'bg-white bg-opacity-50'
+                    }`}
+                    style={item.current ? backgroundButton[i] : {}}
+                  >
+                    <img src={item.icon} alt="Icon" width="35" height="35" />
+                  </div>
                 </Link>
               </div>
             ))}
