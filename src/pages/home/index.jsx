@@ -66,7 +66,7 @@ function SosmedIcon() {
       icon: <GithubIcon className="h-7 w-7 xl:h-8 xl:w-8" />,
       label: 'Github',
       color: '#333',
-      link: '',
+      link: 'https://github.com/allfitra',
       customClass: 'h-[3em] w-[3em]',
     },
     {
