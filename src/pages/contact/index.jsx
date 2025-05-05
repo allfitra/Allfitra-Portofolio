@@ -8,8 +8,6 @@ import StackImages from '@/utils/Animation/stack-images';
 import { stackImagesData } from './data/database';
 
 export const ContactPage = () => {
-  console.log(stackImagesData);
-
   return (
     <MainLayout title="Contact">
       <div className="row my-[40px] -mt-0 flex flex-col justify-center md:flex-row">
