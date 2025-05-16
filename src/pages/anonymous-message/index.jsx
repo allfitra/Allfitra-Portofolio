@@ -50,8 +50,8 @@ const MessageBox = () => {
       draggable: true,
       icon: <SuccessSendIcon />,
     });
-    // setUsername('');
-    // setMessage('');
+    setUsername('');
+    setMessage('');
   };
   return (
     <div
