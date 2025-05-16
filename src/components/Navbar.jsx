@@ -215,7 +215,7 @@ const SendAnonymousMessage = () => {
     <div className="hadow-lg fixed bottom-4 right-6 z-50 mb-[80px] cursor-pointer md:mb-0">
       <Link to={'/anonymous-message'}>
         <img
-          className="w-[75px] md:w-[90px]"
+          className="w-[65px] md:w-[90px]"
           src={theme == 'dark' ? sendMessageIconDark : sendMessageIconLight}
           alt="Send Message"
         />
