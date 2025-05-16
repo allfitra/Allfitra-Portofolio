@@ -24,7 +24,7 @@ export const ContactPage = () => {
         </div>
         <div className="flex max-w-xl flex-col items-center gap-5 px-8 py-10 text-center md:gap-8">
           <Zoom>
-            <h1 className="text-3xl font-bold md:text-5xl">Contact Me 📞.</h1>
+            <h1 className="text-3xl font-bold md:text-5xl">Contact Me 📩.</h1>
           </Zoom>
           <p className="text-base font-bold md:text-xl">
             You can contact me at the contact listed below.

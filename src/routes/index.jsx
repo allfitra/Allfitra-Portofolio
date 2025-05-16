@@ -1,10 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
 
-import { HomePage } from '@/pages/home';
+import { AnonymousPage } from '@/pages/anonymous-message';
+import { ContactPage } from '@/pages/contact';
 import { EducationPage } from '@/pages/education';
 import { ExperiencePage } from '@/pages/experience';
+import { HomePage } from '@/pages/home';
+import { NotFoundPage } from '@/pages/not-found';
 import { ProjectPage } from '@/pages/project';
-import { ContactPage } from '@/pages/contact';
 
 export const AppRoutes = () => {
   return (
@@ -14,6 +16,8 @@ export const AppRoutes = () => {
       <Route path="/experience" element={<ExperiencePage />} />
       <Route path="/project" element={<ProjectPage />} />
       <Route path="/contact" element={<ContactPage />} />
+      <Route path="/anonymous-message" element={<AnonymousPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };

@@ -32,18 +32,31 @@ export const HomePage = () => {
             />
           </p>
           <SosmedIcon />
-          <Magnet padding={150} disabled={false} magnetStrength={10}>
-            <div className="flex justify-center md:justify-start">
-              <button className="mb-6 md:mt-4">
+          <div className="flex flex-col justify-center md:-mr-8 md:flex-row md:justify-between">
+            <button className="mb-10 md:mt-4">
+              <Magnet padding={50} disabled={false} magnetStrength={10}>
                 <Link
                   to="/contact"
-                  className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white hover:shadow-md hover:shadow-black"
+                  className="whitespace-nowrap rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white hover:shadow-md hover:shadow-black"
                 >
                   Contact Me
                 </Link>
-              </button>
-            </div>
-          </Magnet>
+              </Magnet>
+            </button>
+            <div></div>
+
+            {/* <button className="mb-10 hidden md:mt-4 md:block">
+              <Magnet padding={50} disabled={false} magnetStrength={10}>
+                <Link
+                  title="Say Something as Anonymous"
+                  to="/anonymous-message"
+                  className="whitespace-nowrap rounded-md bg-[#006666] px-12 py-3 text-xl font-bold text-white hover:shadow-md hover:shadow-black"
+                >
+                  Say Something
+                </Link>
+              </Magnet>
+            </button> */}
+          </div>
         </div>
         <Zoom>
           <div className="relative ml-[-20px] mt-[-50px] h-[400px] w-[400px] md:ml-0">

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import burgerButton from '@/assets/images/burger-button.png';
 import { MoonIcon, SunIcon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { themes } from '@/utils/theme';
 import { useTheme } from '@/utils/themeContext';
 import {
+  sendMessageIconLight,
+  sendMessageIconDark,
   logoName,
   homeIcon,
   educationIcon,
@@ -47,6 +48,12 @@ export const Navbar = () => {
       current: location.pathname === '/contact',
       icon: contactIcon,
     },
+    // {
+    //   name: 'Message',
+    //   href: '/anonymous-message',
+    //   current: location.pathname === '/anonymous-message',
+    //   icon: contactIcon,
+    // },
   ]);
 
   const { pathname } = useLocation();
@@ -66,6 +73,7 @@ export const Navbar = () => {
 
   return (
     <>
+      {location.pathname !== '/anonymous-message' && <SendAnonymousMessage />}
       {/* Web Navbar */}
       <nav
         className={`container fixed top-0 z-20 hidden max-w-none bg-[#1D1D1D] px-6 lg:block`}
@@ -76,34 +84,35 @@ export const Navbar = () => {
             <Link to={'/'}>
               {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
               <img
-                className="ml-0 mt-4 h-[150px] w-[200px] xl:ml-7"
+                className="ml-0 mt-4 h-[50px] w-[200px] xl:ml-7"
                 src={logoName}
                 alt="Allfitra Logos"
               />
             </Link>
             <div className="flex flex-shrink-0 items-center">
               <div className="flex gap-4 space-x-4">
-                {navigation.map((item, i) => (
-                  <div
-                    key={item.name}
-                    style={isHovered === i || item.current ? backgroundButton[i] : {}}
-                    className="rounded p-1.5 transition duration-300 ease-in-out"
-                    onMouseEnter={() => setIsHovered(i)}
-                    onMouseLeave={() => setIsHovered(null)}
-                  >
-                    <Link
+                {location.pathname !== '/anonymous-message' &&
+                  navigation.map((item, i) => (
+                    <div
                       key={item.name}
-                      to={item.href}
-                      className={classNames(
-                        item.current && 'font-bold',
-                        'rounded-md px-2 py-2 font-heading text-base '
-                      )}
-                      aria-current={item.current ? 'page' : undefined}
+                      style={isHovered === i || item.current ? backgroundButton[i] : {}}
+                      className="rounded p-1.5 transition duration-300 ease-in-out"
+                      onMouseEnter={() => setIsHovered(i)}
+                      onMouseLeave={() => setIsHovered(null)}
                     >
-                      {item.name}
-                    </Link>
-                  </div>
-                ))}
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className={classNames(
+                          item.current && 'font-bold',
+                          'rounded-md px-2 py-2 font-heading text-base '
+                        )}
+                        aria-current={item.current ? 'page' : undefined}
+                      >
+                        {item.name}
+                      </Link>
+                    </div>
+                  ))}
                 {theme === 'dark' ? (
                   <button
                     onClick={changeTheme}
@@ -158,38 +167,60 @@ export const Navbar = () => {
           }`}
         >
           <div className="relative flex h-16 w-full items-center justify-around">
-            {navigation.map((item, i) => (
-              <div
-                key={item.name}
-                // style={isHovered === i ? backgroundButton[i] : {}}
-                className="rounded-full p-1 transition duration-300 ease-in-out"
-                onMouseEnter={() => setIsHovered(i)}
-                onMouseLeave={() => setIsHovered(null)}
-              >
-                <Link
+            {location.pathname !== '/anonymous-message' ? (
+              navigation.map((item, i) => (
+                <div
                   key={item.name}
-                  to={item.href}
-                  className={classNames(
-                    item.current && 'font-bold',
-                    'rounded-full px-2 py-2 font-heading text-base'
-                  )}
-                  aria-current={item.current ? 'page' : undefined}
+                  className="rounded-full p-1 transition duration-300 ease-in-out"
+                  onMouseEnter={() => setIsHovered(i)}
+                  onMouseLeave={() => setIsHovered(null)}
                 >
-                  <div
-                    className={`rounded-xl p-1 ${
-                      theme === 'dark' ? 'bg-black bg-opacity-50' : 'bg-white bg-opacity-50'
-                    }`}
-                    style={item.current ? backgroundButton[i] : {}}
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={classNames(
+                      item.current && 'font-bold',
+                      'rounded-full px-2 py-2 font-heading text-base'
+                    )}
+                    aria-current={item.current ? 'page' : undefined}
                   >
-                    <img src={item.icon} alt="Icon" width="35" height="35" />
-                  </div>
+                    <div
+                      className={`rounded-xl p-1 ${
+                        theme === 'dark' ? 'bg-black bg-opacity-50' : 'bg-white bg-opacity-50'
+                      }`}
+                      style={item.current ? backgroundButton[i] : {}}
+                    >
+                      <img src={item.icon} alt="Icon" width="35" height="35" />
+                    </div>
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <div className="">
+                <Link to={'/'}>
+                  <img className="h-[50px]" src={logoName} alt="Allfitra Logos" />
                 </Link>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </nav>
     </>
+  );
+};
+
+const SendAnonymousMessage = () => {
+  const { theme } = useTheme();
+  return (
+    <div className="hadow-lg fixed bottom-4 right-6 z-50 mb-[80px] cursor-pointer md:mb-0">
+      <Link to={'/anonymous-message'}>
+        <img
+          className="w-[75px] md:w-[90px]"
+          src={theme == 'dark' ? sendMessageIconDark : sendMessageIconLight}
+          alt="Send Message"
+        />
+      </Link>
+    </div>
   );
 };
 
