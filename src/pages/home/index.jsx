@@ -33,7 +33,7 @@ export const HomePage = () => {
           </p>
           <SosmedIcon />
           <div className="flex flex-col justify-center md:-mr-8 md:flex-row md:justify-between">
-            <button className="mb-10 md:mt-4">
+            <button className="mb-10">
               <Magnet padding={50} disabled={false} magnetStrength={10}>
                 <Link
                   to="/contact"
@@ -112,7 +112,7 @@ function SosmedIcon() {
     },
   ];
   return (
-    <div style={{ position: 'relative' }} className="flex justify-center md:justify-end">
+    <div style={{ position: 'relative' }} className="-mt-3 flex justify-center md:justify-end">
       <GlassIcons
         items={items}
         className="max-w-[370px] grid-cols-5 gap-[15px] md:grid-cols-5 md:gap-[30px]"
