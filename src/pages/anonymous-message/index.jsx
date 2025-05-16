@@ -55,7 +55,7 @@ const MessageBox = () => {
   };
   return (
     <div
-      className={`mt-[100px] rounded-xl p-5 shadow-lg md:mt-0 
+      className={`mt-[70px] rounded-xl p-5 shadow-lg md:mt-0 
           ${theme === 'dark' ? 'bg-gray-400 text-black' : 'bg-gray-800 text-white'}`}
     >
       <h1 className="text-2xl font-bold">Anonymous Message</h1>
