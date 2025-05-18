@@ -1,8 +1,11 @@
+import React, { useEffect, useState } from 'react';
 import { MainLayout } from '@/components/Layouts';
 import { useTheme } from '@/utils/themeContext';
-import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+// fetch api
+import { postMessage } from '@/database/fetch-api';
 
 export const AnonymousPage = () => {
   return (
@@ -45,13 +48,43 @@ const MessageBox = () => {
     // console.log(
     //   `Username: ${username.trim() === '' ? 'anonymous' : username}, Message: ${message}`
     // );
-    toast.success('Pesan berhasil dikirim', {
-      theme: theme,
-      draggable: true,
-      icon: <SuccessSendIcon />,
-    });
-    setUsername('');
-    setMessage('');
+    const itemData = {
+      username: username.trim() === '' ? 'anonymous' : username,
+      message: message,
+    };
+    postMessage(itemData)
+      .then(() => {
+        toast.success(
+          <p>
+            Pesan berhasil dikirim!! <br />
+            Terima kasih :)
+          </p>,
+          {
+            theme: theme,
+            draggable: true,
+            icon: <SuccessSendIcon />,
+          }
+        );
+      })
+      .finally(() => {
+        setUsername('');
+        setMessage('');
+      })
+      .catch((error) => {
+        console.log(itemData);
+
+        console.error('Error sending message:', error);
+        toast.error(
+          <p>
+            Mohon maaf pesan anda tidak terkirim!! <br />
+            Harap lapor developer -_-
+          </p>,
+          {
+            theme: theme,
+            draggable: true,
+          }
+        );
+      });
   };
   return (
     <div
@@ -65,7 +98,7 @@ const MessageBox = () => {
           type="text"
           value={username}
           onChange={handleUsernameChange}
-          placeholder="anonymous"
+          placeholder="username (anonymous)"
           className={`w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring focus:ring-green-400 
                 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}
         />
@@ -102,7 +135,7 @@ const SuccessSendIcon = () => {
   return (
     <div className="-mt-2">
       <svg
-        class="h-5 w-5 rotate-45 text-green-600"
+        className="h-5 w-5 rotate-45 text-green-600"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -110,9 +143,9 @@ const SuccessSendIcon = () => {
       >
         <path
           stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
           d="m9 17 8 2L9 1 1 19l8-2Zm0 0V9"
         />
       </svg>
