@@ -6,6 +6,7 @@ import projectIcon from './project-icon.png';
 import contactIcon from './contact-icon.png';
 import sendMessageIconDark from './send-message-icon-dark.png';
 import sendMessageIconLight from './send-message-icon-light.png';
+import graduateAvatar from './graduate-avatar.png';
 
 export {
   logoName,
@@ -16,4 +17,5 @@ export {
   contactIcon,
   sendMessageIconDark,
   sendMessageIconLight,
+  graduateAvatar,
 };

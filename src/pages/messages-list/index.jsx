@@ -10,16 +10,18 @@ export const MessagesListPage = () => {
     getMessages()
       .then((data) => {
         // Mapping data setelah diambil
-        const mappedMessages = data.map(({ id, username, message }) => ({
+        const mappedMessages = data.map(({ id, username, message, createdAt }) => ({
           id,
-          username: username, // Asumsi sender adalah nama
-          message: message, // Asumsi content adalah pesan
+          username: username,
+          message: message,
+          createdAt: createdAt,
         }));
         setMessagesData(mappedMessages); // Menyimpan data yang sudah dipetakan
 
         // setLoading(false); // Mengubah status loading
       })
       .catch((error) => {
+        console.error('Error fetching messages:', error);
         // setError(error); // Menangani error jika terjadi
         // setLoading(false); // Mengubah status loading meskipun ada error
       });
@@ -39,6 +41,9 @@ export const MessagesListPage = () => {
                   <th scope="col" className="w-5 px-6 py-3">
                     No.
                   </th>
+                  <th scope="col" className="w-5 px-6 py-3">
+                    Date
+                  </th>
                   <th scope="col" className="w-[200px] px-6 py-3">
                     Username
                   </th>
@@ -54,6 +59,18 @@ export const MessagesListPage = () => {
                     className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
                   >
                     <td className="px-6 py-4">{index + 1}</td>
+                    <td className="px-6 py-4">
+                      {new Date(message.createdAt).toLocaleDateString('id-ID', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                      })}
+                      <br />
+                      {new Date(message.createdAt).toLocaleTimeString('id-ID', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </td>
                     <td className="px-6 py-4">{message.username}</td>
                     <td className="px-6 py-4">{message.message}</td>
                   </tr>

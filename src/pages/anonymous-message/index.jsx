@@ -49,7 +49,7 @@ const MessageBox = () => {
         draggable: true,
       });
     }
-    if (words.length < 4) {
+    if (words.length < 3) {
       return toast.warn('Pesan anda terlalu pendek');
     }
 
@@ -59,6 +59,7 @@ const MessageBox = () => {
     const itemData = {
       username: username.trim() === '' ? 'anonymous' : username,
       message: message,
+      createdAt: new Date().toISOString(),
     };
     postMessage(itemData)
       .then(() => {
@@ -73,6 +74,7 @@ const MessageBox = () => {
             icon: <SuccessSendIcon />,
           }
         );
+        console.log(itemData);
       })
       .finally(() => {
         setUsername('');
@@ -125,12 +127,17 @@ const MessageBox = () => {
                 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-300 text-black'}`}
         ></textarea>
 
-        <button
-          onClick={handleSubmitMessage}
-          className="w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-800"
-        >
-          Send
-        </button>
+        <div className="flex flex-col gap-1">
+          <button
+            onClick={handleSubmitMessage}
+            className="w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-800"
+          >
+            Send
+          </button>
+          <p className="bg-slate-50 bg-opacity-50 text-center text-sm font-bold italic text-[#FF0000]">
+            &bull; Identitas pengirim tersamarkan, hanya anda dan tuhan lah yang tau!!
+          </p>
+        </div>
       </form>
     </div>
   );

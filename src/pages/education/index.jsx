@@ -1,19 +1,19 @@
-import { GraduationImg } from '@/assets/images/ImagesEducation';
 import { MainLayout } from '@/components/Layouts';
 import { Fade, Zoom } from 'react-awesome-reveal';
 import { educations } from './data/database';
 import { useTheme } from '@/utils/themeContext';
+import { graduateAvatar } from '@/assets/Content';
 
 export const EducationPage = () => {
   const { theme } = useTheme();
   return (
     <MainLayout title="Education">
       <div className="row mb-16 mt-5 flex flex-col justify-center md:flex-row">
-        <div className="-mb-10 -mt-6 flex justify-center md:mb-0 md:mt-0">
+        <div className="-mb-10 -mt-6 flex justify-center md:mb-0 md:mt-6">
           <img
-            src={GraduationImg}
+            src={graduateAvatar}
             alt="img-graduation"
-            className="max-h-52 w-52 md:max-h-[400px] md:w-full"
+            className="max-h-52 md:max-h-[400px] md:w-full"
           />
         </div>
         <div className="first-letter flex flex-col items-center gap-14 px-8 py-10 text-center">
