@@ -155,10 +155,10 @@ const HaveFunBox = () => {
     >
       {/* <h1 className="text-6xl text-black">Coming Soon!!</h1> */}
       <div className="absolute -bottom-[3px] left-0">
-        <img className="w-[170px]" src={catKnitting} alt="Waiting Avatar" />
+        <img className="w-[170px]" src={catKnitting} alt="Meoww" />
       </div>
       <div className="absolute -right-5 bottom-0">
-        <img className="w-[200px]" src={waitingAvatar} alt="Waiting Avatar" />
+        <img className="w-[200px]" src={waitingAvatar} alt="Help me" />
       </div>
     </div>
   );

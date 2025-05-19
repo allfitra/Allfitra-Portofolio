@@ -203,10 +203,10 @@ export const Navbar = () => {
                 </Link>
 
                 <div className="absolute bottom-0 left-0">
-                  <img className="w-[90px]" src={catKnitting} alt="Waiting Avatar" />
+                  <img className="w-[90px]" src={catKnitting} alt="Meoww" />
                 </div>
                 <div className="absolute -right-7 bottom-0">
-                  <img className="w-[150px]" src={waitingAvatar} alt="Waiting Avatar" />
+                  <img className="w-[150px]" src={waitingAvatar} alt="Help me!!" />
                 </div>
               </>
             )}
