@@ -220,7 +220,7 @@ export const Navbar = () => {
 const SendAnonymousMessage = () => {
   const { theme } = useTheme();
   return (
-    <div className="hadow-lg fixed bottom-4 right-6 z-50 mb-[80px] cursor-pointer md:mb-0">
+    <div className="hadow-lg fixed bottom-4 right-6 z-50 mb-[80px] cursor-pointer lg:mb-0">
       <Link to={'/anonymous-message'}>
         <img
           className="w-[65px] md:w-[90px]"

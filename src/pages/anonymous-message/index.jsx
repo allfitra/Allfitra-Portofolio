@@ -18,7 +18,7 @@ import { postMessage } from '@/database/fetch-api';
 export const AnonymousPage = () => {
   return (
     <MainLayout title="Anonymous Message">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <MessageBox />
         <HaveFunBox />
         <ToastContainer position="top-right" autoClose={3000} />
@@ -146,7 +146,7 @@ const MessageBox = () => {
 const HaveFunBox = () => {
   return (
     <div
-      className="relative hidden items-center justify-center rounded-xl p-6 shadow-lg md:flex"
+      className="relative hidden items-center justify-center rounded-xl p-6 shadow-lg lg:flex"
       style={{
         backgroundImage: `url(${comingSoonBackground})`,
         backgroundSize: 'cover',
