@@ -202,8 +202,8 @@ export const Navbar = () => {
                   <img className="h-[50px]" src={logoName} alt="Allfitra Logos" />
                 </Link>
 
-                <div className="absolute bottom-0 left-0">
-                  <img className="w-[90px]" src={catKnitting} alt="Meoww" />
+                <div className="absolute -bottom-[2px] left-1">
+                  <img className="w-[120px]" src={catKnitting} alt="Meoww" />
                 </div>
                 <div className="absolute -right-7 bottom-0">
                   <img className="w-[150px]" src={waitingAvatar} alt="Help me!!" />
