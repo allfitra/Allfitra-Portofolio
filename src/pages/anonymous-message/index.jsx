@@ -4,6 +4,9 @@ import { useTheme } from '@/utils/themeContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// import images
+import { anonymousBackground, waitingAvatar } from '@/assets/Other';
+
 // fetch api
 import { postMessage } from '@/database/fetch-api';
 
@@ -88,19 +91,24 @@ const MessageBox = () => {
   };
   return (
     <div
-      className={`mt-[70px] rounded-xl p-5 shadow-lg md:mt-0 
-          ${theme === 'dark' ? 'bg-gray-400 text-black' : 'bg-gray-800 text-white'}`}
+      className="relative mt-[70px] rounded-xl bg-cover bg-center p-5 shadow-lg md:mt-0"
+      style={{ backgroundImage: `url(${anonymousBackground})` }}
     >
-      <h1 className="text-2xl font-bold">Anonymous Message</h1>
-      <p className="mt-2">Send me a message anonymously!</p>
-      <form className="mt-2 flex w-full flex-col gap-4">
+      <div className="absolute inset-0 z-0 rounded-xl bg-black/40" />
+      <h1 className="bg-slate-50 bg-opacity-50 text-center text-2xl font-bold text-black">
+        Anonymous Message
+      </h1>
+      <p className="mt-1 bg-slate-50 bg-opacity-50 text-center italic text-black">
+        Send me a message anonymously!
+      </p>
+      <form className="mt-2 flex w-full flex-col gap-4 opacity-95">
         <input
           type="text"
           value={username}
           onChange={handleUsernameChange}
           placeholder="username (anonymous)"
-          className={`w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring focus:ring-green-400 
-                ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}
+          className={`w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring focus:ring-green-500 
+                ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-300 text-black'}`}
         />
         <textarea
           id="message"
@@ -108,13 +116,13 @@ const MessageBox = () => {
           value={message}
           onChange={handleMessageChange}
           placeholder="your message"
-          className={`h-[230px] w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring focus:ring-green-400 
-                ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}
+          className={`h-[230px] w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring focus:ring-green-500
+                ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-300 text-black'}`}
         ></textarea>
 
         <button
           onClick={handleSubmitMessage}
-          className="ho'ver:bg-blue-600 w-full rounded-md bg-blue-500 py-2 text-white"
+          className="w-full rounded-md bg-blue-500 py-2 text-white hover:bg-blue-800"
         >
           Send
         </button>
@@ -125,8 +133,11 @@ const MessageBox = () => {
 
 const HaveFunBox = () => {
   return (
-    <div className="hidden items-center justify-center rounded-xl bg-[#009999] p-6 shadow-lg md:flex">
-      <h1 className="text-5xl text-black">Ongoing</h1>
+    <div className="relative hidden items-center justify-center rounded-xl bg-[#009999] p-6 shadow-lg md:flex">
+      <h1 className="text-6xl text-black">Coming Soon!!</h1>
+      <div className="absolute -right-5 bottom-0">
+        <img className="w-[200px]" src={waitingAvatar} alt="Waiting Avatar" />
+      </div>
     </div>
   );
 };

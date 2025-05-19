@@ -92,6 +92,7 @@ export default function StackImages({
             >
               <img
                 src={card.img}
+                loading="lazy"
                 alt={`card-${card.id}`}
                 className="pointer-events-none h-full w-full object-cover"
               />
