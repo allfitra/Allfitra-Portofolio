@@ -14,6 +14,7 @@ import {
   projectIcon,
   contactIcon,
 } from '@/assets/Content';
+import { catKnitting, waitingAvatar } from '@/assets/Other';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -196,11 +197,18 @@ export const Navbar = () => {
                 </div>
               ))
             ) : (
-              <div className="">
+              <>
                 <Link to={'/'}>
                   <img className="h-[50px]" src={logoName} alt="Allfitra Logos" />
                 </Link>
-              </div>
+
+                <div className="absolute bottom-0 left-0">
+                  <img className="w-[90px]" src={catKnitting} alt="Waiting Avatar" />
+                </div>
+                <div className="absolute -right-7 bottom-0">
+                  <img className="w-[150px]" src={waitingAvatar} alt="Waiting Avatar" />
+                </div>
+              </>
             )}
           </div>
         </div>

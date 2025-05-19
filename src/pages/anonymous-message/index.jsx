@@ -5,7 +5,12 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // import images
-import { anonymousBackground, waitingAvatar } from '@/assets/Other';
+import {
+  anonymousBackground,
+  catKnitting,
+  comingSoonBackground,
+  waitingAvatar,
+} from '@/assets/Other';
 
 // fetch api
 import { postMessage } from '@/database/fetch-api';
@@ -99,7 +104,7 @@ const MessageBox = () => {
         Anonymous Message
       </h1>
       <p className="mt-1 bg-slate-50 bg-opacity-50 text-center italic text-black">
-        Send me a message anonymously!
+        Feel free to drop your advice, thoughts, or rants about me here!
       </p>
       <form className="mt-2 flex w-full flex-col gap-4 opacity-95">
         <input
@@ -133,8 +138,18 @@ const MessageBox = () => {
 
 const HaveFunBox = () => {
   return (
-    <div className="relative hidden items-center justify-center rounded-xl bg-[#009999] p-6 shadow-lg md:flex">
-      <h1 className="text-6xl text-black">Coming Soon!!</h1>
+    <div
+      className="relative hidden items-center justify-center rounded-xl p-6 shadow-lg md:flex"
+      style={{
+        backgroundImage: `url(${comingSoonBackground})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      {/* <h1 className="text-6xl text-black">Coming Soon!!</h1> */}
+      <div className="absolute bottom-0 left-0">
+        <img className="w-[170px]" src={catKnitting} alt="Waiting Avatar" />
+      </div>
       <div className="absolute -right-5 bottom-0">
         <img className="w-[200px]" src={waitingAvatar} alt="Waiting Avatar" />
       </div>
