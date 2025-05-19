@@ -135,7 +135,7 @@ const MessageBox = () => {
             Send
           </button>
           <p className="bg-slate-50 bg-opacity-50 text-center text-sm font-bold italic text-[#FF0000]">
-            &bull; Identitas pengirim tersamarkan, hanya anda dan tuhan lah yang tau!!
+            &bull; Identitas pengirim tersamarkan, hanya anda dan tuhan yang tau!!
           </p>
         </div>
       </form>
@@ -154,7 +154,7 @@ const HaveFunBox = () => {
       }}
     >
       {/* <h1 className="text-6xl text-black">Coming Soon!!</h1> */}
-      <div className="absolute bottom-0 left-0">
+      <div className="absolute -bottom-[3px] left-0">
         <img className="w-[170px]" src={catKnitting} alt="Waiting Avatar" />
       </div>
       <div className="absolute -right-5 bottom-0">
