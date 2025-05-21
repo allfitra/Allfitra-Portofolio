@@ -106,7 +106,7 @@ const MessageBox = () => {
         Anonymous Message
       </h1>
       <p className="mt-1 bg-slate-50 bg-opacity-50 text-center italic text-black">
-        Feel free to vent, as well as give advice, thoughts, or rant about me here!
+        Feel free to vent, share advice, thoughts, or even rant about me here!
       </p>
       <form className="mt-2 flex w-full flex-col gap-4 opacity-95">
         <input
