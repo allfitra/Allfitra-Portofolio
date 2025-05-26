@@ -198,9 +198,9 @@ export const Navbar = () => {
               ))
             ) : (
               <>
-                <Link to={'/'}>
-                  <img className="h-[50px]" src={logoName} alt="Allfitra Logos" />
-                </Link>
+                {/* <Link to={'/'}> */}
+                <img className="h-[50px]" src={logoName} alt="Allfitra Logos" />
+                {/* </Link> */}
 
                 <div className="absolute -bottom-[2px] left-1">
                   <img className="w-[120px]" src={catKnitting} alt="Meoww" />
