@@ -83,7 +83,7 @@ const EducationCard = ({ education }) => {
       >
         <button className="rounded-md bg-[#ff2f6dcb] px-10 py-3 opacity-90 hover:opacity-100">
           <a
-            href="https://www.unj.ac.id/"
+            href="https://unj.ac.id/"
             target="_blank"
             rel="noreferrer"
             className="text-xl font-semibold"
