@@ -16,7 +16,7 @@ export const EducationPage = () => {
             className="max-h-52 md:max-h-[400px] md:w-full"
           />
         </div>
-        <div className="first-letter flex flex-col items-center gap-14 px-8 py-10 text-center">
+        <div className="first-letter flex flex-col items-center gap-14 px-8 text-center">
           <div>
             <Fade direction="down">
               <h1 className="text-5xl font-bold">Education.</h1>
@@ -31,7 +31,9 @@ export const EducationPage = () => {
             />
           </div>
           <div className="-mx-12 md:mx-0">
-            <h2 className="mb-5 ml-3 text-left text-3xl font-bold md:ml-0">Degrees Received</h2>
+            <h2 className="mb-5 ml-3 text-left text-3xl font-bold md:-mt-5 md:ml-0">
+              Degrees Received
+            </h2>
             <Zoom>
               <div className="flex flex-col gap-8">
                 {educations.map((education, index) => (
@@ -54,14 +56,24 @@ const EducationCard = ({ education }) => {
       style={{ color: theme === 'dark' ? '#fff' : '#000' }}
     >
       <div className="flex px-6 py-4">
-        <img src={education.icon} alt="logo-unj" className="mr-5 h-10 w-10 md:h-16 md:w-16" />
+        <img src={education.icon} alt="logo-unj" className="mr-5 h-10 w-10 md:h-20 md:w-20" />
         <div className="flex w-full flex-col gap-4">
-          <div className="flex justify-between gap-2">
+          <div className="flex justify-between gap-1 md:gap-2">
             <div className="text-start">
-              <h3 className="text-lg font-bold md:text-2xl">{education.school}</h3>
-              <h1 className="text-sm font-semibold md:text-base">{education.degree}</h1>
+              <h1 className="text-xs font-bold md:text-2xl">{education.school}</h1>
+              <h2 className="text-xs font-semibold md:text-base">{education.degree}</h2>
+              <h2 className="text-xs font-semibold md:text-base">GPA : {education.gpa}</h2>
             </div>
-            <h3 className="text-base font-semibold md:text-xl">{education.date}</h3>
+            <h3 className="text-xs font-semibold md:text-xl">{education.date}</h3>
+          </div>
+          <div className="-mt-2 flex flex-row">
+            <div className="flex w-[150px] flex-col text-start text-xs font-semibold md:text-base">
+              <h2>Thesis :</h2>
+              {/* Icon untuk direct ke link skripsi*/}
+            </div>
+            <h2 className="text-justify text-xs font-semibold italic md:text-base">
+              {education.thesis}
+            </h2>
           </div>
         </div>
       </div>
