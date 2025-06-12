@@ -104,6 +104,22 @@ export const ProjectData = {
             },
           ],
         },
+        {
+          id: 6,
+          name: 'Convolutional Neural Network (CNN) Model - Self-Developed in Python',
+          description:
+            'Implementing a Convolutional Neural Network (CNN) from scratch in Python without utilizing standard machine learning libraries such as TensorFlow or PyTorch, to understand the underlying principles of CNNs.',
+          tools: {
+            python: { name: 'Python', logo: PythonLogo },
+          },
+          action: [
+            {
+              href: 'https://github.com/allfitra/CNN_Model-Python',
+              icon: GithubIcon,
+              label: 'Github',
+            },
+          ],
+        },
       ],
     },
     {

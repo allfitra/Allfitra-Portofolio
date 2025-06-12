@@ -62,7 +62,7 @@ const EducationCard = ({ education }) => {
             <div className="text-start">
               <h1 className="text-xs font-bold md:text-2xl">{education.school}</h1>
               <h2 className="text-xs font-semibold md:text-base">{education.degree}</h2>
-              <h2 className="text-xs font-semibold md:text-base">GPA : {education.gpa}</h2>
+              {/* <h2 className="text-xs font-semibold md:text-base">GPA : {education.gpa}</h2> */}
             </div>
             <h3 className="text-xs font-semibold md:text-xl">{education.date}</h3>
           </div>
