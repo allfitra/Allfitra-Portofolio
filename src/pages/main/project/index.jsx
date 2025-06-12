@@ -42,7 +42,7 @@ export const ProjectPage = () => {
                       }
                     >
                       <h1 className="text-3xl font-bold">{project.name}</h1>
-                      <p>{project.description}</p>
+                      <p className="text-justify">{project.description}</p>
                       <div className="flex justify-between pr-8">
                         <div className="flex gap-3">
                           {project.tools &&

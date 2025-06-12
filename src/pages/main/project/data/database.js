@@ -91,7 +91,7 @@ export const ProjectData = {
           id: 5,
           name: 'YouTube Scrapping - Python',
           description:
-            'Scraping Youtube id, url, and youtube comment from videos using the BeautifulSoup library and Selenium Driver library in Python.',
+            'Project for collect data from YouTube videos — including video IDs, URLs, and user comments — by utilizing Python-based tools like Selenium WebDriver and BeautifulSoup for dynamic web scraping',
           tools: {
             python: { name: 'Python', logo: PythonLogo },
             selenium: { name: 'Selenium', logo: SeleniumLogo },
@@ -106,9 +106,9 @@ export const ProjectData = {
         },
         {
           id: 6,
-          name: 'Convolutional Neural Network (CNN) Model - Self-Developed in Python',
+          name: 'CNN Model - Self-Developed',
           description:
-            'Implementing a Convolutional Neural Network (CNN) from scratch in Python without utilizing standard machine learning libraries such as TensorFlow or PyTorch, to understand the underlying principles of CNNs.',
+            'Implementing a Convolutional Neural Network (CNN) from scratch in Python without utilizing standard machine learning libraries such as TensorFlow, to understand the underlying principles of CNNs.',
           tools: {
             python: { name: 'Python', logo: PythonLogo },
           },
