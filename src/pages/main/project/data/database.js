@@ -17,10 +17,25 @@ export const ProjectData = {
   title: 'My Projects List',
   projects: [
     {
+      id: 1,
+      name: 'Personal Portofolio',
+      description:
+        'A website that aims to display personal biodata, as well as a showcase for skills and expertise that is made as attractive as possible so that it is easy to access and use.',
+      tools: {
+        react: { name: 'React', logo: ReactLogo },
+        tailwind: { name: 'tailwind', logo: TailwindLogo },
+        javascript: { name: 'Javascript', logo: JavascriptLogo },
+      },
+      action: [
+        { href: 'https://github.com/allfitra/Portofolio', icon: GithubIcon, label: 'Github' },
+        { href: '/', icon: GlobeIcon, label: 'Globe' },
+      ],
+    },
+    {
       category: 'Personal Projects',
       projects: [
         {
-          id: 1,
+          id: 2,
           name: 'AiVents (Portal Event Information)',
           description:
             'A website that displays event information in the Jakarta area. Here users can find out information about events that are taking place or will take place so that they can organize plans to visit the event.',
@@ -35,7 +50,7 @@ export const ProjectData = {
           ],
         },
         {
-          id: 2,
+          id: 3,
           name: 'Simple Calculator',
           description:
             'Simple calculator as a means of training logic and advanced stages of learning javascript, with website functions in the form of providing convenience in performing mathematical operations.',
@@ -50,7 +65,7 @@ export const ProjectData = {
           ],
         },
         {
-          id: 3,
+          id: 4,
           name: 'Detik Finance Clone - Landing Page',
           description:
             'A clone website of the detik.com finance landing page, aims to train in making a suitable appearance and deepen the use of style and design for a website appearance.',
@@ -70,21 +85,6 @@ export const ProjectData = {
               icon: GlobeIcon,
               label: 'Globe',
             },
-          ],
-        },
-        {
-          id: 4,
-          name: 'Personal Portofolio',
-          description:
-            'A website that aims to display personal biodata, as well as a showcase for skills and expertise that is made as attractive as possible so that it is easy to access and use.',
-          tools: {
-            react: { name: 'React', logo: ReactLogo },
-            tailwind: { name: 'tailwind', logo: TailwindLogo },
-            javascript: { name: 'Javascript', logo: JavascriptLogo },
-          },
-          action: [
-            { href: 'https://github.com/allfitra/Portofolio', icon: GithubIcon, label: 'Github' },
-            { href: '/', icon: GlobeIcon, label: 'Globe' },
           ],
         },
         {
