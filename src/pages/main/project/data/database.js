@@ -110,9 +110,7 @@ export const ProjectData = {
           description:
             'Implementing a Convolutional Neural Network (CNN) from scratch in Python without utilizing standard machine learning libraries such as TensorFlow, to understand the underlying principles of CNNs.',
           tools: {
-            react: { name: 'React', logo: ReactLogo },
-            tailwind: { name: 'tailwind', logo: TailwindLogo },
-            javascript: { name: 'Javascript', logo: JavascriptLogo },
+            python: { name: 'Python', logo: PythonLogo },
           },
           action: [
             {
@@ -128,7 +126,9 @@ export const ProjectData = {
           description:
             'KMM (Komunitas Mahasiswa Minangkabau) is a student organization at Universitas Negeri Jakarta that focuses on the Minangkabau culture and community. This website serves as a platform to introduce KMM UNJ, its activities, and its members.',
           tools: {
-            python: { name: 'Python', logo: PythonLogo },
+            react: { name: 'React', logo: ReactLogo },
+            tailwind: { name: 'tailwind', logo: TailwindLogo },
+            javascript: { name: 'Javascript', logo: JavascriptLogo },
           },
           action: [
             {
