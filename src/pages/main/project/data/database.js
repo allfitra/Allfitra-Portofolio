@@ -110,13 +110,36 @@ export const ProjectData = {
           description:
             'Implementing a Convolutional Neural Network (CNN) from scratch in Python without utilizing standard machine learning libraries such as TensorFlow, to understand the underlying principles of CNNs.',
           tools: {
-            python: { name: 'Python', logo: PythonLogo },
+            react: { name: 'React', logo: ReactLogo },
+            tailwind: { name: 'tailwind', logo: TailwindLogo },
+            javascript: { name: 'Javascript', logo: JavascriptLogo },
           },
           action: [
             {
               href: 'https://github.com/allfitra/CNN_Model-Python',
               icon: GithubIcon,
               label: 'Github',
+            },
+          ],
+        },
+        {
+          id: 7,
+          name: 'KMM UNJ Organization - Website',
+          description:
+            'KMM (Komunitas Mahasiswa Minangkabau) is a student organization at Universitas Negeri Jakarta that focuses on the Minangkabau culture and community. This website serves as a platform to introduce KMM UNJ, its activities, and its members.',
+          tools: {
+            python: { name: 'Python', logo: PythonLogo },
+          },
+          action: [
+            {
+              href: 'https://github.com/allfitra/KMM-UNJ_org-Profile',
+              icon: GithubIcon,
+              label: 'Github',
+            },
+            {
+              href: 'https://kmm-unj.vercel.app/',
+              icon: GlobeIcon,
+              label: 'Globe',
             },
           ],
         },
