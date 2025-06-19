@@ -17,23 +17,23 @@ export const ProjectData = {
   title: 'My Projects List',
   projects: [
     {
-      id: 1,
-      name: 'Personal Portofolio',
-      description:
-        'A website that aims to display personal biodata, as well as a showcase for skills and expertise that is made as attractive as possible so that it is easy to access and use.',
-      tools: {
-        react: { name: 'React', logo: ReactLogo },
-        tailwind: { name: 'tailwind', logo: TailwindLogo },
-        javascript: { name: 'Javascript', logo: JavascriptLogo },
-      },
-      action: [
-        { href: 'https://github.com/allfitra/Portofolio', icon: GithubIcon, label: 'Github' },
-        { href: '/', icon: GlobeIcon, label: 'Globe' },
-      ],
-    },
-    {
       category: 'Personal Projects',
       projects: [
+        {
+          id: 1,
+          name: 'Personal Portofolio',
+          description:
+            'A website that aims to display personal biodata, as well as a showcase for skills and expertise that is made as attractive as possible so that it is easy to access and use.',
+          tools: {
+            react: { name: 'React', logo: ReactLogo },
+            tailwind: { name: 'tailwind', logo: TailwindLogo },
+            javascript: { name: 'Javascript', logo: JavascriptLogo },
+          },
+          action: [
+            { href: 'https://github.com/allfitra/Portofolio', icon: GithubIcon, label: 'Github' },
+            { href: '/', icon: GlobeIcon, label: 'Globe' },
+          ],
+        },
         {
           id: 2,
           name: 'AiVents (Portal Event Information)',
