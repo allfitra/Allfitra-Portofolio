@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Magnet from '@/utils/FramerMotion/magnetic-item';
 import GlassIcons from '@/utils/FramerMotion/glass-icon';
 import StackImages from '@/utils/Animation/stack-images';
-import { stackImagesData } from './data/database';
+import { cvLink, stackImagesData } from './data/database';
 
 export const ContactPage = () => {
   return (
@@ -34,7 +34,7 @@ export const ContactPage = () => {
           <Magnet padding={150} disabled={false} magnetStrength={10}>
             <button className="flex items-start">
               <Link
-                to="https://drive.google.com/file/d/1VZOmVHjTqlTTovaIMP8g4Ztg_tm81cxi/view?usp=sharing"
+                to={cvLink}
                 target="_blank"
                 className="rounded-md bg-[#FC1056] px-12 py-3 text-xl font-bold text-white hover:shadow-md hover:shadow-[#ccc]"
               >

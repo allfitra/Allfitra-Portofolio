@@ -14,3 +14,5 @@ export const stackImagesData = [
     img: PhotoContact,
   },
 ];
+
+export const cvLink = 'https://drive.google.com/file/d/1qIThQTdoW5U2vOAeq7e_z-KjzP0z4UAh/view?usp=sharing';
