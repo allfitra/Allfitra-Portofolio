@@ -13,6 +13,7 @@ import {
   experienceIcon,
   projectIcon,
   contactIcon,
+  afLogo,
 } from '@/assets/Content';
 import { catKnitting, waitingAvatar } from '@/assets/Other';
 
@@ -77,20 +78,16 @@ export const Navbar = () => {
       {location.pathname !== '/anonymous-message' && <SendAnonymousMessage />}
       {/* Web Navbar */}
       <nav
-        className={`container fixed top-0 z-20 hidden max-w-none bg-[#1D1D1D] px-6 lg:block`}
+        className={`container fixed top-0 z-20 hidden h-[100px] max-w-none bg-[#1D1D1D] px-6 lg:block`}
         style={theme === 'dark' ? themes.dark : themes.light}
       >
         <div className="flex justify-center">
-          <div className="relative flex h-20 w-full max-w-7xl items-center justify-between md:px-14">
+          <div className="relative flex h-20 w-full max-w-7xl items-center justify-between px-14">
             <Link to={'/'}>
               {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
-              <img
-                className="ml-0 mt-4 h-[50px] w-[200px] xl:ml-7"
-                src={logoName}
-                alt="Allfitra Logos"
-              />
+              <img className="ml-32 mt-7 h-[70px] w-[80px]" src={afLogo} alt="Allfitra Logos" />
             </Link>
-            <div className="flex flex-shrink-0 items-center">
+            <div className="mt-10 flex flex-shrink-0 items-center">
               <div className="flex gap-4 space-x-4">
                 {location.pathname !== '/anonymous-message' &&
                   navigation.map((item, i) => (
@@ -199,7 +196,7 @@ export const Navbar = () => {
             ) : (
               <>
                 {/* <Link to={'/'}> */}
-                <img className="h-[50px]" src={logoName} alt="Allfitra Logos" />
+                <img className="h-[50px]" src={afLogo} alt="Allfitra Logos" />
                 {/* </Link> */}
 
                 <div className="absolute -bottom-[2px] left-1">

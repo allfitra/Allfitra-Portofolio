@@ -7,14 +7,16 @@ import contactIcon from './contact-icon.png';
 import sendMessageIconDark from './send-message-icon-dark.png';
 import sendMessageIconLight from './send-message-icon-light.png';
 import graduateAvatar from './graduate-avatar.png';
+import afLogo from './af-logo.png';
 
 export {
-  logoName,
-  homeIcon,
+  afLogo,
+  contactIcon,
   educationIcon,
   experienceIcon,
+  homeIcon,
+  logoName,
   projectIcon,
-  contactIcon,
   sendMessageIconDark,
   sendMessageIconLight,
   graduateAvatar,
