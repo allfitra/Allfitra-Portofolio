@@ -17,7 +17,7 @@ export const ContactPage = () => {
             randomRotation={true}
             sensitivity={120}
             sendToBackOnClick={false}
-            cardDimensions={{ width: 300, height: 400 }}
+            cardDimensions={{ width: 300, height: 450 }}
             cardsData={stackImagesData}
             // animationConfig={{ stiffness: 200, damping: 10 }}
           />

@@ -1,9 +1,9 @@
-import { PhotoContact, PhotoContact2, PhotoContact3 } from '@/assets/images/ImagesContact';
+import { PhotoContact, PhotoContact2, PhotoContact3, PhotoContact4 } from '@/assets/images/ImagesContact';
 
 export const stackImagesData = [
   {
     id: 1,
-    img: PhotoContact3,
+    img: PhotoContact,
   },
   {
     id: 2,
@@ -11,7 +11,11 @@ export const stackImagesData = [
   },
   {
     id: 3,
-    img: PhotoContact,
+    img: PhotoContact3,
+  },
+  {
+    id: 4,
+    img: PhotoContact4,
   },
 ];
 
