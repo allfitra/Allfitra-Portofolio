@@ -11,7 +11,7 @@ export const MainLayout = ({ title, children }) => {
       <Head title={title} />
 
       <div
-        className="pb-10 pt-10 md:pb-0 md:pt-28"
+        className="duration-600 pb-10 pt-10 transition md:pb-0 md:pt-28"
         style={theme === 'dark' ? themes.dark : themes.light}
       >
         <Navbar />

@@ -32,7 +32,7 @@ export const ProjectPage = () => {
             <div className=" mt-6 grid grid-cols-1 gap-4 font-sans md:grid-cols-2">
               {data.projects.map((project) => (
                 <div key={project.id}>
-                  <Fade direction={project.id % 2 == 1 ? 'left' : 'right'}>
+                  <Fade direction={project.id % 2 == 1 ? 'left' : 'left'}>
                     <div
                       className="flex min-h-[250px] flex-col gap-4 rounded-lg px-6 py-7 shadow-sm shadow-[#6d6e70]"
                       style={

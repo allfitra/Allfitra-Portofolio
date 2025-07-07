@@ -4,7 +4,7 @@ import { MoonIcon, SunIcon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { themes } from '@/utils/theme';
 import { useTheme } from '@/utils/themeContext';
-import { logoName, homeIcon } from '@/assets/Content';
+import { afLogo } from '@/assets/Content';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -12,13 +12,10 @@ function classNames(...classes) {
 
 export const SecondNavbar = () => {
   const location = useLocation();
-  const [isHovered, setIsHovered] = useState(null);
   const [navigation, setNavigation] = useState([
-    { name: 'Blog', href: '/blog', current: location.pathname === '/blog', icon: homeIcon },
+    { name: 'Base', href: '/base', current: location.pathname === '/base' },
+    { name: 'Blog', href: '/blog', current: location.pathname === '/blog' },
   ]);
-
-  const { pathname } = useLocation();
-  const { theme, changeTheme } = useTheme();
 
   useEffect(() => {
     const updatedNavigation = navigation.map((item) => ({
@@ -30,67 +27,178 @@ export const SecondNavbar = () => {
 
   return (
     <>
-      {/* Web Navbar */}
-      <nav
-        className={`container fixed top-0 z-20 hidden max-w-none bg-[#1D1D1D] px-6 lg:block`}
-        style={theme === 'dark' ? themes.dark : themes.light}
-      >
-        <div className="flex justify-center">
-          <div className="relative flex h-20 w-full max-w-7xl items-center justify-between md:px-14">
-            <Link to={'/'}>
-              {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
-              <img className="mt-4 h-[50px] w-[200px]" src={logoName} alt="Allfitra Logos" />
-            </Link>
-            <div className="-ml-4 flex flex-shrink-0 items-center">
-              <div className="flex gap-4 space-x-4">
-                {navigation.map((item, i) => (
-                  <div
+      <WebNavbar navigation={navigation} location={location} />
+      <MobileNavbar navigation={navigation} location={location} />
+    </>
+  );
+};
+
+const WebNavbar = ({ navigation, location }) => {
+  const { theme, changeTheme } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <nav
+      className={`z-100 duration-600 container fixed top-0 hidden max-w-none bg-[#1D1D1D] px-6 pb-3 pt-3 transition-all ease-in-out md:block`}
+      style={theme === 'dark' ? themes.dark : themes.light}
+    >
+      <div className="flex justify-center ">
+        <div className="relative flex h-20 w-full max-w-7xl items-center justify-between md:px-10">
+          <Link to={'/'}>
+            {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
+            <img className="mt-4 h-[60px] " src={afLogo} alt="Allfitra Logos" />
+          </Link>
+
+          <div className="-ml-4 mt-8 flex flex-shrink-0 items-center">
+            <div className="flex gap-2">
+              {navigation.map((item, i) => (
+                <div
+                  key={item.name}
+                  // style={isHovered === i || item.current ? backgroundButton[i] : {}}
+                  className="rounded p-1.5 transition duration-300 ease-in-out"
+                  onMouseEnter={() => setIsHovered(i)}
+                  onMouseLeave={() => setIsHovered(null)}
+                >
+                  <Link
                     key={item.name}
-                    // style={isHovered === i || item.current ? backgroundButton[i] : {}}
-                    className="rounded p-1.5 transition duration-300 ease-in-out"
-                    onMouseEnter={() => setIsHovered(i)}
-                    onMouseLeave={() => setIsHovered(null)}
+                    to={item.href}
+                    className={classNames(
+                      item.current && 'font-bold',
+                      'rounded-md px-2 py-2 font-heading text-base '
+                    )}
+                    aria-current={item.current ? 'page' : undefined}
                   >
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className={classNames(
-                        item.current && 'font-bold',
-                        'rounded-md px-2 py-2 font-heading text-base '
-                      )}
-                      aria-current={item.current ? 'page' : undefined}
-                    >
-                      {item.name}
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              {theme === 'dark' ? (
-                <button
-                  onClick={changeTheme}
-                  className="rounded-full p-1.5 pr-12 transition duration-300"
-                  style={{ backgroundColor: '#333' }}
-                >
-                  <MoonIcon />
-                </button>
-              ) : (
-                <button
-                  onClick={changeTheme}
-                  className="translate-x-5 rounded-full p-1.5 pl-12 transition duration-300"
-                  style={{ backgroundColor: '#ccc' }}
-                >
-                  <SunIcon color="black" />
-                </button>
-              )}
+                    {item.name}
+                  </Link>
+                </div>
+              ))}
             </div>
           </div>
+          <div className="mt-8">
+            <button
+              onClick={changeTheme}
+              className={classNames(
+                'duration-900 rounded-full p-1.5 transition-transform',
+                theme === 'dark' ? 'translate-x-0 bg-[#333] pr-12' : 'translate-x-5 bg-[#ccc] pl-12'
+              )}
+            >
+              {theme === 'dark' ? <MoonIcon /> : <SunIcon color="black" />}
+            </button>
+          </div>
         </div>
-      </nav>
-      <div className="flex justify-center">
-        <hr className="w-[85%]" />
       </div>
-    </>
+      <div className="mt-3 flex justify-center">
+        <hr
+          className={`w-[75%] border-[1px] ${theme === 'dark' ? 'border-white' : 'border-black'}`}
+        />
+      </div>
+    </nav>
+  );
+};
+
+const MobileNavbar = ({ navigation, location }) => {
+  const { theme, changeTheme } = useTheme();
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <nav
+      className={
+        'container fixed top-0 z-50 block h-[95px] w-full max-w-none px-8 pb-6 text-white shadow-md transition duration-200 md:hidden'
+      }
+      style={theme === 'dark' ? themes.dark : themes.light}
+    >
+      <div className="flex justify-center">
+        <div className="relative flex h-20 w-full max-w-7xl items-center justify-between">
+          <div className="mt-5">
+            <button
+              onClick={changeTheme}
+              className={classNames(
+                'rounded-full p-3 transition-transform duration-500',
+                theme === 'dark' ? 'rotate-0 bg-[#333]' : 'rotate-180 bg-[#ccc]'
+              )}
+            >
+              {theme === 'dark' ? <MoonIcon /> : <SunIcon color="black" />}
+            </button>
+          </div>
+
+          {/* Logo */}
+          <Link to="/">
+            <img className="ml-0 mt-4 h-[50px] w-[50px] xl:ml-2" src={afLogo} alt="KMM Logos" />
+          </Link>
+
+          {/* Burger Button */}
+          <div className="mt-5 flex items-center">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="flex h-10 w-10 flex-col items-center justify-center rounded focus:outline-none"
+              aria-label="Open menu"
+            >
+              <span
+                className={classNames(
+                  'mb-2 block h-0.5 w-8 transition-transform duration-300',
+                  theme === 'dark' ? 'bg-white' : 'bg-black',
+                  isOpen && 'translate-y-2 rotate-45'
+                )}
+              ></span>
+              <span
+                className={classNames(
+                  'mb-2 block h-0.5 w-8 transition-opacity duration-300',
+                  theme === 'dark' ? 'bg-white' : 'bg-black',
+                  isOpen && 'opacity-0'
+                )}
+              ></span>
+              <span
+                className={classNames(
+                  'block h-0.5 w-8 transition-transform duration-300',
+                  theme === 'dark' ? 'bg-white' : 'bg-black',
+                  isOpen && '-translate-y-3 -rotate-45'
+                )}
+              ></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="flex justify-center">
+        <hr
+          className={`mt-[13px] w-[100%] border-t-2 border-[#39afaf]`}
+          // className={`mt-[13px] w-[100%] border-t-2 ${theme === 'dark' ? 'border-white' : 'border-black'}`}
+        />
+      </div>
+
+      {/* Dropdown menu */}
+      <div
+        className={classNames(
+          'ease-in-ou duration-900 mt-0.5 w-full overflow-hidden rounded-b-2xl bg-[#39afaf] text-center shadow-md transition-all',
+          isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        )}
+      >
+        {navigation.map((item) => (
+          <div key={item.name} className="px-2 py-1.5">
+            <Link
+              to={item.href}
+              className={classNames(
+                item.current && 'font-bold',
+                'block rounded-md px-4 py-2 font-heading text-base transition hover:bg-[#014f30]'
+              )}
+              aria-current={item.current ? 'page' : undefined}
+              onClick={() => setIsOpen(false)}
+            >
+              {item.name}
+            </Link>
+          </div>
+        ))}
+      </div>
+    </nav>
   );
 };

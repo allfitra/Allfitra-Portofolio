@@ -78,7 +78,7 @@ export const Navbar = () => {
       {location.pathname !== '/anonymous-message' && <SendAnonymousMessage />}
       {/* Web Navbar */}
       <nav
-        className={`container fixed top-0 z-20 hidden h-[100px] max-w-none bg-[#1D1D1D] px-6 lg:block`}
+        className={`duration-600 container fixed top-0 z-20 hidden h-[100px] max-w-none bg-[#1D1D1D] px-6 transition lg:block`}
         style={theme === 'dark' ? themes.dark : themes.light}
       >
         <div className="flex justify-center">
@@ -135,26 +135,18 @@ export const Navbar = () => {
       </nav>
 
       {/* Mobile Navbar */}
-      <nav className="mt-50 fixed bottom-2 left-0 z-50 w-full bg-none px-3 lg:hidden">
+      <nav className="mt-50 duration-600 fixed bottom-2 left-0 z-50 w-full bg-none px-3 transition lg:hidden">
         <div className="mb-[-15px] flex justify-center">
           <div>
-            {theme === 'dark' ? (
-              <button
-                onClick={changeTheme}
-                className="rounded-full p-3"
-                style={{ backgroundColor: '#333' }}
-              >
-                <MoonIcon />
-              </button>
-            ) : (
-              <button
-                onClick={changeTheme}
-                className="rounded-full p-3"
-                style={{ backgroundColor: '#ccc' }}
-              >
-                <SunIcon color="black" />
-              </button>
-            )}
+            <button
+              onClick={changeTheme}
+              className={classNames(
+                'rounded-full p-3 transition-transform duration-500',
+                theme === 'dark' ? 'rotate-0 bg-[#333]' : 'rotate-180 bg-[#ccc]'
+              )}
+            >
+              {theme === 'dark' ? <MoonIcon /> : <SunIcon color="black" />}
+            </button>
           </div>
         </div>
         <div
@@ -217,7 +209,7 @@ export const Navbar = () => {
 const SendAnonymousMessage = () => {
   const { theme } = useTheme();
   return (
-    <div className="hadow-lg fixed bottom-4 right-6 z-50 mb-[80px] cursor-pointer lg:mb-0">
+    <div className="cursor-pointerlg:mb-0 fixed bottom-4 right-6 z-50 mb-[80px]">
       <Link to={'/anonymous-message'}>
         <img
           className="w-[65px] md:w-[90px]"
