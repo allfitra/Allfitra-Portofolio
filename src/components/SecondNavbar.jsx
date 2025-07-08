@@ -11,10 +11,11 @@ function classNames(...classes) {
 }
 
 export const SecondNavbar = () => {
-  const location = useLocation();
   const [navigation, setNavigation] = useState([
     { name: 'Base', href: '/base', current: location.pathname === '/base' },
     { name: 'Blog', href: '/blog', current: location.pathname === '/blog' },
+    { name: 'Album', href: '/album', current: location.pathname === '/album' },
+    { name: 'Support Me', href: '/support-me', current: location.pathname === '/support-me' },
   ]);
 
   useEffect(() => {
@@ -27,36 +28,34 @@ export const SecondNavbar = () => {
 
   return (
     <>
-      <WebNavbar navigation={navigation} location={location} />
-      <MobileNavbar navigation={navigation} location={location} />
+      <WebNavbar navigation={navigation} />
+      <MobileNavbar navigation={navigation} />
     </>
   );
 };
 
-const WebNavbar = ({ navigation, location }) => {
+const WebNavbar = ({ navigation }) => {
   const { theme, changeTheme } = useTheme();
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <nav
-      className={`z-100 duration-600 container fixed top-0 hidden max-w-none bg-[#1D1D1D] px-6 pb-3 pt-3 transition-all ease-in-out md:block`}
+      className={`duration-600 container fixed top-0 z-10 hidden max-w-none bg-[#1D1D1D] px-6 pt-3 transition-all ease-in-out md:block`}
       style={theme === 'dark' ? themes.dark : themes.light}
     >
-      <div className="flex justify-center ">
-        <div className="relative flex h-20 w-full max-w-7xl items-center justify-between md:px-10">
-          <Link to={'/'}>
-            {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
-            <img className="mt-4 h-[60px] " src={afLogo} alt="Allfitra Logos" />
-          </Link>
+      <div className="flex justify-center">
+        <div className="relative flex h-20 w-full max-w-6xl items-center justify-between md:px-10">
+          <div className="mt-4 flex gap-2">
+            <Link to={'/'}>
+              <img className="h-[60px] " src={afLogo} alt="Allfitra Logos" />
+            </Link>
+            <div
+              className={`mx-auto h-[60px] w-[2px] ${theme === 'dark' ? 'bg-white' : 'bg-black'}`}
+            />
+            <Link to={'/base'} className="flex flex-col justify-center font-mono leading-none">
+              <h2 className="text-[35px] tracking-widest">NEW</h2>
+              <h3 className="text-[24px]">world</h3>
+            </Link>
+          </div>
 
           <div className="-ml-4 mt-8 flex flex-shrink-0 items-center">
             <div className="flex gap-2">
@@ -96,7 +95,7 @@ const WebNavbar = ({ navigation, location }) => {
           </div>
         </div>
       </div>
-      <div className="mt-3 flex justify-center">
+      <div className="mt-5 flex justify-center">
         <hr
           className={`w-[75%] border-[1px] ${theme === 'dark' ? 'border-white' : 'border-black'}`}
         />
@@ -105,14 +104,14 @@ const WebNavbar = ({ navigation, location }) => {
   );
 };
 
-const MobileNavbar = ({ navigation, location }) => {
+const MobileNavbar = ({ navigation }) => {
   const { theme, changeTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav
       className={
-        'container fixed top-0 z-50 block h-[95px] w-full max-w-none px-8 pb-6 text-white shadow-md transition duration-200 md:hidden'
+        'container fixed top-0 z-50 block h-[95px] w-full max-w-none px-8 pb-6 text-white transition duration-200 md:hidden'
       }
       style={theme === 'dark' ? themes.dark : themes.light}
     >
@@ -131,9 +130,16 @@ const MobileNavbar = ({ navigation, location }) => {
           </div>
 
           {/* Logo */}
-          <Link to="/">
-            <img className="ml-0 mt-4 h-[50px] w-[50px] xl:ml-2" src={afLogo} alt="KMM Logos" />
-          </Link>
+          <div className="mt-4 flex gap-1">
+            <Link to="/">
+              <img className="ml-0 mt-1.5 h-[50px] w-[50px] xl:ml-2" src={afLogo} alt="KMM Logos" />
+            </Link>
+            <div className="mx-auto mt-1.5 h-[50px] w-[2px] bg-gray-300" />
+            <Link to={'/base'} className="flex flex-col justify-center font-mono leading-none">
+              <h2 className="text-[35px] tracking-widest">NEW</h2>
+              <h3 className="text-[24px]">world</h3>
+            </Link>
+          </div>
 
           {/* Burger Button */}
           <div className="mt-5 flex items-center">
@@ -179,7 +185,7 @@ const MobileNavbar = ({ navigation, location }) => {
       {/* Dropdown menu */}
       <div
         className={classNames(
-          'ease-in-ou duration-900 mt-0.5 w-full overflow-hidden rounded-b-2xl bg-[#39afaf] text-center shadow-md transition-all',
+          'ease-in-ou duration-900 w-full overflow-hidden rounded-b-2xl bg-[#39afaf] text-center shadow-md transition-all',
           isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         )}
       >
@@ -188,8 +194,8 @@ const MobileNavbar = ({ navigation, location }) => {
             <Link
               to={item.href}
               className={classNames(
-                item.current && 'font-bold',
-                'block rounded-md px-4 py-2 font-heading text-base transition hover:bg-[#014f30]'
+                item.current && 'bg-[#2e7b7b] font-bold',
+                'block rounded-md px-4 py-2 font-heading text-base transition'
               )}
               aria-current={item.current ? 'page' : undefined}
               onClick={() => setIsOpen(false)}

@@ -13,3 +13,17 @@
     background-color: #1d1d1d;
   }
 }
+
+.album-scroll {
+  display: flex;
+  animation: scrollLeft 20s linear infinite;
+}
+
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translatex(-100vw);
+  }
+}

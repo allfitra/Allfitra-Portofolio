@@ -85,7 +85,7 @@ export const Navbar = () => {
           <div className="relative flex h-20 w-full max-w-7xl items-center justify-between px-14">
             <Link to={'/'}>
               {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
-              <img className="ml-32 mt-7 h-[70px] w-[80px]" src={afLogo} alt="Allfitra Logos" />
+              <img className="ml-16 mt-7 h-[60px]" src={afLogo} alt="Allfitra Logos" />
             </Link>
             <div className="mt-10 flex flex-shrink-0 items-center">
               <div className="flex gap-4 space-x-4">
