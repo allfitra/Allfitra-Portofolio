@@ -76,18 +76,24 @@ export const Navbar = () => {
   return (
     <>
       {location.pathname !== '/anonymous-message' && <SendAnonymousMessage />}
+
       {/* Web Navbar */}
       <nav
-        className={`duration-600 container fixed top-0 z-20 hidden h-[100px] max-w-none bg-[#1D1D1D] px-6 transition lg:block`}
+        className={`duration-600 container fixed top-0 z-20 hidden h-[100px] max-w-none bg-[#1D1D1D] px-6 pt-7 transition lg:block`}
         style={theme === 'dark' ? themes.dark : themes.light}
       >
         <div className="flex justify-center">
           <div className="relative flex h-20 w-full max-w-7xl items-center justify-between px-14">
-            <Link to={'/'}>
-              {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
-              <img className="ml-16 mt-7 h-[60px]" src={afLogo} alt="Allfitra Logos" />
-            </Link>
-            <div className="mt-10 flex flex-shrink-0 items-center">
+            <div className="flex items-center gap-10">
+              <Link to={'/'}>
+                {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
+                <img className="ml-16 h-[60px]" src={afLogo} alt="Allfitra Logos" />
+              </Link>
+              <div className="mt-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text p-2 text-xl font-semibold italic text-transparent drop-shadow-lg">
+                <Link to={'/base'}>Another World</Link>
+              </div>
+            </div>
+            <div className="mt-2 flex flex-shrink-0 items-center">
               <div className="flex gap-4 space-x-4">
                 {location.pathname !== '/anonymous-message' &&
                   navigation.map((item, i) => (
@@ -135,6 +141,12 @@ export const Navbar = () => {
       </nav>
 
       {/* Mobile Navbar */}
+      <Link to={'/base'} className="lg:hidden">
+        <div className="-mt-5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text p-2 px-10 text-xl font-semibold italic text-transparent drop-shadow-lg">
+          <h1>Another World</h1>
+        </div>
+      </Link>
+
       <nav className="mt-50 duration-600 fixed bottom-2 left-0 z-50 w-full bg-none px-3 transition lg:hidden">
         <div className="mb-[-15px] flex justify-center">
           <div>

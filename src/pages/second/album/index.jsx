@@ -96,5 +96,3 @@ const AlbumList = () => {
     </div>
   );
 };
-
-export default AlbumList;

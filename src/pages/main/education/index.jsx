@@ -9,7 +9,7 @@ export const EducationPage = () => {
   return (
     <MainLayout title="Education">
       <div className="row mb-16 mt-5 flex flex-col justify-center md:flex-row">
-        <div className="-mt-6 flex justify-center md:mt-6">
+        <div className="flex justify-center md:mt-6">
           <img
             src={graduateAvatar}
             alt="img-graduation"
