@@ -13,8 +13,9 @@ function classNames(...classes) {
 export const SecondNavbar = () => {
   const [navigation, setNavigation] = useState([
     { name: 'Base', href: '/base', current: location.pathname === '/base' },
-    { name: 'Blog', href: '/blog', current: location.pathname === '/blog' },
-    { name: 'Album', href: '/album', current: location.pathname === '/album' },
+    // { name: 'Blog', href: '/blog', current: location.pathname === '/blog' },
+    { name: 'PitBooth', href: '/pitbooth', current: location.pathname === '/pitbooth' },
+    { name: 'Galery', href: '/galery', current: location.pathname === '/galery' },
     { name: 'Support Me', href: '/support-me', current: location.pathname === '/support-me' },
   ]);
 

@@ -11,8 +11,9 @@ import { BlogPage } from '@/pages/second/blog';
 import { HomePage } from '@/pages/main/home';
 import { BasePage } from '@/pages/second/base';
 import { SupportMe } from '@/pages/second/support-me';
-import { MyAlbum } from '@/pages/second/album';
 import { useEffect } from 'react';
+import { MyGalery } from '@/pages/second/galery';
+import { Pitbooth } from '@/pages/second/pitbooth';
 
 export const AppRoutes = () => {
   return (
@@ -28,8 +29,9 @@ export const AppRoutes = () => {
 
         {/* Second */}
         <Route path="/base" element={<BasePage />} />
-        <Route path="/blog" element={<BlogPage />} />
-        <Route path="/album" element={<MyAlbum />} />
+        {/* <Route path="/blog" element={<BlogPage />} /> */}
+        <Route path="/pitbooth" element={<Pitbooth />} />
+        <Route path="/galery" element={<MyGalery />} />
         <Route path="/support-me" element={<SupportMe />} />
 
         {/* Extra */}

@@ -221,11 +221,11 @@ export const Navbar = () => {
 const SendAnonymousMessage = () => {
   const { theme } = useTheme();
   return (
-    <div className="cursor-pointerlg:mb-0 fixed bottom-4 right-6 z-50 mb-[80px]">
+    <div className="fixed bottom-4 right-6 z-50 mb-[80px] cursor-pointer lg:mb-0">
       <Link to={'/anonymous-message'}>
         <img
-          className="w-[65px] md:w-[90px]"
-          src={theme == 'dark' ? sendMessageIconDark : sendMessageIconLight}
+          className="animate-flip w-[65px] md:w-[90px]"
+          src={theme === 'dark' ? sendMessageIconDark : sendMessageIconLight}
           alt="Send Message"
         />
       </Link>

@@ -1,10 +1,26 @@
 /* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class', 
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      animation: {
+        flip: 'flip 2s infinite ease-in-out',
+      },
+      keyframes: {
+        flip: {
+          '0%': {
+            transform: 'rotateY(0deg)',
+          },
+          '50%': {
+            transform: 'rotateY(180deg)',
+          },
+          '100%': {
+            transform: 'rotateY(360deg)',
+          },
+        },
+      },
       fontFamily: {
         heading: ['Poppins', 'sans-serif'],
         sans: ['Inter', 'sans-serif'],
