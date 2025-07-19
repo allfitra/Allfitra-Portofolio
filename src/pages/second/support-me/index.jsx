@@ -15,7 +15,7 @@ export const SupportMe = () => {
             rel="noopener noreferrer"
             className="flex transform items-center justify-center rounded-lg bg-orange-500 py-3 font-semibold text-white shadow transition hover:-translate-y-1 hover:scale-105 hover:bg-orange-400"
           >
-            <div className="mx-3">
+            <div className="mx-3" style={{ transform: 'rotate(155deg)' }}>
               <BanknoteIcon />
             </div>
             Support in Saweria

@@ -2,11 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SecondLayout } from '@/components/Layouts';
 import { PhotoContact } from '@/assets/images/ImagesContact';
 import { Link } from 'react-router-dom';
+import { OnGoing } from '@/utils/components/OnGoing';
 
 export const MyGalery = () => {
   return (
     <SecondLayout>
       <AlbumList />
+      <div className="absolute inset-0 z-0 flex flex-col items-center justify-center gap-5 bg-black opacity-90">
+        <OnGoing />
+        <div className="rounded-xl bg-blue-800 px-3 py-2">
+          <Link to={'/base'}> Kembali ke Base</Link>
+        </div>
+      </div>
     </SecondLayout>
   );
 };
@@ -63,16 +70,6 @@ const AlbumList = () => {
 
   return (
     <div className="relative grid gap-4">
-      {/* Overlay gelap */}
-      <div className="fixed inset-0 z-30 flex flex-col items-center justify-center gap-5 bg-black bg-opacity-80 ">
-        <span className="text-center text-2xl font-semibold text-red-400 md:text-4xl">
-          Halaman Masih Dalam Pengembangan
-        </span>
-        <div className="rounded-xl bg-blue-800 px-3 py-2 opacity-70">
-          <Link to={'/base'}> Kembali ke Base</Link>
-        </div>
-      </div>
-
       {/* Gambar utama */}
       <div className="flex justify-center">
         {isLoading ? (
