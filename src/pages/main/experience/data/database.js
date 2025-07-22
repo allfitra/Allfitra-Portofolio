@@ -14,7 +14,7 @@ export const experiences = [
     icon: DnaLogo,
     iconBg: '#CF1050',
     date: 'April 2025 - Present',
-    points: ['On Progress'],
+    points: ['Responsible for developing front-end websites using modern frameworks such as Next.js and Nuxt.js, while collaborating closely with designers and engineers to deliver high-quality, responsive user interfaces.'],
   },
   {
     title: 'IT Developer and Team Support',
