@@ -37,6 +37,7 @@ export const SecondNavbar = () => {
 
 const WebNavbar = ({ navigation }) => {
   const { theme, changeTheme } = useTheme();
+  const [isHovered, setIsHovered] = useState(null);
 
   return (
     <nav

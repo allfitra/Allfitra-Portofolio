@@ -10,9 +10,6 @@ export const MyGalery = () => {
       <AlbumList />
       <div className="absolute inset-0 z-0 flex flex-col items-center justify-center gap-5 bg-black opacity-90">
         <OnGoing />
-        <div className="rounded-xl bg-blue-800 px-3 py-2">
-          <Link to={'/base'}> Kembali ke Base</Link>
-        </div>
       </div>
     </SecondLayout>
   );

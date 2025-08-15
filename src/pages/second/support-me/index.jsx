@@ -10,8 +10,8 @@ export const SupportMe = () => {
         <h2 className="text-4xl font-bold text-[#39afaf]">Support Me</h2>
         <div className="flex w-full max-w-xs flex-col gap-4">
           <a
-            href="#"
-            // target="_blank"
+            href="https://saweria.co/allfitra"
+            target="_blank"
             rel="noopener noreferrer"
             className="flex transform items-center justify-center rounded-lg bg-orange-500 py-3 font-semibold text-white shadow transition hover:-translate-y-1 hover:scale-105 hover:bg-orange-400"
           >

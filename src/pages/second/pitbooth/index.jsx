@@ -1,202 +1,109 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { SecondLayout } from '@/components/Layouts';
-import { Camera } from 'react-camera-pro';
-import { useTheme } from '@/utils/themeContext';
 import ColorPicker from 'react-pick-color';
 import { ColorPickerIcon } from '@/assets/NewWorld';
+import { CameraComponent } from './components/cameraPackage';
+import { imageThemes } from './data/imageTheme';
+import { useTheme } from '@/utils/themeContext';
 
 export const Pitbooth = () => {
+  const imageColorDefault = '#39afaf';
+  const [imageBackground, setImageBackground] = useState(imageColorDefault);
+
+  const handleBackgroundChange = (value) => {
+    if (typeof value === 'object' && value.hex) {
+      setImageBackground(value.hex);
+    } else {
+      setImageBackground(value);
+    }
+  };
+
   return (
     <SecondLayout title="PitBooth">
-      <CameraComponent />
-      <button className="mt-3">
-        <img src={ColorPickerIcon} className="h-16" />
-      </button>
+      <CameraComponent imageBackground={imageThemes[imageBackground] || imageBackground} />
+      <ImageBackgroundPackage
+        imageBackground={imageBackground}
+        onBackgroundChange={handleBackgroundChange}
+      />
     </SecondLayout>
   );
 };
 
-const CameraComponent = () => {
+const ImageBackgroundPackage = ({ imageBackground, onBackgroundChange }) => {
   const { theme } = useTheme();
-  const camera = useRef(null);
-
-  const [images, setImages] = useState([]);
-  const maxPhotos = 2;
-
-  const captureImage = () => {
-    if (!camera.current || images.length >= maxPhotos) return;
-
-    const photo = camera.current.takePhoto();
-    setImages((prev) => [...prev, photo]);
-  };
-
-  const resetAll = () => {
-    setImages([]);
-  };
-
-  const downloadCollage = async () => {
-    const canvas = document.createElement('canvas');
-    const width = 280;
-    const height = 680;
-    canvas.width = width;
-    canvas.height = height;
-    const photoWidth = 250;
-    const photoHeight = 200;
-    const padding = 10;
-    const totalHeight = images.length * (photoHeight + padding) + padding;
-
-    canvas.width = width;
-    canvas.height = totalHeight;
-
-    const ctx = canvas.getContext('2d');
-
-    // Background canvas
-    ctx.fillStyle = '#60A5FA';
-    ctx.fillRect(0, 0, width, totalHeight);
-
-    const reversedImages = [...images];
-
-    for (let i = 0; i < reversedImages.length; i++) {
-      const img = new Image();
-      img.src = reversedImages[i];
-      await new Promise((resolve) => {
-        img.onload = () => {
-          const x = (width - photoWidth) / 2;
-          const y = padding + i * (photoHeight + padding);
-          ctx.drawImage(img, x, y, photoWidth, photoHeight);
-          resolve();
-        };
-      });
-    }
-
-    const collageData = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.href = collageData;
-    link.download = 'PhotoByPitbooth.png';
-    link.click();
-  };
 
   return (
-    <div className="items-center justify-center gap-4 text-center md:flex">
-      {/* Collage Photo Desktop */}
-      <div className="order-2 hidden md:order-none md:block">
-        <PhotoResult images={images} />
+    <div className="mt-6 flex flex-row items-start justify-between gap-4 md:w-[85%]">
+      <div className="flex w-full flex-row gap-2">
+        <SetColorPicker imageBackground={imageBackground} onChange={onBackgroundChange} />
+
+        {/* Default Theme Images */}
+        <div className="flex flex-wrap gap-4 md:max-w-[60%]">
+          {Object.keys(imageThemes).map((key) => (
+            <div
+              key={key}
+              className="h-12 w-12 cursor-pointer rounded-full border border-gray-300"
+              style={{ background: imageThemes[key] }}
+              onClick={() => onBackgroundChange(key)}
+            ></div>
+          ))}
+        </div>
       </div>
 
-      {/* Camera Section */}
-      <div
-        className={`relative flex-1 overflow-hidden rounded-[5%] border-[10px] md:max-w-[600px] ${
-          theme === 'dark' ? 'border-white' : 'border-black'
-        }`}
-      >
-        <Camera
-          ref={camera}
-          aspectRatio={4 / 3}
-          facingMode="user"
-          errorMessages={{
-            noCameraAccessible: 'Tidak ada kamera yang dapat diakses.',
-            permissionDenied: 'Izin ditolak. Mohon izinkan akses kamera.',
-            switchCamera: 'Tidak dapat mengganti kamera.',
-            canvas: 'Browser tidak mendukung canvas.',
-          }}
-          videoReadyCallback={() => {
-            console.log('Kamera siap.');
-          }}
+      {/* Input custom image URL */}
+      <div className="relative mb-6 hidden w-[40%] md:block">
+        <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5">
+          <svg
+            className="h-6 w-6 text-gray-500 dark:text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm.5 5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm0 5c.47 0 .917-.092 1.326-.26l1.967 1.967a1 1 0 0 0 1.414-1.414l-1.817-1.818A3.5 3.5 0 1 0 11.5 17Z" />
+          </svg>
+        </div>
+        <input
+          type="text"
+          className={`block w-full rounded-lg border border-gray-300 p-3 ps-10 text-sm
+            ${theme === 'dark' ? 'bg-gray-100 text-black' : 'bg-gray-900 text-white'}`}
+          placeholder="Image Background URL..."
+          onBlur={(e) => onBackgroundChange(e.target.value)}
         />
+      </div>
+    </div>
+  );
+};
 
-        {/* Dark Overlay */}
-        {images.length >= maxPhotos && (
-          <div className="pointer-events-none absolute inset-0 z-10 bg-black bg-opacity-90">
-            <div className="flex h-full w-full items-center justify-center">
-              <span className="text-2xl text-red-600">Photos Already Done</span>
-            </div>
+const SetColorPicker = ({ imageColor, onChange }) => {
+  const [isHover, setIsHover] = useState(false);
+
+  return (
+    <div
+      className="relative inline-block"
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
+    >
+      <button className="-mt-3">
+        <img src={ColorPickerIcon} className="h-16" />
+      </button>
+      {isHover && (
+        <div className="absolute top-full -mt-[340px] ml-7">
+          <div>
+            <ColorPicker
+              color={imageColor}
+              onChange={onChange}
+              theme={{
+                background: 'lightgrey',
+                borderRadius: '10px',
+                width: '200px',
+              }}
+            />
           </div>
-        )}
-      </div>
-
-      <div className="mt-4 flex flex-col gap-3 md:mt-0 md:w-[150px]">
-        {/* Take Photo */}
-        <button
-          onClick={captureImage}
-          className={`rounded-lg bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-400 ${
-            images.length < maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
-          }`}
-        >
-          Take Photo {images.length + 1}
-        </button>
-
-        {/* Switch Camera */}
-        <button
-          onClick={() => camera.current?.switchCamera()}
-          className={`rounded-lg bg-green-500 px-4 py-2 text-white transition hover:bg-green-400 ${
-            images.length < maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
-          }`}
-        >
-          Switch Camera
-        </button>
-
-        {/* Reset Photo */}
-        <button
-          onClick={resetAll}
-          className={`rounded-lg bg-red-500 px-4 py-2 text-white transition hover:bg-red-400 ${
-            images.length > 0 ? '' : 'hidden md:invisible md:block md:opacity-0'
-          }`}
-        >
-          Reset Photo
-        </button>
-
-        {/* Download */}
-        <button
-          onClick={downloadCollage}
-          className={`rounded-lg bg-yellow-500 px-4 py-2 text-white transition hover:bg-yellow-400 ${
-            images.length === maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
-          }`}
-        >
-          Download Now
-        </button>
-      </div>
-
-      {/* Collage Photo Mobile */}
-      <div className="order-3 mt-4 block md:hidden">
-        <PhotoResult images={images} />
-      </div>
-    </div>
-  );
-};
-
-const PhotoResult = ({ images }) => {
-  return (
-    <div className="flex h-[450px] w-full flex-col items-center justify-center gap-2 overflow-y-auto rounded-lg bg-blue-300 p-4 md:w-[300px]">
-      {images.length > 0 ? (
-        images.map((img, index) => (
-          <img
-            key={index}
-            src={img}
-            alt={`Photo ${index + 1}`}
-            className="h-[200px] w-[300px] rounded border object-cover"
-          />
-        ))
-      ) : (
-        <span className="text-white">Let's Take the Photo</span>
+        </div>
       )}
-    </div>
-  );
-};
-
-const PhotoBackgroundTheme = () => {
-  const [color, setColor] = useState('#fff');
-
-  return (
-    <div>
-      <ColorPicker
-        color={color}
-        onChange={(newColor) => setColor(newColor.hex)}
-        theme={{
-          background: 'lightgrey',
-          borderRadius: '10px',
-          width: '300px',
-        }}
-      />
     </div>
   );
 };
