@@ -1,14 +1,19 @@
 import React, { useRef, useState } from 'react';
 import { Camera } from 'react-camera-pro';
 import { useTheme } from '@/utils/themeContext';
+import { ModalAccepted } from './modalAccepted';
+import supabase from '@/utils/Database/supabase';
+import { SuccessToast } from './toastNotif';
 
 export const CameraComponent = ({ imageBackground }) => {
   const { theme } = useTheme();
   const camera = useRef(null);
 
   const [images, setImages] = useState([]);
+  const [imageUrl, setImageUrl] = useState('');
   const [maxPhotos, setMaxPhoto] = useState(2);
-  const [openModal, setOpenModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [onUpload, setOnUpload] = useState(false);
 
   const captureImage = () => {
     if (!camera.current || images.length >= maxPhotos) return;
@@ -36,17 +41,36 @@ export const CameraComponent = ({ imageBackground }) => {
 
   // Function to add collage to gallery
   const handleAddtoGallery = async () => {
-    const collageData = await imageCollage();
+    const collageData = await imageCollage(); // returns base64 string
 
-    // const response = await fetch('/api/gallery', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ image: collageData }),
-    // });
+    // Convert base64 → Blob
+    const blob = dataURLtoBlob(collageData);
 
-    setOpenModal(false);
+    const fileName = `${Date.now()}_pitbooth.png`;
+    const filePath = `public_area/${fileName}`;
+
+    // Upload to Supabase storage
+    const { error: uploadError } = await supabase.storage
+      .from('gallery-collection')
+      .upload(filePath, blob, {
+        contentType: 'image/png',
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error('Upload error:', uploadError);
+      return;
+    }
+
+    // Get public URL
+    const { data: publicUrl } = supabase.storage.from('gallery-collection').getPublicUrl(filePath);
+
+    setImageUrl(publicUrl.publicUrl);
+    setOnUpload(true);
+    setTimeout(() => {
+      setOnUpload(false);
+    }, 3000);
+    setIsModalOpen(false);
   };
 
   // Function to render images as a collage
@@ -125,124 +149,114 @@ export const CameraComponent = ({ imageBackground }) => {
   };
 
   return (
-    <div className="items-center justify-center gap-4 text-center md:flex">
-      {/* Collage Photo Desktop */}
-      <div className="order-2 hidden md:order-none md:block">
-        <PhotoResult images={images} imageBackground={imageBackground} />
-      </div>
+    <>
+      <div className="items-center justify-center gap-4 text-center md:flex">
+        {/* Collage Photo Desktop */}
+        <div className="order-2 hidden md:order-none md:block">
+          <PhotoResult images={images} imageBackground={imageBackground} />
+        </div>
 
-      {/* Camera Section */}
-      <div
-        className={`relative flex-1 overflow-hidden rounded-[5%] border-[10px] md:max-w-[600px] ${
-          theme === 'dark' ? 'border-white' : 'border-black'
-        }`}
-      >
-        <Camera
-          ref={camera}
-          aspectRatio={4 / 3}
-          facingMode="user"
-          errorMessages={{
-            noCameraAccessible: 'Tidak ada kamera yang dapat diakses.',
-            permissionDenied: 'Izin ditolak. Mohon izinkan akses kamera.',
-            switchCamera: 'Tidak dapat mengganti kamera.',
-            canvas: 'Browser tidak mendukung canvas.',
-          }}
-          videoReadyCallback={() => {
-            console.log('Camera Ready broo');
-          }}
-        />
+        {/* Camera Section */}
+        <div
+          className={`relative flex-1 overflow-hidden rounded-[5%] border-[10px] md:max-w-[600px] ${
+            theme === 'dark' ? 'border-white' : 'border-black'
+          }`}
+        >
+          <Camera
+            ref={camera}
+            aspectRatio={4 / 3}
+            facingMode="user"
+            errorMessages={{
+              noCameraAccessible: 'Tidak ada kamera yang dapat diakses.',
+              permissionDenied: 'Izin ditolak. Mohon izinkan akses kamera.',
+              switchCamera: 'Tidak dapat mengganti kamera.',
+              canvas: 'Browser tidak mendukung canvas.',
+            }}
+            videoReadyCallback={() => {
+              console.log('Camera Ready broo');
+            }}
+          />
 
-        {/* Dark Overlay */}
-        {images.length >= maxPhotos && (
-          <div className="absolute inset-0 cursor-not-allowed bg-black bg-opacity-95">
-            <div className="flex h-full w-full items-center justify-center">
-              <span className="text-2xl text-red-600">Photos Already Done</span>
+          {/* Dark Overlay */}
+          {images.length >= maxPhotos && (
+            <div className="absolute inset-0 cursor-not-allowed bg-black bg-opacity-95">
+              <div className="flex h-full w-full items-center justify-center">
+                <span className="text-2xl text-red-600">Photos Already Done</span>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        <div className="mt-4 flex flex-col gap-3 md:mt-0 md:w-[150px]">
+          {/* Take Photo */}
+          <button
+            onClick={captureImage}
+            className={`rounded-lg bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-400 ${
+              images.length < maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
+            }`}
+          >
+            Take Photo {images.length + 1}
+          </button>
+
+          {/* Switch Camera */}
+          <button
+            onClick={() => camera.current?.switchCamera()}
+            className={`rounded-lg bg-green-500 px-4 py-2 text-white transition hover:bg-green-400 ${
+              images.length < maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
+            }`}
+          >
+            Mirror Camera
+          </button>
+
+          {/* Reset Photo */}
+          <button
+            onClick={resetAll}
+            className={`rounded-lg bg-red-500 px-4 py-2 text-white transition hover:bg-red-400 ${
+              images.length > 0 ? '' : 'hidden md:invisible md:block md:opacity-0'
+            }`}
+          >
+            Reset Photo
+          </button>
+
+          {/* Download */}
+          <button
+            onClick={downloadCollage}
+            className={`rounded-lg bg-yellow-500 px-4 py-2 text-white transition hover:bg-yellow-400 ${
+              images.length === maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
+            }`}
+          >
+            Download Now
+          </button>
+
+          {/* add to galery */}
+          <button
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+            className={`rounded-lg bg-green-500 px-4 py-2 text-white transition hover:bg-green-400 ${
+              images.length === maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
+            }`}
+          >
+            Add to Gallery
+          </button>
+
+          {/* Open Modal */}
+          <ModalAccepted
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={handleAddtoGallery}
+          />
+        </div>
+
+        {/* Collage Photo Mobile */}
+        <div className="order-3 mt-4 block md:hidden">
+          <PhotoResult images={images} imageBackground={imageBackground} />
+        </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-3 md:mt-0 md:w-[150px]">
-        {/* Take Photo */}
-        <button
-          onClick={captureImage}
-          className={`rounded-lg bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-400 ${
-            images.length < maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
-          }`}
-        >
-          Take Photo {images.length + 1}
-        </button>
-
-        {/* Switch Camera */}
-        <button
-          onClick={() => camera.current?.switchCamera()}
-          className={`rounded-lg bg-green-500 px-4 py-2 text-white transition hover:bg-green-400 ${
-            images.length < maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
-          }`}
-        >
-          Mirror Camera
-        </button>
-
-        {/* Reset Photo */}
-        <button
-          onClick={resetAll}
-          className={`rounded-lg bg-red-500 px-4 py-2 text-white transition hover:bg-red-400 ${
-            images.length > 0 ? '' : 'hidden md:invisible md:block md:opacity-0'
-          }`}
-        >
-          Reset Photo
-        </button>
-
-        {/* Download */}
-        <button
-          onClick={downloadCollage}
-          className={`rounded-lg bg-yellow-500 px-4 py-2 text-white transition hover:bg-yellow-400 ${
-            images.length === maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
-          }`}
-        >
-          Download Now
-        </button>
-
-        {/* add to galery */}
-        <button
-          onClick={() => {
-            setOpenModal(true);
-          }}
-          className={`rounded-lg bg-green-500 px-4 py-2 text-white transition hover:bg-green-400 ${
-            images.length === maxPhotos ? '' : 'hidden md:invisible md:block md:opacity-0'
-          }`}
-        >
-          Add to Gallery
-        </button>
-
-        {/* Open Modal */}
-        {openModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="rounded-lg bg-white p-6 shadow-lg">
-              <h2 className="mb-4 text-xl font-bold">Add to Gallery</h2>
-              <p className="mb-4">Are you sure, want to add this collage to the gallery?</p>
-              <button
-                onClick={handleAddtoGallery}
-                className="mr-2 rounded bg-blue-500 px-4 py-2 text-white"
-              >
-                Yes, i agree
-              </button>
-              <button
-                onClick={() => setOpenModal(false)}
-                className="rounded bg-gray-300 px-4 py-2 text-black"
-              >
-                Maybe later
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Collage Photo Mobile */}
-      <div className="order-3 mt-4 block md:hidden">
-        <PhotoResult images={images} imageBackground={imageBackground} />
-      </div>
-    </div>
+      {/* Toast Notification */}
+      {onUpload && <SuccessToast showTime={3000} />}
+    </>
   );
 };
 
@@ -272,3 +286,14 @@ const PhotoResult = ({ images, imageBackground }) => {
     </div>
   );
 };
+
+function dataURLtoBlob(dataURL) {
+  const byteString = atob(dataURL.split(',')[1]);
+  const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: mimeString });
+}
