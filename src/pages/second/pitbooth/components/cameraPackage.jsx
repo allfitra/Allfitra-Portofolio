@@ -10,7 +10,6 @@ export const CameraComponent = ({ imageBackground }) => {
   const camera = useRef(null);
 
   const [images, setImages] = useState([]);
-  const [imageUrl, setImageUrl] = useState('');
   const [maxPhotos, setMaxPhoto] = useState(2);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [onUpload, setOnUpload] = useState(false);
@@ -39,9 +38,27 @@ export const CameraComponent = ({ imageBackground }) => {
     }
   };
 
-  // Function to add collage to gallery
+  const postToGallery = async ({ username, image_url }) => {
+    const data = {
+      username: username,
+      image_url: image_url,
+    };
+    // Insert data into Supabase
+    await supabase
+      .from('gallery_pitbooth')
+      .insert([data])
+      .then(({ error }) => {
+        if (error) {
+          console.error('Error adding to gallery:', error);
+        } else {
+          console.log('added data succesfully:');
+        }
+      });
+  };
+
+  // Function to upload image to bracket
   const handleAddtoGallery = async () => {
-    const collageData = await imageCollage(); // returns base64 string
+    const collageData = await imageCollage();
 
     // Convert base64 → Blob
     const blob = dataURLtoBlob(collageData);
@@ -65,7 +82,8 @@ export const CameraComponent = ({ imageBackground }) => {
     // Get public URL
     const { data: publicUrl } = supabase.storage.from('gallery-collection').getPublicUrl(filePath);
 
-    setImageUrl(publicUrl.publicUrl);
+    await postToGallery({ username: 'pitbooth user', image_url: `${publicUrl.publicUrl}` });
+
     setOnUpload(true);
     setTimeout(() => {
       setOnUpload(false);
