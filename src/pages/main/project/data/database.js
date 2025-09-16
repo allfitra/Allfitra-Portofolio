@@ -10,6 +10,7 @@ import {
   TailwindLogo,
   PythonLogo,
   SeleniumLogo,
+  ExpoLogo,
 } from '@/assets/images/ImagesProject';
 import { GithubIcon, GlobeIcon } from 'lucide-react';
 
@@ -36,6 +37,23 @@ export const ProjectData = {
         },
         {
           id: 2,
+          name: 'Balanjo - Mobile Apps',
+          description:
+            'The financial management and daily needs application aims to collect all daily needs in one application. The application is intended for personal use.',
+          tools: {
+            react: { name: 'React Native', logo: ReactLogo },
+            tailwind: { name: 'tailwind', logo: ExpoLogo },
+          },
+          action: [
+            {
+              href: 'https://github.com/allfitra/balanjo',
+              icon: GithubIcon,
+              label: 'Github',
+            },
+          ],
+        },
+        {
+          id: 3,
           name: 'AiVents (Portal Event Information)',
           description:
             'A website that displays event information in the Jakarta area. Here users can find out information about events that are taking place or will take place so that they can organize plans to visit the event.',
@@ -50,7 +68,7 @@ export const ProjectData = {
           ],
         },
         {
-          id: 3,
+          id: 4,
           name: 'Simple Calculator',
           description:
             'Simple calculator as a means of training logic and advanced stages of learning javascript, with website functions in the form of providing convenience in performing mathematical operations.',
@@ -65,7 +83,7 @@ export const ProjectData = {
           ],
         },
         {
-          id: 4,
+          id: 5,
           name: 'Detik Finance Clone - Landing Page',
           description:
             'A clone website of the detik.com finance landing page, aims to train in making a suitable appearance and deepen the use of style and design for a website appearance.',
@@ -88,7 +106,7 @@ export const ProjectData = {
           ],
         },
         {
-          id: 5,
+          id: 6,
           name: 'YouTube Scrapping - Python',
           description:
             'Project for collect data from YouTube videos — including video IDs, URLs, and user comments — by utilizing Python-based tools like Selenium WebDriver and BeautifulSoup for dynamic web scraping',
@@ -105,7 +123,7 @@ export const ProjectData = {
           ],
         },
         {
-          id: 6,
+          id: 7,
           name: 'CNN Model - Self-Developed',
           description:
             'Implementing a Convolutional Neural Network (CNN) from scratch in Python without utilizing standard machine learning libraries such as TensorFlow, to understand the underlying principles of CNNs.',
@@ -121,7 +139,7 @@ export const ProjectData = {
           ],
         },
         {
-          id: 7,
+          id: 8,
           name: 'KMM UNJ Organization - Website',
           description:
             'KMM (Komunitas Mahasiswa Minangkabau) is a student organization at Universitas Negeri Jakarta that focuses on the Minangkabau culture and community. This website serves as a platform to introduce KMM UNJ, its activities, and its members.',

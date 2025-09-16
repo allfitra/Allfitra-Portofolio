@@ -10,6 +10,7 @@ import ReactLogo from './react-logo.png';
 import TailwindLogo from './tailwind-logo.png';
 import PythonLogo from './python-logo.png';
 import SeleniumLogo from './selenium-logo.png';
+import ExpoLogo from './expo-logo.png'
 
 export {
   AndroidLogo,
@@ -24,5 +25,5 @@ export {
   KotlinLogo,
   PythonLogo,
   SeleniumLogo,
-  // Add more images as needed
+  ExpoLogo,
 };

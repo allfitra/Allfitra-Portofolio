@@ -54,7 +54,7 @@ const ImageBackgroundPackage = ({ imageBackground, onBackgroundChange }) => {
       <div className="relative mb-6 hidden w-[40%] md:block">
         <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5">
           <svg
-            className="h-6 w-6 text-gray-500 dark:text-white"
+            className="h-6 w-6 text-gray-500 dark:text-gray-500"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"

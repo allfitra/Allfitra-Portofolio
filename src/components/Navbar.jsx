@@ -83,7 +83,7 @@ export const Navbar = () => {
         style={theme === 'dark' ? themes.dark : themes.light}
       >
         <div className="flex justify-center">
-          <div className="relative flex h-20 w-full max-w-7xl items-center justify-between px-14">
+          <div className="h-30 relative flex w-full max-w-7xl items-center justify-between px-14">
             <div className="flex items-center gap-10">
               <Link to={'/'}>
                 {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
@@ -224,7 +224,7 @@ const SendAnonymousMessage = () => {
     <div className="fixed bottom-4 right-6 z-50 mb-[80px] cursor-pointer lg:mb-0">
       <Link to={'/anonymous-message'}>
         <img
-          className="animate-flip w-[65px] md:w-[90px]"
+          className="w-[65px] animate-flip md:w-[90px]"
           src={theme === 'dark' ? sendMessageIconDark : sendMessageIconLight}
           alt="Send Message"
         />

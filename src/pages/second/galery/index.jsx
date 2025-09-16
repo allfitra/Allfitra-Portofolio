@@ -45,7 +45,6 @@ const AlbumList = ({ isLoading, galleryData }) => {
   const getImageList = galleryData.map((data) => data.image_url);
   const imageList = [PhotoContact4, ...getImageList];
 
-  // Gandakan konten 5x agar panjang & looping halus
   const images = Array(3).fill(imageList).flat();
 
   const changeMainImage = (src) => {
@@ -55,7 +54,7 @@ const AlbumList = ({ isLoading, galleryData }) => {
   useEffect(() => {
     if (ulRef.current) {
       const totalWidth = ulRef.current.scrollWidth;
-      const speed = 100; // px per detik
+      const speed = 100;
       const newDuration = totalWidth / speed;
       setDuration(newDuration);
     }

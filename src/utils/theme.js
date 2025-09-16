@@ -1,6 +1,6 @@
 const lightTheme = {
   name: 'light',
-  backgroundColor: '#FFFFFF',
+  backgroundColor: '#FDFDFD',
   color: '#343434',
 };
 

@@ -4,7 +4,7 @@ import { AnonymousPage } from '@/pages/main/anonymous-message';
 import { ContactPage } from '@/pages/main/contact';
 import { EducationPage } from '@/pages/main/education';
 import { ExperiencePage } from '@/pages/main/experience';
-import { MessagesListPage } from '@/pages/main/messages-list';
+import { MessagesListPage } from '@/pages/silent/messages-list';
 import { NotFoundPage } from '@/pages/not-found';
 import { ProjectPage } from '@/pages/main/project';
 import { BlogPage } from '@/pages/second/blog';
@@ -14,6 +14,7 @@ import { SupportMe } from '@/pages/second/support-me';
 import { useEffect } from 'react';
 import { MyGalery } from '@/pages/second/galery';
 import { Pitbooth } from '@/pages/second/pitbooth';
+import { FinancialReport } from '@/pages/silent/financial-report';
 
 export const AppRoutes = () => {
   return (
@@ -37,6 +38,7 @@ export const AppRoutes = () => {
         {/* Extra */}
         <Route path="/anonymous-message" element={<AnonymousPage />} />
         <Route path="/230701" element={<MessagesListPage />} />
+        <Route path="/balanjo" element={<FinancialReport />} />
 
         {/* Not Found */}
         <Route path="/not-found" element={<NotFoundPage />} />
