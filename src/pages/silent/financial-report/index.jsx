@@ -16,7 +16,7 @@ export const FinancialReport = () => {
   const firstDayStr = firstDay.toISOString().split('T')[0];
 
   const [startDate, setStartDate] = useState(firstDayStr);
-  const [endDate, setEndDate] = useState(today);
+  const [endDate, setEndDate] = useState(addDays(today, 1));
 
   useEffect(() => {
     if (lockPass === '230701') {
@@ -179,7 +179,9 @@ const BalanjoContent = ({ balanjoData, startDate, endDate, onDelete }) => {
           ) : (
             filteredData.map((t) => (
               <tr key={t.id} className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-                <td className="px-6 py-4">{new Date(t.created_at).toLocaleDateString('id-ID')}</td>
+                <td className="px-6 py-4">
+                  {new Date(t.created_at).toLocaleDateString('id-ID', { timeZone: 'UTC' })}
+                </td>
                 <td className="px-6 py-4">{t.desc}</td>
                 <td className="px-6 py-4">
                   <span
@@ -262,3 +264,9 @@ const LockScreen = ({ lockPass, setLockPass }) => {
     </div>
   );
 };
+
+function addDays(dateStr, days) {
+  const date = new Date(dateStr);
+  date.setDate(date.getDate() + days);
+  return date.toISOString().split('T')[0]; // format YYYY-MM-DD
+}
