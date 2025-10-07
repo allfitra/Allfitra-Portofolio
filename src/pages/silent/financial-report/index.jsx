@@ -1,22 +1,40 @@
 import { SecondLayout } from '@/components/Layouts';
 import supabase from '@/utils/Database/supabase';
-import { EyeIcon, EyeOffIcon, Rotate3DIcon, Trash } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, Rotate3DIcon, Trash, TrendingDown, TrendingUp, Wallet } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
+
+const formatCurrency = (amount) => {
+  return `Rp ${amount.toLocaleString('id-ID')}`;
+};
 
 export const FinancialReport = () => {
   const [balanjoData, setBalanjoData] = useState([]);
   const [lockPass, setLockPass] = useState('');
-  const [unlocked, setUnlocked] = useState(false);
+  const [unlocked, setUnlocked] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  // State untuk filter tanggal
-  const today = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
-  const firstDay = new Date();
-  firstDay.setDate(1);
-  const firstDayStr = firstDay.toISOString().split('T')[0];
+  const getStartDateDefault = () => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 1);
+    date.setDate(25);
+    return date.toISOString().split('T')[0];
+  };
+  const today = new Date().toISOString().split('T')[0];
 
-  const [startDate, setStartDate] = useState(firstDayStr);
-  const [endDate, setEndDate] = useState(addDays(today, 1));
+  const [startDate, setStartDate] = useState(getStartDateDefault());
+  const [endDate, setEndDate] = useState(today);
+
+  const [showAllData, setShowAllData] = useState(false);
+
+  useEffect(() => {
+    if (showAllData) {
+      setStartDate('');
+      setEndDate('');
+    } else {
+      setStartDate(getStartDateDefault());
+      setEndDate(today);
+    }
+  }, [showAllData]);
 
   useEffect(() => {
     if (lockPass === '230701') {
@@ -56,13 +74,54 @@ export const FinancialReport = () => {
     }
   };
 
+  const filteredData = useMemo(() => {
+    if (!startDate || !endDate) return balanjoData;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+
+    return balanjoData.filter((t) => {
+      const tDate = new Date(t.created_at);
+      return tDate >= start && tDate <= end;
+    });
+  }, [balanjoData, startDate, endDate]);
+
+  const { totalIncome, totalExpense, balance } = useMemo(() => {
+    const income = filteredData
+      .filter((t) => t.type === 'income')
+      .reduce((sum, t) => sum + t.price, 0);
+    const expense = filteredData
+      .filter((t) => t.type === 'expense')
+      .reduce((sum, t) => sum + t.price, 0);
+    return {
+      totalIncome: income,
+      totalExpense: expense,
+      balance: income - expense,
+    };
+  }, [filteredData]);
+
+  const { allTimeIncome, allTimeExpense, allTimeBalance } = useMemo(() => {
+    const income = balanjoData
+      .filter((t) => t.type === 'income')
+      .reduce((sum, t) => sum + t.price, 0);
+    const expense = balanjoData
+      .filter((t) => t.type === 'expense')
+      .reduce((sum, t) => sum + t.price, 0);
+    return {
+      allTimeIncome: income,
+      allTimeExpense: expense,
+      allTimeBalance: income - expense,
+    };
+  }, [balanjoData]);
+
   return (
     <SecondLayout title="Financial Report">
       {!unlocked ? (
         <LockScreen lockPass={lockPass} setLockPass={setLockPass} />
       ) : (
         <div className="flex flex-col gap-6">
-          <div className="mt-10 flex justify-center">
+          <div className="mt-4 flex justify-center">
             <h1 className="text-3xl font-bold">Balanjo Report</h1>
           </div>
 
@@ -70,13 +129,7 @@ export const FinancialReport = () => {
             {/* Start Date */}
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-                <svg
-                  className="h-4 w-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg className="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                 </svg>
               </div>
@@ -95,13 +148,7 @@ export const FinancialReport = () => {
             {/* End Date */}
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-                <svg
-                  className="h-4 w-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg className="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                 </svg>
               </div>
@@ -113,6 +160,60 @@ export const FinancialReport = () => {
                 onChange={(e) => setEndDate(e.target.value)}
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
               />
+
+            </div>
+            <div className="relative">
+            <div className="flex items-center">
+              <input
+                id="show-all-checkbox"
+                type="checkbox"
+                checked={showAllData}
+                onChange={(e) => setShowAllData(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-green-600 focus:ring-2 focus:ring-green-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-green-600"
+                />
+            </div>
+            </div>
+          </div>
+
+          <div className="mx-auto max-w-6xl w-full rounded-2xl border border-gray-200 bg-gray-50 p-4 shadow-xl dark:bg-gray-800 dark:border-gray-700">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              <div className="transform rounded-xl border-l-4 border-green-500 bg-white px-6 py-2 shadow-md transition duration-300 hover:shadow-lg dark:bg-gray-900 cursor-default">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-md font-semibold uppercase tracking-wider text-green-700">Income (Filtered)</h3>
+                  <TrendingUp className="h-6 w-6 text-green-500" />
+                </div>
+                <p className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalIncome)}</p>
+              </div>
+
+              <div className="transform rounded-xl border-l-4 border-red-500 bg-white px-6 py-2 shadow-md transition duration-300 hover:shadow-lg dark:bg-gray-900 cursor-default">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-md font-semibold uppercase tracking-wider text-red-700">Expense (Filtered)</h3>
+                  <TrendingDown className="h-6 w-6 text-red-500" />
+                </div>
+                <p className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalExpense)}</p>
+              </div>
+
+              <div className="transform rounded-xl bg-blue-600 px-6 py-2 shadow-2xl transition duration-300 ease-in-out hover:scale-105 cursor-not-allowed">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-md font-semibold uppercase tracking-wider text-blue-100">Balance (Filtered)</h3>
+                  <Wallet className="h-6 w-6 text-white" />
+                </div>
+                <p className="mb-2 text-2xl font-extrabold text-white">{formatCurrency(balance)}</p>
+              </div>
+            </div>
+
+            <div className="mt-3 border-t text-center dark:border-gray-600">
+              <div className="mt-2 flex justify-center gap-6 text-gray-600 dark:text-gray-400">
+                <span>
+                  Total Income: <strong className="text-green-600">{formatCurrency(allTimeIncome)}</strong>
+                </span>
+                <span>
+                  Total Expense: <strong className="text-red-600">{formatCurrency(allTimeExpense)}</strong>
+                </span>
+                <span>
+                  Total Balance: <strong className="text-gray-900 dark:text-white">{formatCurrency(allTimeBalance)}</strong>
+                </span>
+              </div>
             </div>
           </div>
 
@@ -120,9 +221,7 @@ export const FinancialReport = () => {
             <p className="text-center text-2xl text-gray-500">Loading data...</p>
           ) : (
             <BalanjoContent
-              balanjoData={balanjoData}
-              startDate={startDate}
-              endDate={endDate}
+              filteredData={filteredData}
               onDelete={handleDelete}
             />
           )}
@@ -132,106 +231,67 @@ export const FinancialReport = () => {
   );
 };
 
-const BalanjoContent = ({ balanjoData, startDate, endDate, onDelete }) => {
-  const filteredData = useMemo(() => {
-    return balanjoData.filter((t) => {
-      const tDate = new Date(t.created_at);
-      const afterStart = startDate ? tDate >= new Date(startDate) : true;
-      const beforeEnd = endDate ? tDate <= new Date(endDate + 'T23:59:59') : true;
-      return afterStart && beforeEnd;
-    });
-  }, [balanjoData, startDate, endDate]);
-
-  const { totalIncome, totalExpense, balance } = useMemo(() => {
-    const income = filteredData
-      .filter((t) => t.type === 'income')
-      .reduce((sum, t) => sum + t.price, 0);
-    const expense = filteredData
-      .filter((t) => t.type === 'expense')
-      .reduce((sum, t) => sum + t.price, 0);
-    return {
-      totalIncome: income,
-      totalExpense: expense,
-      balance: income - expense,
-    };
-  }, [filteredData]);
-
+const BalanjoContent = ({ filteredData, onDelete }) => {
   return (
-    <div className="relative overflow-x-auto sm:rounded-lg">
+    <div className="relative max-h-[69vh] overflow-y-auto overflow-x-auto sm:rounded-lg mb-4">
       <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-        <thead className="bg-gray-100 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+        <thead className="sticky top-0 bg-gray-100 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th className="px-6 py-3">Date</th>
             <th className="px-6 py-3">Description</th>
             <th className="px-6 py-3">Type</th>
             <th className="px-6 py-3">Price</th>
             <th className="px-6 py-3">Action</th>
-            {/* <th className="px-6 py-3">Source</th> */}
           </tr>
         </thead>
         <tbody>
           {filteredData.length === 0 ? (
             <tr>
-              <td colSpan="4" className="px-6 py-4 text-center text-gray-500">
+              <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
                 Tidak ada data untuk periode ini
               </td>
             </tr>
           ) : (
             filteredData.map((t) => (
-              <tr key={t.id} className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+              <tr
+                key={t.id}
+                className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
+              >
                 <td className="px-6 py-4">
-                  {new Date(t.created_at).toLocaleDateString('id-ID', { timeZone: 'UTC' })}
+                  {new Date(t.created_at).toLocaleDateString('id-ID', {
+                    timeZone: 'UTC',
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
                 </td>
                 <td className="px-6 py-4">{t.desc}</td>
                 <td className="px-6 py-4">
                   <span
-                    className={`rounded px-2 py-1 text-xs font-medium ${
-                      t.type === 'income'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
+                    className={`rounded px-2 py-1 text-xs font-medium ${t.type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                      }`}
                   >
                     {t.type}
                   </span>
                 </td>
-                <td className="px-6 py-4">Rp {t.price.toLocaleString('id-ID')}</td>
+                <td className="px-6 py-4">{formatCurrency(t.price)}</td>
                 <td className="px-6 py-4">
                   <button
                     onClick={() => onDelete(t.id)}
                     className="rounded bg-red-500 px-3 py-1 font-semibold text-white hover:bg-red-600"
                   >
-                    <Trash />
+                    <Trash size={16} />
                   </button>
                 </td>
-                {/* <td className="px-6 py-4">{t.source}</td> */}
               </tr>
             ))
           )}
         </tbody>
-        <tfoot>
-          <tr className="font-semibold text-gray-900 dark:text-white">
-            <th className="px-6 py-3 text-base">Total Income</th>
-            <td colSpan={3} className="px-6 py-3 text-green-600">
-              Rp {totalIncome.toLocaleString('id-ID')}
-            </td>
-          </tr>
-          <tr className="font-semibold text-gray-900 dark:text-white">
-            <th className="px-6 py-3 text-base">Total Expense</th>
-            <td colSpan={3} className="px-6 py-3 text-red-600">
-              Rp {totalExpense.toLocaleString('id-ID')}
-            </td>
-          </tr>
-          <tr className="font-bold text-gray-900 dark:text-white">
-            <th className="px-6 py-3 text-base">Balance</th>
-            <td colSpan={3} className="px-6 py-3">
-              Rp {balance.toLocaleString('id-ID')}
-            </td>
-          </tr>
-        </tfoot>
       </table>
     </div>
   );
 };
+
 const LockScreen = ({ lockPass, setLockPass }) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
@@ -245,7 +305,6 @@ const LockScreen = ({ lockPass, setLockPass }) => {
             onChange={(e) => setLockPass(e.target.value)}
             className="w-full rounded p-3 pr-10 text-black"
           />
-
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
@@ -254,19 +313,10 @@ const LockScreen = ({ lockPass, setLockPass }) => {
             {showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
           </button>
         </div>
-        <button
-          onClick={() => setLockPass('')}
-          className="flex w-16 items-center justify-center rounded-xl p-1"
-        >
+        <button onClick={() => setLockPass('')} className="flex w-16 items-center justify-center rounded-xl p-1">
           <Rotate3DIcon color="green" size={40} />
         </button>
       </div>
     </div>
   );
 };
-
-function addDays(dateStr, days) {
-  const date = new Date(dateStr);
-  date.setDate(date.getDate() + days);
-  return date.toISOString().split('T')[0]; // format YYYY-MM-DD
-}
