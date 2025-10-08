@@ -85,8 +85,6 @@ export const FinancialReport = () => {
       const tDate = new Date(t.created_at);
       tDate.setHours(tDate.getHours() - 7);
 
-      console.log(tDate);
-
       return tDate >= start && tDate <= end;
     });
   }, [balanjoData, startDate, endDate]);
