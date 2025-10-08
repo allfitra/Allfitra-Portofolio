@@ -77,12 +77,16 @@ export const FinancialReport = () => {
   const filteredData = useMemo(() => {
     if (!startDate || !endDate) return balanjoData;
 
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    end.setHours(23, 59, 59, 999);
+
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T23:59:59`);
 
     return balanjoData.filter((t) => {
       const tDate = new Date(t.created_at);
+      tDate.setHours(tDate.getHours() - 7);
+
+      console.log(tDate);
+
       return tDate >= start && tDate <= end;
     });
   }, [balanjoData, startDate, endDate]);
@@ -163,15 +167,15 @@ export const FinancialReport = () => {
 
             </div>
             <div className="relative">
-            <div className="flex items-center">
-              <input
-                id="show-all-checkbox"
-                type="checkbox"
-                checked={showAllData}
-                onChange={(e) => setShowAllData(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-green-600 focus:ring-2 focus:ring-green-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-green-600"
+              <div className="flex items-center">
+                <input
+                  id="show-all-checkbox"
+                  type="checkbox"
+                  checked={showAllData}
+                  onChange={(e) => setShowAllData(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-green-600 focus:ring-2 focus:ring-green-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-green-600"
                 />
-            </div>
+              </div>
             </div>
           </div>
 
