@@ -10,7 +10,7 @@ const formatCurrency = (amount) => {
 export const FinancialReport = () => {
   const [balanjoData, setBalanjoData] = useState([]);
   const [lockPass, setLockPass] = useState('');
-  const [unlocked, setUnlocked] = useState(true);
+  const [unlocked, setUnlocked] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const getStartDateDefault = () => {
