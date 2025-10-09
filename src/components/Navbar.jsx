@@ -89,9 +89,11 @@ export const Navbar = () => {
                 {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
                 <img className="ml-16 h-[60px]" src={afLogo} alt="Allfitra Logos" />
               </Link>
-              <div className="mt-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text p-2 text-xl font-semibold italic text-transparent drop-shadow-lg">
-                <Link to={'/base'}>Another World</Link>
-              </div>
+              <span className='hidden'>
+                <div className="mt-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text p-2 text-xl font-semibold italic text-transparent drop-shadow-lg">
+                  <Link to={'/world/home'}>Another World</Link>
+                </div>
+              </span>
             </div>
             <div className="mt-2 flex flex-shrink-0 items-center">
               <div className="flex gap-4 space-x-4">
@@ -141,11 +143,13 @@ export const Navbar = () => {
       </nav>
 
       {/* Mobile Navbar */}
-      <Link to={'/base'} className="lg:hidden">
-        <div className="-mt-5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text p-2 px-10 text-xl font-semibold italic text-transparent drop-shadow-lg">
-          <h1>Another World</h1>
-        </div>
-      </Link>
+      <span className='hidden'>
+        <Link to={'/world/home'} className="lg:hidden">
+          <div className="-mt-5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text p-2 px-10 text-xl font-semibold italic text-transparent drop-shadow-lg">
+            <h1>Another World</h1>
+          </div>
+        </Link>
+      </span>
 
       <nav className="mt-50 duration-600 fixed bottom-2 left-0 z-50 w-full bg-none px-3 transition lg:hidden">
         <div className="mb-[-15px] flex justify-center">
@@ -162,11 +166,10 @@ export const Navbar = () => {
           </div>
         </div>
         <div
-          className={`flex justify-center rounded-full border-t border-black pt-2 dark:border-gray-200 ${
-            theme === 'dark'
-              ? 'bg-white bg-opacity-70 text-black'
-              : 'bg-black bg-opacity-70 text-white'
-          }`}
+          className={`flex justify-center rounded-full border-t border-black pt-2 dark:border-gray-200 ${theme === 'dark'
+            ? 'bg-white bg-opacity-70 text-black'
+            : 'bg-black bg-opacity-70 text-white'
+            }`}
         >
           <div className="relative flex h-16 w-full items-center justify-around">
             {location.pathname !== '/anonymous-message' ? (
@@ -187,9 +190,8 @@ export const Navbar = () => {
                     aria-current={item.current ? 'page' : undefined}
                   >
                     <div
-                      className={`rounded-xl p-1 ${
-                        theme === 'dark' ? 'bg-black bg-opacity-50' : 'bg-white bg-opacity-50'
-                      }`}
+                      className={`rounded-xl p-1 ${theme === 'dark' ? 'bg-black bg-opacity-50' : 'bg-white bg-opacity-50'
+                        }`}
                       style={item.current ? backgroundButton[i] : {}}
                     >
                       <img src={item.icon} alt="Icon" width="35" height="35" />

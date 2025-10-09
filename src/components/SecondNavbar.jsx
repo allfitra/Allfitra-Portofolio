@@ -12,11 +12,11 @@ function classNames(...classes) {
 
 export const SecondNavbar = () => {
   const [navigation, setNavigation] = useState([
-    { name: 'Base', href: '/base', current: location.pathname === '/base' },
+    { name: 'Base', href: '/world/home', current: location.pathname === '/home' },
     // { name: 'Blog', href: '/blog', current: location.pathname === '/blog' },
-    { name: 'PitBooth', href: '/pitbooth', current: location.pathname === '/pitbooth' },
-    { name: 'Galery', href: '/galery', current: location.pathname === '/galery' },
-    { name: 'Support Me', href: '/support-me', current: location.pathname === '/support-me' },
+    { name: 'PitBooth', href: '/world/pitbooth', current: location.pathname === '/pitbooth' },
+    { name: 'Galery', href: '/world/galery', current: location.pathname === '/galery' },
+    { name: 'Support Me', href: '/world/support-me', current: location.pathname === '/support-me' },
   ]);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const WebNavbar = ({ navigation }) => {
             <div
               className={`mx-auto h-[60px] w-[2px] ${theme === 'dark' ? 'bg-white' : 'bg-black'}`}
             />
-            <Link to={'/base'} className="flex flex-col justify-center font-mono leading-none">
+            <Link to={'/world/home'} className="flex flex-col justify-center font-mono leading-none">
               <h2 className="text-[35px] tracking-widest">NEW</h2>
               <h3 className="text-[24px]">world</h3>
             </Link>
@@ -137,7 +137,7 @@ const MobileNavbar = ({ navigation }) => {
               <img className="ml-0 mt-1.5 h-[50px] w-[50px] xl:ml-2" src={afLogo} alt="KMM Logos" />
             </Link>
             <div className="mx-auto mt-1.5 h-[50px] w-[2px] bg-gray-300" />
-            <Link to={'/base'} className="flex flex-col justify-center font-mono leading-none">
+            <Link to={'/world/home'} className="flex flex-col justify-center font-mono leading-none">
               <h2 className="text-[35px] tracking-widest">NEW</h2>
               <h3 className="text-[24px]">world</h3>
             </Link>

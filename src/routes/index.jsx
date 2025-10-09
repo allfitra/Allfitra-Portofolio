@@ -29,11 +29,11 @@ export const AppRoutes = () => {
         <Route path="/contact" element={<ContactPage />} />
 
         {/* Second */}
-        <Route path="/base" element={<BasePage />} />
+        <Route path="/world/home" element={<BasePage />} />
         {/* <Route path="/blog" element={<BlogPage />} /> */}
-        <Route path="/pitbooth" element={<Pitbooth />} />
-        <Route path="/galery" element={<MyGalery />} />
-        <Route path="/support-me" element={<SupportMe />} />
+        <Route path="/world/pitbooth" element={<Pitbooth />} />
+        <Route path="/world/galery" element={<MyGalery />} />
+        <Route path="/world/support-me" element={<SupportMe />} />
 
         {/* Extra */}
         <Route path="/anonymous-message" element={<AnonymousPage />} />
