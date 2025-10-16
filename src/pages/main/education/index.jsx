@@ -57,12 +57,12 @@ const EducationCard = ({ education }) => {
     >
       <div className="flex px-6 py-4">
         <img src={education.icon} alt="logo-unj" className="mr-5 h-10 w-10 md:h-20 md:w-20" />
-        <div className="flex w-full flex-col gap-4">
+        <div className="flex w-full flex-col gap-2">
           <div className="flex justify-between gap-1 md:gap-2">
             <div className="text-start">
               <h1 className="text-xs font-bold md:text-2xl">{education.school}</h1>
               <h2 className="text-xs font-semibold md:text-base">{education.degree}</h2>
-              {/* <h2 className="text-xs font-semibold md:text-base">GPA : {education.gpa}</h2> */}
+              <h2 className="text-xs font-semibold md:text-base">GPA : {education.gpa}</h2>
             </div>
             <h3 className="text-xs font-semibold md:text-xl">{education.date}</h3>
           </div>
@@ -70,6 +70,7 @@ const EducationCard = ({ education }) => {
             <div className="flex w-[150px] flex-col text-start text-xs font-semibold md:text-base">
               <h2>Thesis :</h2>
               {/* Icon untuk direct ke link skripsi*/}
+
             </div>
             <h2 className="text-justify text-xs font-semibold italic md:text-base">
               {education.thesis}

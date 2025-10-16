@@ -14,7 +14,10 @@ export const experiences = [
     icon: DnaLogo,
     iconBg: '#CF1050',
     date: 'April 2025 - Present',
-    points: ['Responsible for developing front-end websites using modern frameworks such as Next.js and Nuxt.js, while collaborating closely with designers and engineers to deliver high-quality, responsive user interfaces.'],
+    points: ['Built and optimized responsive web applications using Next.js and Nuxt.js, ensuring fast performance and seamless user experiences.',
+      'Collaborated cross-functionally with designers and backend engineers to translate UI/UX concepts into scalable, maintainable front-end solutions.',
+      'Contributed to the continuous development and optimization of three production websites to improve stability and functionality.'
+    ],
   },
   {
     title: 'IT Developer and Team Support',
@@ -23,10 +26,9 @@ export const experiences = [
     icon: SiemensLogo,
     iconBg: '#f7b908',
     date: 'Jan 2024 - Dec 2024',
-    points: [
-      'Successfully develop several web applications for the ASEAN region using Angular ang .NET Core, leveraging Microsoft SQL Server as the Database. Integrated applications with Azure AD for the authentication and access management.',
-      'Carry out administrative work for the IT division, such as managing Purchase Requisition, Expanse Claims, and Travel Requisition.',
-      'Manage asset management for IT goods, and organize data collection on the use of goods by users.',
+    points: ['Successfully developed and launched multiple full-stack web applications for the ASEAN region, utilizing Angular, .NET Framework, and Microsoft SQL Server. Integrated applications with Azure AD for authentication and access management.',
+      'Managed and streamlined daily administrative workflows for the IT division, including processing purchase requisitions, expense claims, and travel requests.',
+      'Executed comprehensive IT asset management, which involved inventory tracking and detailed data collection on asset utilization by end-users.'
     ],
   },
   {
