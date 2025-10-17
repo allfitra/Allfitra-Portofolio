@@ -19,4 +19,4 @@ export const stackImagesData = [
   },
 ];
 
-export const cvLink = 'https://drive.google.com/file/d/1uKB_4hpSO5MkQK1G3Mu0lTv6NhSpaMVJ/view?usp=sharing';
+export const cvLink = 'https://drive.google.com/file/d/1dOBCCxTBY3w015FhcySWsHxhwooZ12bb/view?usp=sharing';
