@@ -4,16 +4,26 @@ import {
   GifLogo,
   SiemensLogo,
   DnaLogo,
+  MostransLogo,
 } from '@/assets/images/ImagesExperience';
 
 export const experiences = [
   {
+    title: 'Application Developer',
+    company_name: 'PT. Mostrans Global Digiloc',
+    type_job: 'Fulltime',
+    icon: MostransLogo,
+    iconBg: '#f7b908',
+    date: 'Dec 2025 - Present',
+    points: ['On Progress'],
+  },
+  {
     title: 'Frontend Developer',
     company_name: 'PT. Digital Nayaka Abinaya',
-    type_job: 'Fulltime',
+    type_job: 'Contract',
     icon: DnaLogo,
     iconBg: '#CF1050',
-    date: 'April 2025 - Present',
+    date: 'Apr 2025 - Dec 2025',
     points: ['Built and optimized responsive web applications using Next.js and Nuxt.js, ensuring fast performance and seamless user experiences.',
       'Collaborated cross-functionally with designers and backend engineers to translate UI/UX concepts into scalable, maintainable front-end solutions.',
       'Contributed to the continuous development and optimization of three production websites to improve stability and functionality.'
