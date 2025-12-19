@@ -10,13 +10,13 @@ const formatCurrency = (amount) => {
 export const FinancialReport = () => {
   const [balanjoData, setBalanjoData] = useState([]);
   const [lockPass, setLockPass] = useState('');
-  const [unlocked, setUnlocked] = useState(false);
+  const [unlocked, setUnlocked] = useState(sessionStorage.getItem('unlocked') === 'true');
   const [loading, setLoading] = useState(true);
 
   const getStartDateDefault = () => {
     const date = new Date();
     date.setMonth(date.getMonth() - 1);
-    date.setDate(25);
+    date.setDate(28);
     return date.toISOString().split('T')[0];
   };
   const today = new Date().toISOString().split('T')[0];
@@ -39,6 +39,7 @@ export const FinancialReport = () => {
   useEffect(() => {
     if (lockPass === '230701') {
       setUnlocked(true);
+      sessionStorage.setItem('unlocked', true);
     }
   }, [lockPass]);
 
@@ -76,7 +77,6 @@ export const FinancialReport = () => {
 
   const filteredData = useMemo(() => {
     if (!startDate || !endDate) return balanjoData;
-
 
     const start = new Date(`${startDate}T00:00:00`);
     const end = new Date(`${endDate}T23:59:59`);
