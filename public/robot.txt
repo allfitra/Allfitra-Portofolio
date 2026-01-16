@@ -1,0 +1,6 @@
+# Izinkan semua robot pencari (Google, Bing, dll) untuk masuk
+User-agent: *
+Allow: /
+
+# Beri tahu Google di mana peta situs (sitemap) Anda berada
+Sitemap: https://allfitra-fadjri.my.id/sitemap.xml
