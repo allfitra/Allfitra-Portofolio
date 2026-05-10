@@ -168,7 +168,7 @@ function SosmedIcon() {
     },
   ];
   return (
-    <div className="relative z-20">
+    <div className="relative z-20 mb-10 md:mb-0">
       <GlassIcons items={items} />
     </div>
   );

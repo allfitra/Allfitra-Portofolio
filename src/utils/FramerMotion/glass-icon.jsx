@@ -17,7 +17,7 @@ const GlassIcons = ({ items, className }) => {
 
   return (
     <div
-      className={`grid grid-cols-3 overflow-visible py-[1em] md:grid-cols-5 ${className || ''
+      className={`grid grid-cols-4 md:grid-cols-5 overflow-visible py-[1em] ${className || ''
         }`}
     >
       {items.map((item, index) => (
