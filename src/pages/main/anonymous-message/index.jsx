@@ -140,7 +140,7 @@ const MessageBox = ({ theme }) => {
             name="message"
             value={message}
             onChange={handleMessageChange}
-            placeholder="Type your message here..."
+            placeholder="Type your message here... (minimal 3 kata)"
             className="w-full h-full min-h-[160px] rounded-xl p-4 focus:outline-none focus:ring-2 transition-all duration-300 resize-none"
             style={{
               background: 'rgba(255,255,255,0.03)',
@@ -165,8 +165,12 @@ const MessageBox = ({ theme }) => {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
           </button>
 
-          <p className="text-xs text-center font-medium mt-2" style={{ color: 'var(--text-tertiary)' }}>
+          <p className="text-xs text-center font-medium mt-2 leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
             <span className="text-[var(--accent-pink)]">🔒</span> Identitas pengirim sepenuhnya anonim.
+            <br />
+            <span className="opacity-60 italic">
+              Masukkan nomor/email jika ada pertanyaan yang butuh untuk dijawab.
+            </span>
           </p>
         </div>
       </form>
@@ -174,31 +178,133 @@ const MessageBox = ({ theme }) => {
   );
 };
 
+// ============================================================
+// ✏️ EDIT STATUS SAYA DI SINI — ubah sesuai mood/aktivitas mu!
+// ============================================================
+const myStatus = {
+  isOnline: true,
+  activity: 'Vibe coding bareng lagu kesukaan 🎵',
+  vibe: 'Butuh Support Sistem',
+  battery: {
+    label: 'Social Battery',
+    level: 23,
+    icon: '🔋',
+    text: 'Survival Mode',
+  },
+  note: 'Isi pesannya siapa tau bisa ngebantu — dihujat pun tak masalah. 🙌',
+};
+// ============================================================
+
 const HaveFunBox = () => {
+  const { battery } = myStatus;
   return (
-    <div className="hidden lg:flex card-panel relative overflow-hidden w-full h-full min-h-[400px] items-center justify-center p-6 group">
+    <div className="hidden lg:flex card-panel relative overflow-hidden w-full h-full min-h-[400px] flex-col justify-between p-8 group">
 
-      {/* Dynamic Background Overlay */}
-      <div
-        className="absolute inset-0 z-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500 bg-cover bg-center"
-        style={{ backgroundImage: `url(${comingSoonBackground})` }}
-      />
-      <div className="absolute inset-0 z-10" style={{ background: 'linear-gradient(to top, var(--card-bg) 10%, transparent 90%)' }}></div>
-      <div className="absolute inset-0 z-10" style={{ background: 'linear-gradient(to right, var(--card-bg) 5%, transparent 50%)' }}></div>
+      {/* Decorative glow blobs */}
+      <div className="absolute top-0 right-0 w-48 h-48 rounded-full pointer-events-none opacity-10"
+        style={{ background: 'var(--accent-cyan)', filter: 'blur(60px)' }} />
+      <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full pointer-events-none opacity-10"
+        style={{ background: 'var(--accent-purple)', filter: 'blur(60px)' }} />
 
-      <div className="relative z-20 flex flex-col items-center justify-center text-center">
-        <h2 className="text-3xl font-black mb-2 opacity-50 transition-opacity duration-300 group-hover:opacity-100" style={{ color: 'var(--text-primary)' }}>
-          Coming Soon
+      {/* Header */}
+      <div className="relative z-10">
+        <div className="flex items-center gap-2 mb-1">
+          {/* Live indicator */}
+          <span className="relative flex h-3 w-3">
+            <span
+              className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${myStatus.isOnline ? 'bg-emerald-400' : 'bg-gray-500'}`}
+            />
+            <span
+              className={`relative inline-flex rounded-full h-3 w-3 ${myStatus.isOnline ? 'bg-emerald-500' : 'bg-gray-600'}`}
+            />
+          </span>
+          <span className="text-xs font-mono font-bold tracking-wider uppercase"
+            style={{ color: myStatus.isOnline ? '#34d399' : 'var(--text-tertiary)' }}>
+            {myStatus.isOnline ? 'Online' : 'Offline'}
+          </span>
+        </div>
+        <h2 className="text-2xl font-black" style={{ color: 'var(--text-primary)' }}>
+          Status <span style={{ color: 'var(--accent-cyan)' }}>Saya</span>
         </h2>
-        <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>More interactive features are on the way.</p>
+        <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+          Diupdate secara manual — tergantung mood
+        </p>
       </div>
 
-      <div className="absolute bottom-0 left-4 z-20 transition-transform duration-500 group-hover:-translate-y-2">
-        <img className="w-[140px] md:w-[170px] drop-shadow-2xl" src={catKnitting} alt="Meoww" />
+      {/* Status cards */}
+      <div className="relative z-10 flex flex-col gap-3">
+
+        {/* Activity */}
+        <div className="flex items-start gap-3 p-4 rounded-xl border"
+          style={{ background: 'rgba(0,240,255,0.04)', borderColor: 'rgba(0,240,255,0.15)' }}>
+          <span className="text-xl mt-0.5">🎧</span>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'var(--accent-cyan)' }}>
+              Lagi ngapain
+            </p>
+            <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+              {myStatus.activity}
+            </p>
+          </div>
+        </div>
+
+        {/* Vibe */}
+        <div className="flex items-start gap-3 p-4 rounded-xl border"
+          style={{ background: 'rgba(167,139,250,0.04)', borderColor: 'rgba(167,139,250,0.15)' }}>
+          <span className="text-xl mt-0.5">✨</span>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'var(--accent-purple)' }}>
+              Vibe hari ini
+            </p>
+            <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+              {myStatus.vibe}
+            </p>
+          </div>
+        </div>
+
+        {/* Social Battery */}
+        <div className="flex items-start gap-3 p-4 rounded-xl border"
+          style={{ background: 'rgba(236,72,153,0.04)', borderColor: 'rgba(236,72,153,0.15)' }}>
+          <span className="text-xl mt-0.5">{battery.icon}</span>
+          <div className="flex flex-col flex-1 gap-1">
+            <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'var(--accent-pink)' }}>
+              {battery.label}
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                <div
+                  className="h-full rounded-full transition-all duration-700"
+                  style={{
+                    width: `${battery.level}%`,
+                    background: battery.level <= 20
+                      ? 'var(--accent-pink)'
+                      : battery.level <= 50
+                        ? '#f59e0b'
+                        : 'var(--accent-cyan)',
+                  }}
+                />
+              </div>
+              <span className="text-xs font-mono font-bold" style={{ color: 'var(--accent-pink)' }}>
+                {battery.level}%
+              </span>
+            </div>
+            <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+              {battery.text}
+            </p>
+            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+              {battery.sub}
+            </p>
+          </div>
+        </div>
+
       </div>
 
-      <div className="absolute bottom-0 right-[-1rem] z-20 transition-transform duration-500 group-hover:-translate-x-4">
-        <img className="w-[160px] md:w-[200px] drop-shadow-2xl" src={waitingAvatar} alt="Help me" />
+      {/* Footer note */}
+      <div className="relative z-10 p-4 rounded-xl text-center border border-dashed"
+        style={{ borderColor: 'var(--glass-border)' }}>
+        <p className="text-sm italic" style={{ color: 'var(--text-secondary)' }}>
+          "{myStatus.note}"
+        </p>
       </div>
 
     </div>

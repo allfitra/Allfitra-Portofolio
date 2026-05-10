@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Photo } from '@/assets/images/ImagesHome';
 import { MainLayout } from '@/components/Layouts';
 import { GithubIcon, InstagramIcon, LinkedinIcon, MailsIcon, TwitterIcon } from 'lucide-react';
@@ -11,7 +12,7 @@ import GlassIcons from '@/utils/FramerMotion/glass-icon';
 export const HomePage = () => {
   return (
     <MainLayout title="Home">
-      <div className="flex flex-col-reverse md:flex-row items-center justify-center gap-10 md:gap-16 min-h-[75vh] fade-in-up">
+      <div className="flex flex-col-reverse md:flex-row items-center justify-center gap-10 md:gap-24 min-h-[75vh] fade-in-up">
 
         {/* Text Content */}
         <div className="flex flex-col gap-5 max-w-xl z-10 text-center md:text-left px-4">
@@ -49,29 +50,79 @@ export const HomePage = () => {
           <SosmedIcon />
         </div>
 
-        {/* Profile Visual — CSS animated spinning border, no GPU lag */}
-        <div className="relative flex items-center justify-center w-[280px] h-[280px] md:w-[400px] md:h-[400px] flex-shrink-0 group">
+        {/* Profile Visual with Decorative Rings and Badges */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="relative flex items-center justify-center mt-10 md:mt-0 flex-shrink-0"
+        >
+          <div className="relative w-[280px] h-[280px] md:w-[300px] md:h-[300px]">
+            {/* Outer glow container */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[var(--accent-purple)] to-[var(--accent-cyan)] opacity-20 blur-2xl transition-opacity duration-500 group-hover:opacity-30"></div>
 
-          {/* Outer glow container */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[var(--accent-purple)] to-[var(--accent-cyan)] opacity-20 blur-2xl group-hover:opacity-30 transition-opacity duration-500"></div>
+            {/* Decorative rings */}
+            <div className="absolute inset-0 -m-6 md:-m-10">
+              <div
+                className="absolute inset-0 rounded-full border border-[var(--accent-cyan)] opacity-20 animate-spin-slow"
+                style={{ animationDuration: '20s' }}
+              />
+              <div
+                className="absolute inset-3 md:inset-5 rounded-full border border-[var(--accent-purple)] opacity-30 animate-spin-slow"
+                style={{ animationDuration: '15s', animationDirection: 'reverse' }}
+              />
+              <div
+                className="absolute inset-6 md:inset-10 rounded-full border border-[var(--accent-pink)] opacity-40"
+              />
+            </div>
 
-          {/* Spinning gradient border */}
-          <div className="absolute inset-0 rounded-full overflow-hidden p-1 shadow-[0_0_30px_rgba(0,240,255,0.2)]">
-            <div
-              className="absolute inset-[-50%] w-[200%] h-[200%] animate-spin-slow"
-              style={{
-                background: 'conic-gradient(from 0deg, transparent 0%, var(--accent-purple) 25%, var(--accent-pink) 50%, var(--accent-cyan) 75%, transparent 100%)'
-              }}
-            />
-            {/* Inner background blocking the center */}
-            <div className="absolute inset-1 rounded-full z-10" style={{ background: 'var(--bg-primary)' }}></div>
+            {/* Spinning gradient border around image */}
+            <div className="absolute inset-0 z-10 rounded-full overflow-hidden p-1 shadow-[0_0_30px_rgba(0,240,255,0.2)]">
+              <div
+                className="absolute inset-[-50%] w-[200%] h-[200%] animate-spin-slow"
+                style={{
+                  background: 'conic-gradient(from 0deg, transparent 0%, var(--accent-purple) 25%, var(--accent-pink) 50%, var(--accent-cyan) 75%, transparent 100%)',
+                  animationDuration: '6s'
+                }}
+              />
+              {/* Inner background blocking the center */}
+              <div className="absolute inset-1 rounded-full z-10" style={{ background: 'var(--bg-primary)' }}></div>
+            </div>
+
+            {/* Profile image */}
+            <div className="relative z-20 w-full h-full rounded-full flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform duration-500 p-1">
+              <img className="w-full h-full rounded-full object-cover scale-[1.3] md:scale-[1.4] translate-y-4 relative z-30" src={Photo} alt="Alfitra Fadjri" />
+            </div>
+
+            {/* Floating badges */}
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -top-4 -right-1 md:-top-4 md:-right-10 px-3 py-1.5 md:px-4 md:py-2 rounded-xl border shadow-lg z-30"
+              style={{ background: 'var(--card-bg)', borderColor: 'var(--glass-border)' }}
+            >
+              <span className="text-xs md:text-sm font-mono font-bold" style={{ color: 'var(--accent-cyan)' }}>People Person 🤝</span>
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              className="absolute -bottom-2 -left-2 md:-bottom-4 md:-left-4 px-3 py-1.5 md:px-4 md:py-2 rounded-xl border shadow-lg z-30"
+              style={{ background: 'var(--card-bg)', borderColor: 'var(--glass-border)' }}
+            >
+              <span className="text-xs md:text-sm font-mono font-bold" style={{ color: 'var(--accent-purple)' }}>Code & Coffee ☕</span>
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              className="absolute top-1/2 -right-10 md:-right-32 px-3 py-1.5 md:px-4 md:py-2 rounded-xl border shadow-lg z-30 transform -translate-y-1/2"
+              style={{ background: 'var(--card-bg)', borderColor: 'var(--glass-border)' }}
+            >
+              <span className="text-xs md:text-sm font-mono font-bold" style={{ color: 'var(--accent-pink)' }}>Always Learning ✨</span>
+            </motion.div>
           </div>
-
-          {/* Profile image */}
-          <div className="relative z-20 w-[92%] h-[92%] rounded-full overflow-hidden border-2 border-[var(--glass-border)] group-hover:scale-105 transition-transform duration-500">
-            <img className="w-full h-full object-cover" src={Photo} alt="Alfitra Fadjri" />
-          </div>
-        </div>
+        </motion.div>
 
       </div>
     </MainLayout>
