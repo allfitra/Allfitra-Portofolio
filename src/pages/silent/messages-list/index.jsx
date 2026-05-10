@@ -15,7 +15,7 @@ export const MessagesListPage = () => {
           username: username,
           message: message,
           createdAt: createdAt,
-        }));
+        })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setMessagesData(mappedMessages); // Menyimpan data yang sudah dipetakan
 
         // setLoading(false); // Mengubah status loading
