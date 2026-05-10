@@ -17,9 +17,8 @@ const GlassIcons = ({ items, className }) => {
 
   return (
     <div
-      className={`grid grid-cols-3 gap-[2em] overflow-visible py-[1em] md:grid-cols-3 md:gap-[4em] ${
-        className || ''
-      }`}
+      className={`grid grid-cols-3 overflow-visible py-[1em] md:grid-cols-5 ${className || ''
+        }`}
     >
       {items.map((item, index) => (
         <button
@@ -27,9 +26,8 @@ const GlassIcons = ({ items, className }) => {
           onClick={() => window.open(item.link)}
           type="button"
           aria-label={item.label}
-          className={`group relative bg-transparent outline-none [-webkit-tap-highlight-color:transparent] [perspective:24em] [transform-style:preserve-3d] ${
-            item.customClass || ''
-          }`}
+          className={`group relative bg-transparent outline-none [-webkit-tap-highlight-color:transparent] [perspective:24em] [transform-style:preserve-3d] ${item.customClass || ''
+            }`}
         >
           {/* Back layer */}
           <span

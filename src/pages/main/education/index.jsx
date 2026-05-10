@@ -1,102 +1,121 @@
 import { MainLayout } from '@/components/Layouts';
-import { Fade, Zoom } from 'react-awesome-reveal';
 import { educations } from './data/database';
-import { useTheme } from '@/utils/themeContext';
 import { graduateAvatar } from '@/assets/Content';
 
 export const EducationPage = () => {
-  const { theme } = useTheme();
   return (
     <MainLayout title="Education">
-      <div className="row mb-16 mt-5 flex flex-col justify-center md:flex-row">
-        <div className="flex justify-center md:mt-6">
+      <div className="flex flex-col lg:flex-row items-start justify-center gap-5 md:pt-10 fade-in-up">
+
+        {/* Sticky Visual */}
+        <div className="relative hidden md:block lg:sticky lg:top-40 flex-shrink-0 flex justify-center">
+          {/* <div
+            className="rounded-3xl p-5"
+            style={{ background: 'var(--card-bg)', border: '1px solid var(--glass-border)' }}
+          > */}
           <img
             src={graduateAvatar}
-            alt="img-graduation"
-            className="max-h-52 md:max-h-[400px] md:w-full"
+            alt="Graduate"
+            className="w-56 md:w-72"
           />
+          {/* </div> */}
         </div>
-        <div className="first-letter flex flex-col items-center gap-14 px-8 text-center">
-          <div>
-            <Fade direction="down">
-              <h1 className="text-5xl font-bold">Education.</h1>
-            </Fade>
-            <hr
-              className="mt-2"
-              style={
-                theme === 'dark'
-                  ? { borderColor: '#fff', borderWidth: '1.5px' }
-                  : { borderColor: '#000', borderWidth: '1.5px' }
-              }
-            />
+
+        {/* Content */}
+        <div className="flex flex-col w-full max-w-2xl mb-10 md:mb-5">
+          <div className="mb-10">
+            <h1 className="text-5xl md:text-6xl font-black mb-3">
+              My <span className="text-gradient-cyan">Education</span>.
+            </h1>
+            <p className="text-lg text-center md:text-start" style={{ color: 'var(--text-secondary)' }}>
+              Academic background and degrees achieved.
+            </p>
           </div>
-          <div className="-mx-12 md:mx-0">
-            <h2 className="mb-5 ml-3 text-left text-3xl font-bold md:-mt-5 md:ml-0">
-              Degrees Received
-            </h2>
-            <Zoom>
-              <div className="flex flex-col gap-8">
-                {educations.map((education, index) => (
-                  <EducationCard key={index} education={education} />
-                ))}
-              </div>
-            </Zoom>
+
+          <div className="flex flex-col gap-6">
+            {educations.map((education, index) => (
+              <EducationCard key={index} education={education} />
+            ))}
           </div>
         </div>
+
       </div>
     </MainLayout>
   );
 };
 
 const EducationCard = ({ education }) => {
-  const { theme } = useTheme();
   return (
-    <div
-      className=" max-w-[700px] rounded-xl bg-[#ff2f6dcb] shadow-md shadow-[#ff2f6dcb] hover:shadow-lg hover:shadow-[#ff2f6dcb]"
-      style={{ color: theme === 'dark' ? '#fff' : '#000' }}
-    >
-      <div className="flex px-6 py-4">
-        <img src={education.icon} alt="logo-unj" className="mr-5 h-10 w-10 md:h-20 md:w-20" />
-        <div className="flex w-full flex-col gap-2">
-          <div className="flex justify-between gap-1 md:gap-2">
-            <div className="text-start">
-              <h1 className="text-xs font-bold md:text-2xl">{education.school}</h1>
-              <h2 className="text-xs font-semibold md:text-base">{education.degree}</h2>
-              <h2 className="text-xs font-semibold md:text-base">GPA : {education.gpa}</h2>
-            </div>
-            <h3 className="text-xs font-semibold md:text-xl">{education.date}</h3>
-          </div>
-          <div className="-mt-2 flex flex-row">
-            <div className="flex w-[150px] flex-col text-start text-xs font-semibold md:text-base">
-              <h2>Thesis :</h2>
-              {/* Icon untuk direct ke link skripsi*/}
+    <div className="card-panel hover-glow p-6 md:p-8 group">
+      <div className="flex flex-col md:flex-row gap-5 items-start relative z-10">
 
-            </div>
-            <h2 className="text-justify text-xs font-semibold italic md:text-base">
-              {education.thesis}
+        {/* Logo */}
+        <div
+          className="p-3 rounded-2xl flex-shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3"
+          style={{ background: 'rgba(157,78,221,0.1)', border: '1px solid rgba(157,78,221,0.2)' }}
+        >
+          <img src={education.icon} alt="school-logo" className="h-14 w-14 object-contain" />
+        </div>
+
+        {/* Info */}
+        <div className="flex flex-col w-full gap-2">
+          <div className="flex flex-wrap justify-between items-start gap-2">
+            <h2 className="text-xl font-bold transition-colors duration-300 group-hover:text-[var(--accent-cyan)]" style={{ color: 'var(--text-primary)' }}>
+              {education.school}
             </h2>
+            <span
+              className="text-xs font-semibold px-3 py-1 rounded-full shadow-[0_0_15px_rgba(0,240,255,0.15)]"
+              style={{ background: 'rgba(0,240,255,0.1)', color: 'var(--accent-cyan)', border: '1px solid rgba(0,240,255,0.2)' }}
+            >
+              {education.date}
+            </span>
+          </div>
+
+          <p className="text-base font-medium" style={{ color: 'var(--text-secondary)' }}>
+            {education.degree}
+          </p>
+          <p className="text-sm font-bold" style={{ color: 'var(--accent-purple)' }}>
+            GPA: {education.gpa}
+          </p>
+
+          {education.thesis && (
+            <div
+              className="mt-3 p-4 rounded-xl"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)' }}
+            >
+              <span
+                className="text-xs uppercase tracking-widest font-bold block mb-2"
+                style={{ color: 'var(--text-tertiary)' }}
+              >
+                Thesis
+              </span>
+              <p className="text-sm italic leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                "{education.thesis}"
+              </p>
+            </div>
+          )}
+
+          <div className="mt-4 flex justify-end">
+            <a
+              href="https://unj.ac.id/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-semibold px-5 py-2 rounded-full transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(157,78,221,0.3)]"
+              style={{
+                background: 'rgba(157,78,221,0.1)',
+                color: 'var(--accent-purple)',
+                border: '1px solid rgba(157,78,221,0.25)',
+              }}
+            >
+              Visit Website →
+            </a>
           </div>
         </div>
-      </div>
-      <div
-        className="rounded-b-xl p-5 text-right "
-        style={{ backgroundColor: theme === 'dark' ? '#000' : '#303030' }}
-      >
-        <button className="rounded-md bg-[#ff2f6dcb] px-10 py-3 opacity-90 hover:opacity-100">
-          <a
-            href="https://unj.ac.id/"
-            target="_blank"
-            rel="noreferrer"
-            className="text-xl font-semibold"
-          >
-            Visit Website
-          </a>
-        </button>
+
       </div>
     </div>
   );
 };
 
-export const CertificateCard = () => {
-  return <></>;
-};
+
+export const CertificateCard = () => null;

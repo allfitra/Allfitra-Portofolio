@@ -1,259 +1,144 @@
 import { useEffect, useState } from 'react';
-
 import { MoonIcon, SunIcon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { themes } from '@/utils/theme';
 import { useTheme } from '@/utils/themeContext';
-import {
-  sendMessageIconLight,
-  sendMessageIconDark,
-  logoName,
-  homeIcon,
-  educationIcon,
-  experienceIcon,
-  projectIcon,
-  contactIcon,
-  afLogo,
-} from '@/assets/Content';
-import { catKnitting, waitingAvatar } from '@/assets/Other';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import { motion } from 'framer-motion';
+import { afLogo } from '@/assets/Content';
 
 export const Navbar = () => {
   const location = useLocation();
-  const [isHovered, setIsHovered] = useState(null);
-  const [navigation, setNavigation] = useState([
-    { name: 'Home', href: '/', current: location.pathname === '/', icon: homeIcon },
-    {
-      name: 'Education',
-      href: '/education',
-      current: location.pathname === '/education',
-      icon: educationIcon,
-    },
-    {
-      name: 'Experience',
-      href: '/experience',
-      current: location.pathname === '/experience',
-      icon: experienceIcon,
-    },
-    {
-      name: 'Project',
-      href: '/project',
-      current: location.pathname === '/project',
-      icon: projectIcon,
-    },
-    {
-      name: 'Contact',
-      href: '/contact',
-      current: location.pathname === '/contact',
-      icon: contactIcon,
-    },
-    // {
-    //   name: 'Message',
-    //   href: '/anonymous-message',
-    //   current: location.pathname === '/anonymous-message',
-    //   icon: contactIcon,
-    // },
-  ]);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const { pathname } = useLocation();
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'Education', href: '/education' },
+    { name: 'Experience', href: '/experience' },
+    { name: 'Project', href: '/project' },
+    { name: 'Contact', href: '/contact' },
+  ];
+
   const { theme, changeTheme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
-    window.scrollTo(1, 0);
-  }, [pathname]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [location.pathname]);
 
   useEffect(() => {
-    const updatedNavigation = navigation.map((item) => ({
-      ...item,
-      current: location.pathname === item.href,
-    }));
-    setNavigation(updatedNavigation);
-  }, [location]);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <>
-      {location.pathname !== '/anonymous-message' && <SendAnonymousMessage />}
-
-      {/* Web Navbar */}
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none">
       <nav
-        className={`duration-600 container fixed top-0 z-20 hidden h-[100px] max-w-none bg-[#1D1D1D] px-6 pt-7 transition lg:block`}
-        style={theme === 'dark' ? themes.dark : themes.light}
+        className="glass-pill flex items-center px-4 py-2 pointer-events-auto gap-4 md:gap-8 transition-all duration-300"
+        style={{
+          background: isScrolled
+            ? (isDark ? '#17171d' : '#ffffff')
+            : (isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)'),
+          borderColor: isScrolled
+            ? (isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)')
+            : (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'),
+          boxShadow: isScrolled ? '0 8px 32px rgba(0,0,0,0.4)' : '0 4px 20px rgba(0,0,0,0.25)',
+        }}
       >
-        <div className="flex justify-center">
-          <div className="h-30 relative flex w-full max-w-7xl items-center justify-between px-14">
-            <div className="flex items-center gap-10">
-              <Link to={'/'}>
-                {/* <h1 className="font-heading text-3xl font-bold md:ml-10">*Allfitra</h1> */}
-                <img className="ml-16 h-[60px]" src={afLogo} alt="Allfitra Logos" />
-              </Link>
-              <span className='hidden'>
-                <div className="mt-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text p-2 text-xl font-semibold italic text-transparent drop-shadow-lg">
-                  <Link to={'/world/home'}>Another World</Link>
-                </div>
-              </span>
-            </div>
-            <div className="mt-2 flex flex-shrink-0 items-center">
-              <div className="flex gap-4 space-x-4">
-                {location.pathname !== '/anonymous-message' &&
-                  navigation.map((item, i) => (
-                    <div
-                      key={item.name}
-                      style={isHovered === i || item.current ? backgroundButton[i] : {}}
-                      className="rounded p-1.5 transition duration-300 ease-in-out"
-                      onMouseEnter={() => setIsHovered(i)}
-                      onMouseLeave={() => setIsHovered(null)}
-                    >
-                      <Link
-                        key={item.name}
-                        to={item.href}
-                        className={classNames(
-                          item.current && 'font-bold',
-                          'rounded-md px-2 py-2 font-heading text-base '
-                        )}
-                        aria-current={item.current ? 'page' : undefined}
-                      >
-                        {item.name}
-                      </Link>
-                    </div>
-                  ))}
-                {theme === 'dark' ? (
-                  <button
-                    onClick={changeTheme}
-                    className="rounded-full p-1.5 pr-12 transition duration-300"
-                    style={{ backgroundColor: '#333' }}
-                  >
-                    <MoonIcon />
-                  </button>
-                ) : (
-                  <button
-                    onClick={changeTheme}
-                    className="translate-x-5 rounded-full p-1.5 pl-12 transition duration-300"
-                    style={{ backgroundColor: '#ccc' }}
-                  >
-                    <SunIcon color="black" />
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile Navbar */}
-      <span className='hidden'>
-        <Link to={'/world/home'} className="lg:hidden">
-          <div className="-mt-5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text p-2 px-10 text-xl font-semibold italic text-transparent drop-shadow-lg">
-            <h1>Another World</h1>
-          </div>
+        <Link to="/" className="flex items-center justify-center pl-2 pr-4">
+          <img className="h-8 w-auto md:h-10 transition-transform duration-300 hover:scale-110" src={afLogo} alt="Allfitra" />
         </Link>
-      </span>
 
-      <nav className="mt-50 duration-600 fixed bottom-2 left-0 z-50 w-full bg-none px-3 transition lg:hidden">
-        <div className="mb-[-15px] flex justify-center">
-          <div>
-            <button
-              onClick={changeTheme}
-              className={classNames(
-                'rounded-full p-3 transition-transform duration-500',
-                theme === 'dark' ? 'rotate-0 bg-[#333]' : 'rotate-180 bg-[#ccc]'
-              )}
-            >
-              {theme === 'dark' ? <MoonIcon /> : <SunIcon color="black" />}
-            </button>
-          </div>
+        <div className="hidden md:flex items-center gap-2 relative">
+          {navigation.map((item, index) => {
+            const isActive = location.pathname === item.href;
+            const activeColor = isDark ? 'white' : '#1a1a2e';
+            const inactiveColor = 'var(--text-secondary)';
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                className="relative px-4 py-2 text-sm font-medium transition-colors duration-300 rounded-full"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                style={{ color: isActive || hoveredIndex === index ? activeColor : inactiveColor }}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="navbar-active"
+                    className="absolute inset-0 rounded-full"
+                    style={{ background: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)' }}
+                    transition={{ type: "spring", bounce: 0.25, stiffness: 130, damping: 9, duration: 0.3 }}
+                  />
+                )}
+                {hoveredIndex === index && !isActive && (
+                  <motion.div
+                    layoutId="navbar-hover"
+                    className="absolute inset-0 rounded-full"
+                    style={{ background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' }}
+                    transition={{ type: "spring", bounce: 0.25, stiffness: 130, damping: 9, duration: 0.3 }}
+                  />
+                )}
+                <span className="relative z-10">{item.name}</span>
+              </Link>
+            );
+          })}
         </div>
-        <div
-          className={`flex justify-center rounded-full border-t border-black pt-2 dark:border-gray-200 ${theme === 'dark'
-            ? 'bg-white bg-opacity-70 text-black'
-            : 'bg-black bg-opacity-70 text-white'
-            }`}
-        >
-          <div className="relative flex h-16 w-full items-center justify-around">
-            {location.pathname !== '/anonymous-message' ? (
-              navigation.map((item, i) => (
-                <div
-                  key={item.name}
-                  className="rounded-full p-1 transition duration-300 ease-in-out"
-                  onMouseEnter={() => setIsHovered(i)}
-                  onMouseLeave={() => setIsHovered(null)}
-                >
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={classNames(
-                      item.current && 'font-bold',
-                      'rounded-full px-2 py-2 font-heading text-base'
-                    )}
-                    aria-current={item.current ? 'page' : undefined}
-                  >
-                    <div
-                      className={`rounded-xl p-1 ${theme === 'dark' ? 'bg-black bg-opacity-50' : 'bg-white bg-opacity-50'
-                        }`}
-                      style={item.current ? backgroundButton[i] : {}}
-                    >
-                      <img src={item.icon} alt="Icon" width="35" height="35" />
-                    </div>
-                  </Link>
-                </div>
-              ))
-            ) : (
-              <>
-                {/* <Link to={'/'}> */}
-                <img className="h-[50px]" src={afLogo} alt="Allfitra Logos" />
-                {/* </Link> */}
 
-                <div className="absolute -bottom-[2px] left-1">
-                  <img className="w-[120px]" src={catKnitting} alt="Meoww" />
-                </div>
-                <div className="absolute -right-7 bottom-0">
-                  <img className="w-[150px]" src={waitingAvatar} alt="Help me!!" />
-                </div>
-              </>
-            )}
-          </div>
+        <div className="flex items-center justify-center pl-2">
+          <button
+            onClick={changeTheme}
+            className="p-2 rounded-full transition-all duration-300"
+            style={{
+              background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+              color: isDark ? '#f0f0ff' : '#1a1a2e',
+            }}
+            aria-label="Toggle Theme"
+          >
+            {isDark ? <MoonIcon size={20} /> : <SunIcon size={20} />}
+          </button>
         </div>
       </nav>
-    </>
-  );
-};
 
-const SendAnonymousMessage = () => {
-  const { theme } = useTheme();
-  return (
-    <div className="fixed bottom-4 right-6 z-50 mb-[80px] cursor-pointer lg:mb-0">
-      <Link to={'/anonymous-message'}>
-        <img
-          className="w-[65px] animate-flip md:w-[90px]"
-          src={theme === 'dark' ? sendMessageIconDark : sendMessageIconLight}
-          alt="Send Message"
-        />
-      </Link>
+      {/* Mobile Bottom Nav */}
+      <nav
+        className="glass-pill fixed bottom-6 left-1/2 -translate-x-1/2 md:hidden flex items-center px-2 py-2 pointer-events-auto gap-1 z-50"
+        style={{
+          background: isDark ? 'rgba(15,15,18,0.88)' : 'rgba(240,240,245,0.90)',
+          borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+        }}
+      >
+        {navigation.map((item) => {
+          const isActive = location.pathname === item.href;
+          return (
+            <Link
+              key={item.name}
+              to={item.href}
+              className="px-3 py-2 rounded-full text-xs font-medium transition-all duration-300"
+              style={{
+                background: isActive ? (isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)') : 'transparent',
+                color: isActive ? (isDark ? 'white' : '#1a1a2e') : 'var(--text-secondary)',
+              }}
+            >
+              {item.name}
+            </Link>
+          );
+        })}
+
+        {/* <button
+          onClick={changeTheme}
+          className="ml-2 p-2 rounded-full transition-all duration-300"
+          style={{
+            background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+            color: isDark ? '#f0f0ff' : '#1a1a2e',
+          }}
+          aria-label="Toggle Theme"
+        >
+          {isDark ? <MoonIcon size={16} /> : <SunIcon size={16} />}
+        </button> */}
+      </nav>
     </div>
   );
 };
-
-const backgroundButton = [
-  {
-    boxShadow: '0 2px 10px #2ab0ee',
-    backgroundColor: '#2ab0ee',
-  },
-  {
-    boxShadow: '0 2px 10px #eb6559',
-    backgroundColor: '#eb6559',
-  },
-  {
-    boxShadow: '0 2px 10px #f7b908',
-    backgroundColor: '#f7b908',
-  },
-  {
-    boxShadow: '0 2px 10px #e44160',
-    backgroundColor: '#e44160',
-  },
-  {
-    boxShadow: '0 1px 10px #47a148',
-    backgroundColor: '#47a148',
-  },
-];

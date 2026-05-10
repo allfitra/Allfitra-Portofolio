@@ -15,7 +15,13 @@ export const experiences = [
     icon: MostransLogo,
     iconBg: '#f7b908',
     date: 'Dec 2025 - Present',
-    points: ['On Progress'],
+    website: 'https://mostrans.co.id/CompanyProfile/',
+    points: [
+      'Design and develop scalable full-stack web applications for logistics solutions, utilizing React for dynamic user interfaces and Node.js for robust backend services.',
+      'Architect and implement efficient APIs using GraphQL, optimizing data querying and mutation to significantly reduce over-fetching and improve application performance.',
+      'Integrate front-end components seamlessly with backend architectures, ensuring secure data flow, efficient state management, and an optimal user experience.',
+      'Collaborate closely with cross-functional teams to gather requirements, troubleshoot complex technical issues, and deliver continuous feature enhancements'
+    ],
   },
   {
     title: 'Frontend Developer',
@@ -24,6 +30,7 @@ export const experiences = [
     icon: DnaLogo,
     iconBg: '#CF1050',
     date: 'Apr 2025 - Dec 2025',
+    website: 'https://digitalnayaka.com/',
     points: ['Built and optimized responsive web applications using Next.js and Nuxt.js, ensuring fast performance and seamless user experiences.',
       'Collaborated cross-functionally with designers and backend engineers to translate UI/UX concepts into scalable, maintainable front-end solutions.',
       'Contributed to the continuous development and optimization of three production websites to improve stability and functionality.'
@@ -36,22 +43,10 @@ export const experiences = [
     icon: SiemensLogo,
     iconBg: '#f7b908',
     date: 'Jan 2024 - Dec 2024',
+    website: 'https://www.siemens.com/en-us/',
     points: ['Successfully developed and launched multiple full-stack web applications for the ASEAN region, utilizing Angular, .NET Framework, and Microsoft SQL Server. Integrated applications with Azure AD for authentication and access management.',
       'Managed and streamlined daily administrative workflows for the IT division, including processing purchase requisitions, expense claims, and travel requests.',
       'Executed comprehensive IT asset management, which involved inventory tracking and detailed data collection on asset utilization by end-users.'
-    ],
-  },
-  {
-    title: 'Frontend Engineer',
-    company_name: 'Alterra Academy',
-    type_job: 'Bootcamp',
-    icon: AlterraLogo,
-    iconBg: '#CF1050',
-    date: 'Aug 2023 - Dec 2023',
-    points: [
-      'Intensive learning for 2 months in front-end application development using react guided by experienced mentors',
-      'Successfully implemented the understanding of the material through independent mini project work, proving the ability to apply the concepts that have been learned.',
-      'Actively contributed to the final project in the form of creating a travel website, presenting a solid and comprehensive team collaboration',
     ],
   },
   {
@@ -61,6 +56,7 @@ export const experiences = [
     icon: GifLogo,
     iconBg: '#f7b908',
     date: 'Jun 2023 - Dec 2023',
+    website: 'https://goto-impact.org/',
     points: [
       'Embarked on a transformative journey mastering the MERN Stack (MongoDB, Express, React, Node.js) during an intensive 2-month bootcamp, guided by seasoned tech experts',
       'Deepen English skills for Business Communication in the IT Field, with semi-private classes for 24 meetings with direct guidance from professional teachers',
@@ -70,12 +66,27 @@ export const experiences = [
     ],
   },
   {
+    title: 'Frontend Engineer',
+    company_name: 'Alterra Academy',
+    type_job: 'Bootcamp',
+    icon: AlterraLogo,
+    iconBg: '#CF1050',
+    date: 'Aug 2023 - Dec 2023',
+    website: '',
+    points: [
+      'Intensive learning for 2 months in front-end application development using react guided by experienced mentors',
+      'Successfully implemented the understanding of the material through independent mini project work, proving the ability to apply the concepts that have been learned.',
+      'Actively contributed to the final project in the form of creating a travel website, presenting a solid and comprehensive team collaboration',
+    ],
+  },
+  {
     title: 'IT Support',
     company_name: 'Digital Talent Scholarship',
     type_job: 'Seasonal',
     icon: DtsLogo,
     iconBg: '#CF1050',
     date: 'Jun 2023 - Aug 2023',
+    website: '',
     points: [
       'learn various basic knowledge to become an IT support',
       'some of the main materials learned are: Fundamentals of Technical Support, The Ins and Outs of Computer Networks, - Operating Systems, System Administration and IT Infrastructure Services, and IT Security Defense against Digital Crimes',
@@ -88,6 +99,7 @@ export const experiences = [
     icon: DtsLogo,
     iconBg: '#f7b908',
     date: 'Mar 2023 - Apr 2023',
+    website: '',
     points: [
       'A frontend web training theme that learns the basics of programming languages such as HTML & CSS and JavaScript. ',
       'Build a simple calculator for each individual project and collaborate with other participants to build landing page as a project using Git and Github as a method of sharing source code remotely in collaboration between participants.',
