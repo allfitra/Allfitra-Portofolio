@@ -33,17 +33,24 @@ const ImageBackgroundPackage = ({ imageBackground, onBackgroundChange }) => {
   const { theme } = useTheme();
 
   return (
-    <div className="mt-6 flex flex-row items-start justify-between gap-4 md:w-[85%]">
-      <div className="flex w-full flex-row gap-2">
-        <SetColorPicker imageBackground={imageBackground} onChange={onBackgroundChange} />
+    <div className="mt-8 flex flex-col md:flex-row items-center md:items-start justify-between gap-6 w-full max-w-4xl mx-auto card-panel p-6">
+      <div className="flex flex-col sm:flex-row w-full gap-6 items-center">
+        
+        {/* Color Picker Toggle */}
+        <div className="flex-shrink-0">
+          <SetColorPicker imageColor={imageBackground} onChange={onBackgroundChange} />
+        </div>
 
         {/* Default Theme Images */}
-        <div className="flex flex-wrap gap-4 md:max-w-[60%]">
+        <div className="flex flex-wrap justify-center sm:justify-start gap-3 w-full">
           {Object.keys(imageThemes).map((key) => (
             <div
               key={key}
-              className="h-12 w-12 cursor-pointer rounded-full border border-gray-300"
-              style={{ background: imageThemes[key] }}
+              className="h-10 w-10 cursor-pointer rounded-full transition-transform duration-300 hover:scale-110 hover:shadow-[0_0_15px_rgba(0,240,255,0.4)]"
+              style={{ 
+                background: imageThemes[key],
+                border: imageBackground === key ? '3px solid var(--accent-cyan)' : '2px solid var(--glass-border)'
+              }}
               onClick={() => onBackgroundChange(key)}
             ></div>
           ))}
@@ -51,14 +58,13 @@ const ImageBackgroundPackage = ({ imageBackground, onBackgroundChange }) => {
       </div>
 
       {/* Input custom image URL */}
-      <div className="relative mb-6 hidden w-[40%] md:block">
-        <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5">
+      <div className="relative w-full md:w-[60%] flex-shrink-0">
+        <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-4">
           <svg
-            className="h-6 w-6 text-gray-500 dark:text-gray-500"
+            className="h-5 w-5 opacity-70"
+            style={{ color: 'var(--text-secondary)' }}
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
@@ -67,10 +73,18 @@ const ImageBackgroundPackage = ({ imageBackground, onBackgroundChange }) => {
         </div>
         <input
           type="text"
-          className={`block w-full rounded-lg border border-gray-300 p-3 ps-10 text-sm
-            ${theme === 'dark' ? 'bg-gray-100 text-black' : 'bg-gray-900 text-white'}`}
-          placeholder="Image Background URL..."
-          onBlur={(e) => onBackgroundChange(e.target.value)}
+          className="block w-full rounded-xl p-3 ps-12 text-sm focus:outline-none focus:ring-2 transition-all duration-300"
+          style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid var(--glass-border)',
+            color: 'var(--text-primary)'
+          }}
+          placeholder="Paste Image URL..."
+          onFocus={(e) => e.target.style.borderColor = 'var(--accent-cyan)'}
+          onBlur={(e) => {
+            e.target.style.borderColor = 'var(--glass-border)';
+            onBackgroundChange(e.target.value);
+          }}
         />
       </div>
     </div>
@@ -79,26 +93,28 @@ const ImageBackgroundPackage = ({ imageBackground, onBackgroundChange }) => {
 
 const SetColorPicker = ({ imageColor, onChange }) => {
   const [isHover, setIsHover] = useState(false);
+  const { theme } = useTheme();
 
   return (
     <div
-      className="relative inline-block"
+      className="relative inline-block z-50"
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <button className="-mt-3">
-        <img src={ColorPickerIcon} className="h-16" />
+      <button className="transition-transform duration-300 hover:scale-105">
+        <img src={ColorPickerIcon} alt="Color Picker" className="h-14 w-14 object-contain" />
       </button>
+      
       {isHover && (
-        <div className="absolute top-full -mt-[340px] ml-7">
-          <div>
+        <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2">
+          <div className="shadow-[0_10px_40px_rgba(0,0,0,0.5)] rounded-2xl overflow-hidden border border-[var(--glass-border)]">
             <ColorPicker
               color={imageColor}
               onChange={onChange}
               theme={{
-                background: 'lightgrey',
-                borderRadius: '10px',
-                width: '200px',
+                background: theme === 'dark' ? '#1a1a2e' : '#ffffff',
+                borderRadius: '16px',
+                width: '220px',
               }}
             />
           </div>
