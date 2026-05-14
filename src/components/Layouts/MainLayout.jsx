@@ -22,15 +22,15 @@ export const MainLayout = ({ title, children }) => {
         style={{ backgroundColor: bgColor, color: textColor }}
       >
         {/* Dot Pattern Overlay */}
-        <div 
+        {/* <div
           className="pointer-events-none fixed inset-0 z-0 opacity-[0.15]"
           style={{
-            backgroundImage: theme === 'dark' 
-              ? 'radial-gradient(#ffffff 1px, transparent 1px)' 
+            backgroundImage: theme === 'dark'
+              ? 'radial-gradient(#ffffff 1px, transparent 1px)'
               : 'radial-gradient(#000000 1px, transparent 1px)',
             backgroundSize: '24px 24px'
           }}
-        />
+        /> */}
 
         {/* Static, lightweight radial background — no blur, no repaint */}
         <div
@@ -66,7 +66,7 @@ export const MainLayout = ({ title, children }) => {
             aria-label="Send Anonymous Message"
           >
             {/* Tooltip (Desktop Only) */}
-            <span 
+            <span
               className="absolute right-full mr-4 hidden md:block px-4 py-2 rounded-xl text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap"
               style={{
                 background: 'var(--card-bg)',

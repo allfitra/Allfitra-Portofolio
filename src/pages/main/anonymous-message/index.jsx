@@ -140,7 +140,7 @@ const MessageBox = ({ theme }) => {
             name="message"
             value={message}
             onChange={handleMessageChange}
-            placeholder="Type your message here... (minimal 3 kata)"
+            placeholder="Type your message here..."
             className="w-full h-full min-h-[160px] rounded-xl p-4 focus:outline-none focus:ring-2 transition-all duration-300 resize-none"
             style={{
               background: 'rgba(255,255,255,0.03)',
@@ -179,120 +179,120 @@ const MessageBox = ({ theme }) => {
 };
 
 // ============================================================
-// ✏️ EDIT STATUS SAYA DI SINI — ubah sesuai mood/aktivitas mu!
+// 🚀 SYSTEM CORE STATUS — real-time telemetry
 // ============================================================
 const myStatus = {
   isOnline: true,
-  activity: 'Vibe coding bareng lagu kesukaan 🎵',
-  vibe: 'Butuh Support Sistem',
-  battery: {
-    label: 'Social Battery',
-    level: 23,
-    icon: '🔋',
-    text: 'Survival Mode',
+  mission: 'Chasing new vibes.',
+  orbit: 'Need Support system',
+  energy: {
+    label: 'Warp Core Energy',
+    level: 18,
+    icon: '⚡',
+    text: 'Survival mode',
   },
   note: 'Isi pesannya siapa tau bisa ngebantu — dihujat pun tak masalah. 🙌',
 };
 // ============================================================
 
 const HaveFunBox = () => {
-  const { battery } = myStatus;
+  const { energy } = myStatus;
   return (
-    <div className="hidden lg:flex card-panel relative overflow-hidden w-full h-full min-h-[400px] flex-col justify-between p-8 group">
+    <div className="hidden lg:flex card-panel relative overflow-hidden w-full h-full min-h-[400px] flex-col justify-between p-8 group border"
+      style={{ borderColor: 'var(--glass-border)', background: 'var(--glass-panel)' }}>
 
       {/* Decorative glow blobs */}
-      <div className="absolute top-0 right-0 w-48 h-48 rounded-full pointer-events-none opacity-10"
-        style={{ background: 'var(--accent-cyan)', filter: 'blur(60px)' }} />
-      <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full pointer-events-none opacity-10"
-        style={{ background: 'var(--accent-purple)', filter: 'blur(60px)' }} />
+      <div className="absolute -top-10 -right-10 w-64 h-64 rounded-full pointer-events-none opacity-20"
+        style={{ background: 'var(--accent-cyan)', filter: 'blur(80px)' }} />
+      <div className="absolute -bottom-10 -left-10 w-64 h-64 rounded-full pointer-events-none opacity-20"
+        style={{ background: 'var(--accent-purple)', filter: 'blur(80px)' }} />
 
       {/* Header */}
-      <div className="relative z-10">
-        <div className="flex items-center gap-2 mb-1">
+      <div className="relative z-10 mb-4">
+        <div className="flex items-center gap-2 mb-2">
           {/* Live indicator */}
           <span className="relative flex h-3 w-3">
             <span
-              className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${myStatus.isOnline ? 'bg-emerald-400' : 'bg-gray-500'}`}
+              className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${myStatus.isOnline ? 'bg-cyan-400' : 'bg-gray-500'}`}
             />
             <span
-              className={`relative inline-flex rounded-full h-3 w-3 ${myStatus.isOnline ? 'bg-emerald-500' : 'bg-gray-600'}`}
+              className={`relative inline-flex rounded-full h-3 w-3 ${myStatus.isOnline ? 'bg-cyan-500' : 'bg-gray-600'}`}
+              style={{ boxShadow: myStatus.isOnline ? '0 0 10px var(--accent-cyan)' : 'none' }}
             />
           </span>
-          <span className="text-xs font-mono font-bold tracking-wider uppercase"
-            style={{ color: myStatus.isOnline ? '#34d399' : 'var(--text-tertiary)' }}>
-            {myStatus.isOnline ? 'Online' : 'Offline'}
+          <span className="text-xs font-mono font-bold tracking-widest uppercase"
+            style={{ color: myStatus.isOnline ? 'var(--accent-cyan)' : 'var(--text-tertiary)' }}>
+            {myStatus.isOnline ? 'System Online' : 'System Offline'}
           </span>
         </div>
-        <h2 className="text-2xl font-black" style={{ color: 'var(--text-primary)' }}>
-          Status <span style={{ color: 'var(--accent-cyan)' }}>Saya</span>
+        <h2 className="text-2xl font-black tracking-wide uppercase" style={{ color: 'var(--text-primary)' }}>
+          Available <span style={{ color: 'var(--accent-cyan)' }}>Status</span>
         </h2>
-        <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
-          Diupdate secara manual — tergantung mood
-        </p>
+        {/* <p className="text-xs mt-1 font-mono opacity-60" style={{ color: 'var(--text-tertiary)' }}>
+          &gt; real_time_telemetry_v1.0
+        </p> */}
       </div>
 
       {/* Status cards */}
-      <div className="relative z-10 flex flex-col gap-3">
+      <div className="relative z-10 flex flex-col gap-3 font-mono">
 
-        {/* Activity */}
-        <div className="flex items-start gap-3 p-4 rounded-xl border"
-          style={{ background: 'rgba(0,240,255,0.04)', borderColor: 'rgba(0,240,255,0.15)' }}>
-          <span className="text-xl mt-0.5">🎧</span>
+        {/* Mission */}
+        <div className="flex items-start gap-4 p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:bg-white/5"
+          style={{ background: 'linear-gradient(90deg, rgba(0,240,255,0.05) 0%, transparent 100%)', borderColor: 'rgba(0,240,255,0.1)' }}>
+          <span className="text-2xl mt-0.5 grayscale group-hover:grayscale-0 transition-all duration-300">🎯</span>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'var(--accent-cyan)' }}>
-              Lagi ngapain
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--accent-cyan)' }}>
+              Current Directive
             </p>
             <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-              {myStatus.activity}
+              {myStatus.mission}
             </p>
           </div>
         </div>
 
-        {/* Vibe */}
-        <div className="flex items-start gap-3 p-4 rounded-xl border"
-          style={{ background: 'rgba(167,139,250,0.04)', borderColor: 'rgba(167,139,250,0.15)' }}>
-          <span className="text-xl mt-0.5">✨</span>
+        {/* Distress Beacon */}
+        <div className="flex items-start gap-4 p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:bg-white/5"
+          style={{ background: 'linear-gradient(90deg, rgba(167,139,250,0.05) 0%, transparent 100%)', borderColor: 'rgba(167,139,250,0.1)' }}>
+          <span className="text-2xl mt-0.5 grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:animate-pulse">🛟</span>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'var(--accent-purple)' }}>
-              Vibe hari ini
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--accent-purple)' }}>
+              Distress Beacon
             </p>
             <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-              {myStatus.vibe}
+              {myStatus.orbit}
             </p>
           </div>
         </div>
 
-        {/* Social Battery */}
-        <div className="flex items-start gap-3 p-4 rounded-xl border"
-          style={{ background: 'rgba(236,72,153,0.04)', borderColor: 'rgba(236,72,153,0.15)' }}>
-          <span className="text-xl mt-0.5">{battery.icon}</span>
-          <div className="flex flex-col flex-1 gap-1">
-            <p className="text-xs font-semibold uppercase tracking-wider mb-0.5" style={{ color: 'var(--accent-pink)' }}>
-              {battery.label}
-            </p>
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                <div
-                  className="h-full rounded-full transition-all duration-700"
-                  style={{
-                    width: `${battery.level}%`,
-                    background: battery.level <= 20
-                      ? 'var(--accent-pink)'
-                      : battery.level <= 50
-                        ? '#f59e0b'
-                        : 'var(--accent-cyan)',
-                  }}
-                />
-              </div>
-              <span className="text-xs font-mono font-bold" style={{ color: 'var(--accent-pink)' }}>
-                {battery.level}%
+        {/* Energy */}
+        <div className="flex items-start gap-4 p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:bg-white/5"
+          style={{ background: 'linear-gradient(90deg, rgba(236,72,153,0.05) 0%, transparent 100%)', borderColor: 'rgba(236,72,153,0.1)' }}>
+          <span className="text-2xl mt-0.5 grayscale group-hover:grayscale-0 transition-all duration-300">{energy.icon}</span>
+          <div className="flex flex-col flex-1 gap-1.5">
+            <div className="flex justify-between items-center">
+              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--accent-pink)' }}>
+                {energy.label}
+              </p>
+              <span className="text-[10px] font-bold" style={{ color: 'var(--accent-pink)' }}>
+                {energy.level}%
               </span>
             </div>
-            <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-              {battery.text}
-            </p>
-            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
-              {battery.sub}
+            <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+              <div
+                className="h-full rounded-full transition-all duration-1000 ease-out"
+                style={{
+                  width: `${energy.level}%`,
+                  background: energy.level <= 20
+                    ? 'var(--accent-pink)'
+                    : energy.level <= 50
+                      ? '#f59e0b'
+                      : 'var(--accent-cyan)',
+                  boxShadow: `0 0 10px ${energy.level <= 20 ? 'var(--accent-pink)' : 'var(--accent-cyan)'}`
+                }}
+              />
+            </div>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+              {energy.text}
             </p>
           </div>
         </div>
@@ -300,10 +300,11 @@ const HaveFunBox = () => {
       </div>
 
       {/* Footer note */}
-      <div className="relative z-10 p-4 rounded-xl text-center border border-dashed"
-        style={{ borderColor: 'var(--glass-border)' }}>
-        <p className="text-sm italic" style={{ color: 'var(--text-secondary)' }}>
-          "{myStatus.note}"
+      <div className="relative z-10 mt-6 pt-4 border-t"
+        style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+        <p className="text-xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
+          <span style={{ color: 'var(--accent-cyan)' }}>&gt;</span> {myStatus.note}
+          <span className="animate-pulse inline-block w-1.5 h-3 ml-1 align-middle" style={{ background: 'var(--accent-cyan)' }}></span>
         </p>
       </div>
 

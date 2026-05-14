@@ -24,7 +24,7 @@ export const SecondLayout = ({ title, children }) => {
         style={{ backgroundColor: bgColor, color: textColor }}
       >
         {/* Dot Pattern Overlay */}
-        <div 
+        {/* <div 
           className="pointer-events-none fixed inset-0 z-0 opacity-[0.15]"
           style={{
             backgroundImage: theme === 'dark' 
@@ -32,7 +32,7 @@ export const SecondLayout = ({ title, children }) => {
               : 'radial-gradient(#000000 1px, transparent 1px)',
             backgroundSize: '24px 24px'
           }}
-        />
+        /> */}
 
         {/* Cyan / Teal Radial Gradients for NEW world */}
         <div
@@ -47,11 +47,11 @@ export const SecondLayout = ({ title, children }) => {
         />
 
         <SecondNavbar />
-        
+
         <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col overflow-hidden px-[1rem] pt-32 pb-10 md:p-0 md:pt-32 xl:overflow-visible">
           <div className="px-5 lg:px-8 fade-in-up">{children}</div>
         </div>
-        
+
         <div className="relative z-10">
           {!hideFooter && <Footer />}
         </div>
