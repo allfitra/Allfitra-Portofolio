@@ -11,7 +11,7 @@ export const MainLayout = ({ title, children }) => {
   const bgColor = theme === 'dark' ? 'var(--bg-primary)' : '#f0f0f5';
   const textColor = theme === 'dark' ? 'var(--text-primary)' : '#1a1a2e';
 
-  const showFloatingButton = location.pathname !== '/anonymous-message' && location.pathname !== '/not-found';
+  const showFloatingButton = location.pathname !== '/send-message' && location.pathname !== '/not-found';
 
   return (
     <>
@@ -57,7 +57,7 @@ export const MainLayout = ({ title, children }) => {
         {/* Floating Anonymous Message Button */}
         {showFloatingButton && (
           <Link
-            to="/anonymous-message"
+            to="/send-message"
             className="fixed bottom-24 right-4 md:bottom-10 md:right-10 z-[100] p-3 md:p-4 rounded-full shadow-[0_4px_20px_rgba(157,78,221,0.5)] transition-all duration-300 hover:scale-110 hover:-translate-y-1 group flex items-center justify-center cursor-pointer"
             style={{
               background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-purple))',

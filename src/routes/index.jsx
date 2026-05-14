@@ -36,7 +36,7 @@ export const AppRoutes = () => {
         <Route path="/world/support-me" element={<SupportMe />} />
 
         {/* Extra */}
-        <Route path="/anonymous-message" element={<AnonymousPage />} />
+        <Route path="/send-message" element={<AnonymousPage />} />
         <Route path="/230701" element={<MessagesListPage />} />
         <Route path="/balanjo" element={<FinancialReport />} />
 
