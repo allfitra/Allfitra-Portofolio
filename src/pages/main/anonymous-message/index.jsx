@@ -4,38 +4,27 @@ import { useTheme } from '@/utils/themeContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// import images
-import {
-  anonymousBackground,
-  catKnitting,
-  comingSoonBackground,
-  waitingAvatar,
-} from '@/assets/Other';
-
 // fetch api
 import { postMessage } from '@/database/fetch-api';
 
 export const AnonymousPage = () => {
   const { theme } = useTheme();
+  const [username, setUsername] = useState('');
+  const [message, setMessage] = useState('');
 
   return (
     <MainLayout title="Anonymous Message">
       <div className="flex flex-col py-5 fade-in-up">
 
-        {/* Header Section */}
-        {/* <div className="text-center mb-10 relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] bg-[var(--accent-purple)] opacity-10 blur-[80px] rounded-full pointer-events-none"></div>
-          <h1 className="text-5xl md:text-6xl font-black mb-3 relative z-10">
-            Anonymous <span className="text-gradient">Message</span>.
-          </h1>
-          <p className="text-lg relative z-10 max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
-            Feel free to vent, share advice, thoughts, or even rant about me here!
-          </p>
-        </div> */}
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto w-full px-4 sm:px-6 z-10">
-          <MessageBox theme={theme} />
-          <HaveFunBox />
+          <MessageBox
+            theme={theme}
+            username={username}
+            setUsername={setUsername}
+            message={message}
+            setMessage={setMessage}
+          />
+          <HaveFunBox onSelectMessage={(text) => setMessage(text)} />
         </div>
         <ToastContainer
           position="top-right"
@@ -48,10 +37,7 @@ export const AnonymousPage = () => {
   );
 };
 
-const MessageBox = ({ theme }) => {
-  const [username, setUsername] = useState('');
-  const [message, setMessage] = useState('');
-
+const MessageBox = ({ theme, username, setUsername, message, setMessage }) => {
   const handleUsernameChange = (e) => setUsername(e.target.value);
   const handleMessageChange = (e) => setMessage(e.target.value);
 
@@ -179,26 +165,63 @@ const MessageBox = ({ theme }) => {
 };
 
 // ============================================================
-// 🚀 SYSTEM CORE STATUS — real-time telemetry
+// 🎲 IDE PESAN ACAK (ICEBREAKERS & CURHAT)
 // ============================================================
-const myStatus = {
-  isOnline: true,
-  mission: 'Chasing new vibes.',
-  orbit: 'Need Support system',
-  energy: {
-    label: 'Warp Core Energy',
-    level: 18,
-    icon: '⚡',
-    text: 'Survival mode',
-  },
-  note: 'Isi pesannya siapa tau bisa ngebantu — dihujat pun tak masalah. 🙌',
-};
-// ============================================================
+const SUGGESTED_MESSAGES = [
+  "Kesan pertama kamu pas kenal aku gimana sih? Jujur aja ya!\n>>>\n ",
+  "Ada hal manis atau kebaikan yang pernah aku lakuin tapi belum sempat kamu ucapin makasih gak?\n>>>\n ",
+  "Kalau boleh jujur, menurut kamu aku tipe orang yang kayak gimana sih pas lagi ngobrol?\n>>>\n ",
+  "Ada saran atau masukan gak biar aku bisa jadi teman yang lebih baik lagi buat kamu?\n>>>\n ",
+  "Kira-kira apa satu sifat aku yang paling kamu suka, dan mana yang paling bikin sebel?\n>>>\n ",
+  "Ada cerita seru atau curhatan kecil yang pengen kamu bagi hari ini? Aku siap dengerin.\n>>>\n ",
+  "Hal yang paling random tapi pernah kita lakuin bareng yang bikin kamu ngakak itu apa?\n>>>\n ",
+  "Pernah gak kamu ngelakuin sesuatu karena gabut? Cerita dong!\n>>>\n ",
+  "Kalau kita bisa tukeran hidup selama sehari, hal pertama yang mau kamu lakuin apa?\n>>>\n ",
+  "Apa satu kebiasaan kecilku yang menurut kamu paling nyebelin sekaligus lucu?\n>>>\n ",
+  "Kalau aku jadi karakter anime, kira-kira aku cocok jadi apa dan kenapa?\n>>>\n ",
+  "Ada hal yang pengen banget kamu lakuin tapi belum kesampaian? Mungkin aku bisa bantu dengan idenya!\n>>>\n ",
+  "Kalo aku punya kekuatan super, menurut kamu aku bakal paling berguna buat ngapain?\n>>>\n ",
+  "Pernah gak kamu ngerasa bete tapi tiba-tiba jadi seneng gara-gara hal kecil? Ceritain dong!\n>>>\n ",
+  "Apa pendapat kamu tentang aku dari sudut pandang yang beda, bukan cuma dari interaksi kita sekarang?\n>>>\n ",
+  "Kalau kamu bisa ngasih aku tantangan selama sehari, apa tantangan paling random yang bakal kamu kasih?\n>>>\n ",
+  "Ada hal yang pengen kamu tanyain tapi malu mau nanya langsung? Jangan ragu di sini ya!\n>>>\n ",
+  "Pernahkah kamu berpikir kalau sifatku ini mirip orang terkenal? Siapa hayo?\n>>>\n ",
+  "Menurutmu, apa satu hal yang harus aku perbaiki dari diriku?\n>>>\n ",
+  "Pernahkah kamu merasa kesepian terus tiba-tiba ada hal yang bikin kamu senyum? Ceritain dong!\n>>>\n ",
+];
 
-const HaveFunBox = () => {
-  const { energy } = myStatus;
+const HaveFunBox = ({ onSelectMessage }) => {
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [isCopied, setIsCopied] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
+
+  const handleNextMessage = () => {
+    setIsSpinning(true);
+    setMessageIndex((prev) => (prev + 1) % SUGGESTED_MESSAGES.length);
+    setIsCopied(false);
+    setTimeout(() => setIsSpinning(false), 300);
+  };
+
+  const handleUseMessage = () => {
+    onSelectMessage(SUGGESTED_MESSAGES[messageIndex]);
+    setIsCopied(true);
+    toast.info("Pesan dimasukkan ke kotak input!", {
+      autoClose: 1500,
+      position: "top-center",
+      hideProgressBar: true,
+      closeOnClick: true,
+    });
+    setTimeout(() => setIsCopied(false), 2000);
+
+    // Focus the message input
+    const messageInput = document.getElementById('message');
+    if (messageInput) {
+      messageInput.focus();
+    }
+  };
+
   return (
-    <div className="hidden lg:flex card-panel relative overflow-hidden w-full h-full min-h-[400px] flex-col justify-between p-8 group border"
+    <div className="flex card-panel relative overflow-hidden w-full h-full min-h-[400px] flex-col justify-between p-6 sm:p-8 group border transition-all duration-300"
       style={{ borderColor: 'var(--glass-border)', background: 'var(--glass-panel)' }}>
 
       {/* Decorative glow blobs */}
@@ -212,99 +235,110 @@ const HaveFunBox = () => {
         <div className="flex items-center gap-2 mb-2">
           {/* Live indicator */}
           <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-green-400" />
             <span
-              className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${myStatus.isOnline ? 'bg-cyan-400' : 'bg-gray-500'}`}
-            />
-            <span
-              className={`relative inline-flex rounded-full h-3 w-3 ${myStatus.isOnline ? 'bg-cyan-500' : 'bg-gray-600'}`}
-              style={{ boxShadow: myStatus.isOnline ? '0 0 10px var(--accent-cyan)' : 'none' }}
+              className="relative inline-flex rounded-full h-3 w-3 bg-green-500"
+              style={{ boxShadow: '0 0 10px rgba(34, 197, 94, 0.7)' }}
             />
           </span>
-          <span className="text-xs font-mono font-bold tracking-widest uppercase"
-            style={{ color: myStatus.isOnline ? 'var(--accent-cyan)' : 'var(--text-tertiary)' }}>
-            {myStatus.isOnline ? 'System Online' : 'System Offline'}
+          <span className="text-xs font-mono font-bold tracking-widest uppercase text-green-400">
+            Status: Siap Mendengar
           </span>
         </div>
         <h2 className="text-2xl font-black tracking-wide uppercase" style={{ color: 'var(--text-primary)' }}>
-          Available <span style={{ color: 'var(--accent-cyan)' }}>Status</span>
+          Inspirasi <span style={{ color: 'var(--accent-purple)' }}>Pesan</span>
         </h2>
-        {/* <p className="text-xs mt-1 font-mono opacity-60" style={{ color: 'var(--text-tertiary)' }}>
-          &gt; real_time_telemetry_v1.0
-        </p> */}
+        <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+          Bingung mau kirim pesan apa? Pilih ide pesan di bawah ini untuk memulai obrolan hangat secara anonim!
+        </p>
       </div>
 
-      {/* Status cards */}
-      <div className="relative z-10 flex flex-col gap-3 font-mono">
+      {/* Interactive Message Generator Box */}
+      <div className="relative z-10 mb-4 p-5 rounded-2xl border backdrop-blur-md transition-all duration-300 bg-white/5 flex flex-col justify-between min-h-[140px]"
+        style={{ borderColor: 'var(--glass-border)' }}>
 
-        {/* Mission */}
-        <div className="flex items-start gap-4 p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:bg-white/5"
-          style={{ background: 'linear-gradient(90deg, rgba(0,240,255,0.05) 0%, transparent 100%)', borderColor: 'rgba(0,240,255,0.1)' }}>
-          <span className="text-2xl mt-0.5 grayscale group-hover:grayscale-0 transition-all duration-300">🎯</span>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--accent-cyan)' }}>
-              Current Directive
-            </p>
-            <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-              {myStatus.mission}
-            </p>
-          </div>
+        {/* Title/Label */}
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-widest" style={{ color: 'var(--accent-pink)' }}>
+            💡 Ide Pesan #{messageIndex + 1}
+          </span>
+          {/* <span className="text-[10px] font-mono opacity-50" style={{ color: 'var(--text-tertiary)' }}>
+            Interaktif
+          </span> */}
         </div>
 
-        {/* Distress Beacon */}
-        <div className="flex items-start gap-4 p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:bg-white/5"
-          style={{ background: 'linear-gradient(90deg, rgba(167,139,250,0.05) 0%, transparent 100%)', borderColor: 'rgba(167,139,250,0.1)' }}>
-          <span className="text-2xl mt-0.5 grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:animate-pulse">🛟</span>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--accent-purple)' }}>
-              Distress Beacon
-            </p>
-            <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-              {myStatus.orbit}
-            </p>
-          </div>
-        </div>
+        {/* Message Content */}
+        <p className={`text-sm font-medium leading-relaxed my-2 transition-all duration-300 ${isSpinning ? 'opacity-30 scale-95' : 'opacity-100 scale-100'}`} style={{ color: 'var(--text-primary)' }}>
+          "{SUGGESTED_MESSAGES[messageIndex]}"
+        </p>
 
-        {/* Energy */}
-        <div className="flex items-start gap-4 p-4 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:bg-white/5"
-          style={{ background: 'linear-gradient(90deg, rgba(236,72,153,0.05) 0%, transparent 100%)', borderColor: 'rgba(236,72,153,0.1)' }}>
-          <span className="text-2xl mt-0.5 grayscale group-hover:grayscale-0 transition-all duration-300">{energy.icon}</span>
-          <div className="flex flex-col flex-1 gap-1.5">
-            <div className="flex justify-between items-center">
-              <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--accent-pink)' }}>
-                {energy.label}
-              </p>
-              <span className="text-[10px] font-bold" style={{ color: 'var(--accent-pink)' }}>
-                {energy.level}%
-              </span>
-            </div>
-            <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
-              <div
-                className="h-full rounded-full transition-all duration-1000 ease-out"
-                style={{
-                  width: `${energy.level}%`,
-                  background: energy.level <= 20
-                    ? 'var(--accent-pink)'
-                    : energy.level <= 50
-                      ? '#f59e0b'
-                      : 'var(--accent-cyan)',
-                  boxShadow: `0 0 10px ${energy.level <= 20 ? 'var(--accent-pink)' : 'var(--accent-cyan)'}`
-                }}
-              />
-            </div>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-              {energy.text}
-            </p>
-          </div>
-        </div>
+        {/* Action Buttons inside Card */}
+        <div className="flex gap-2 mt-4">
+          <button
+            type="button"
+            onClick={handleNextMessage}
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 border hover:bg-white/5 active:scale-95"
+            style={{ borderColor: 'var(--glass-border)', color: 'var(--text-secondary)' }}
+          >
+            <span className={`inline-block ${isSpinning ? 'animate-spin' : ''}`}>🎲</span>
+            Acak Pesan
+          </button>
 
+          <button
+            type="button"
+            onClick={handleUseMessage}
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all duration-200 active:scale-95 text-white"
+            style={{
+              background: isCopied
+                ? 'linear-gradient(90deg, #10B981, #059669)'
+                : 'linear-gradient(90deg, var(--accent-purple), var(--accent-pink))',
+            }}
+          >
+            {isCopied ? '✓ Terpilih!' : '✍️ Gunakan Pesan'}
+          </button>
+        </div>
       </div>
 
-      {/* Footer note */}
-      <div className="relative z-10 mt-6 pt-4 border-t"
+      {/* Cozy Current Vibe Card */}
+      <div className="relative z-10 p-4 rounded-2xl border backdrop-blur-sm transition-all duration-300 hover:bg-white/5 flex flex-col gap-3"
+        style={{ background: 'rgba(255,255,255,0.01)', borderColor: 'rgba(255,255,255,0.04)' }}>
+
+        <div className="flex justify-between items-center border-b pb-2" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+          <div className="flex items-center gap-2">
+            <span className="text-base">🍃</span>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest" style={{ color: 'var(--accent-cyan)' }}>
+              Vibe Hari Ini
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2.5">
+          <p className="text-xs font-semibold leading-relaxed" style={{ color: 'var(--text-primary)' }}>
+            "Menikmati hari ini dengan santai sambil ditemani segelas kopi hangat. Selalu siap buat dengerin cerita atau curhatan seru darimu. Drop a message! ☕✨"
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            <span className="text-[9px] font-mono px-2 py-1 rounded-md border"
+              style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.04)', color: 'var(--text-tertiary)' }}>
+              🔋 Survival Mode
+            </span>
+            <span className="text-[9px] font-mono px-2 py-1 rounded-md border"
+              style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.04)', color: 'var(--text-tertiary)' }}>
+              💬 Open for Curhat
+            </span>
+            <span className="text-[9px] font-mono px-2 py-1 rounded-md border"
+              style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.04)', color: 'var(--text-tertiary)' }}>
+              🌱 Social Life
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer Note */}
+      <div className="relative z-10 mt-5 pt-3 border-t"
         style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-        <p className="text-xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
-          <span style={{ color: 'var(--accent-cyan)' }}>&gt;</span> {myStatus.note}
-          <span className="animate-pulse inline-block w-1.5 h-3 ml-1 align-middle" style={{ background: 'var(--accent-cyan)' }}></span>
+        <p className="text-[11px] font-mono leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+          <span style={{ color: 'var(--accent-cyan)' }}>&gt;</span> Identitas pengirim 100% anonim. Silakan sampaikan apa saja dengan santai!
         </p>
       </div>
 
