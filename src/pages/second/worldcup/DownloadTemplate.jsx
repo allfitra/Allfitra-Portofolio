@@ -25,7 +25,7 @@ const THIRD_PLACE_SLOTS = [
   { key: '3AEHIJ', groups: ['A', 'E', 'H', 'I', 'J'] },
   { key: '3CEFHI', groups: ['C', 'E', 'F', 'H', 'I'] },
   { key: '3EHIJK', groups: ['E', 'H', 'I', 'J', 'K'] },
-  { key: '3EFGLJ', groups: ['E', 'F', 'G', 'L', 'J'] },
+  { key: '3EFGIJ', groups: ['E', 'F', 'G', 'I', 'J'] },
   { key: '3DEIJL', groups: ['D', 'E', 'I', 'J', 'L'] },
 ];
 
@@ -115,7 +115,7 @@ export const DownloadTemplate = forwardRef(({
         { id: 'R32_R4', t1: g1('L'), t2: g3('3EHIJK'), desc: '1L vs 3EHIJK' },
         { id: 'R32_R5', t1: g1('J'), t2: g2('H'), desc: '1J vs 2H' },
         { id: 'R32_R6', t1: g2('D'), t2: g2('G'), desc: '2D vs 2G' },
-        { id: 'R32_R7', t1: g1('B'), t2: g3('3EFGLJ'), desc: '1B vs 3EFGLJ' },
+        { id: 'R32_R7', t1: g1('B'), t2: g3('3EFGIJ'), desc: '1B vs 3EFGIJ' },
         { id: 'R32_R8', t1: g1('K'), t2: g3('3DEIJL'), desc: '1K vs 3DEIJL' },
       ],
     };

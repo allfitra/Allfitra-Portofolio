@@ -40,7 +40,7 @@ const THIRD_PLACE_SLOTS = [
   { key: '3AEHIJ', groups: ['A', 'E', 'H', 'I', 'J'] },
   { key: '3CEFHI', groups: ['C', 'E', 'F', 'H', 'I'] },
   { key: '3EHIJK', groups: ['E', 'H', 'I', 'J', 'K'] },
-  { key: '3EFGLJ', groups: ['E', 'F', 'G', 'L', 'J'] },
+  { key: '3EFGIJ', groups: ['E', 'F', 'G', 'I', 'J'] },
   { key: '3DEIJL', groups: ['D', 'E', 'I', 'J', 'L'] },
 ];
 
@@ -326,7 +326,11 @@ export const CupPage = () => {
       if (snap.exists()) {
         const officialData = snap.data();
         setOfficialResult(officialData);
-        fetchLeaderboardSubmissions(officialData);
+        if (officialData.leaderboardOpened) {
+          fetchLeaderboardSubmissions(officialData);
+        } else {
+          setLeaderboard([]);
+        }
       }
     }, (error) => {
       console.error("Error listening to official result:", error);
@@ -380,7 +384,7 @@ export const CupPage = () => {
         { id: 'R32_R4', t1: g1('L'), t2: g3('3EHIJK'), desc: '1L vs 3EHIJK' },
         { id: 'R32_R5', t1: g1('J'), t2: g2('H'), desc: '1J vs 2H' },
         { id: 'R32_R6', t1: g2('D'), t2: g2('G'), desc: '2D vs 2G' },
-        { id: 'R32_R7', t1: g1('B'), t2: g3('3EFGLJ'), desc: '1B vs 3EFGLJ' },
+        { id: 'R32_R7', t1: g1('B'), t2: g3('3EFGIJ'), desc: '1B vs 3EFGIJ' },
         { id: 'R32_R8', t1: g1('K'), t2: g3('3DEIJL'), desc: '1K vs 3DEIJL' },
       ],
     };
@@ -561,11 +565,15 @@ export const CupPage = () => {
 
       setSaveStatus('success');
       flashSave();
-      fetchLeaderboardSubmissions(officialResult); // Reload live leaderboard
+      if (officialResult?.leaderboardOpened) {
+        fetchLeaderboardSubmissions(officialResult); // Reload live leaderboard
+      }
 
       setTimeout(() => {
         setIsSaveModalOpen(false);
         setSaveStatus(null);
+        // Buka modal preview download langsung
+        handleDownloadBracket();
       }, 2000);
     } catch (error) {
       console.error("Error saving to Firestore:", error);
@@ -979,7 +987,7 @@ export const CupPage = () => {
                   className="bg-zinc-900/60 hover:bg-zinc-800 border border-white/5 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-50"
                 >
                   {isDownloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-                  {isDownloading ? 'Mengunduh...' : 'Unduh Gambar'}
+                  {isDownloading ? 'Mengunduh...' : 'Unduh Hasil'}
                 </button>
               )}
               {isComplete && (
@@ -1128,7 +1136,7 @@ export const CupPage = () => {
             <div className="flex items-center gap-3">
               <span className="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-xs border border-blue-500/25">1</span>
               <div>
-                <h2 className="text-base font-bold text-white">Pilih Tim Lolos</h2>
+                <h2 className="text-base font-bold text-white mt-1">Pilih Tim Lolos</h2>
                 <p className="text-[11px] text-zinc-500">Klik sesuai urutan rank. Kuota Rank 3:
                   <span className={`font-bold ml-1 ${groupsWithThreeCount >= MAX_GROUPS_WITH_THREE ? 'text-amber-400' : 'text-blue-400'}`}>
                     {groupsWithThreeCount}/{MAX_GROUPS_WITH_THREE} grup
