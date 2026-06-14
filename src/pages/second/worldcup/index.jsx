@@ -98,11 +98,9 @@ const getBadgeColor = (name) => {
 
 const MAX_POSSIBLE_SCORE = 176;
 
-const calculateScore = (userPred, official) => {
+const calculateGroupScore = (userPred, official) => {
   if (!official) return 0;
   let score = 0;
-
-  // 1. Group Stage (2 points for correct team + rank, 1 point for correct team but wrong rank)
   if (userPred.groupStage && official.groupAdvancers) {
     userPred.groupStage.forEach(g => {
       const groupId = g.group;
@@ -119,6 +117,12 @@ const calculateScore = (userPred, official) => {
       });
     });
   }
+  return score;
+};
+
+const calculateKnockoutScore = (userPred, official) => {
+  if (!official) return 0;
+  let score = 0;
 
   // 2. Round of 32 & 16 (3 points for each correct match winner)
   if (userPred.bracket && official.r32Winners) {
@@ -169,6 +173,10 @@ const calculateScore = (userPred, official) => {
   }
 
   return score;
+};
+
+const calculateScore = (userPred, official) => {
+  return calculateGroupScore(userPred, official) + calculateKnockoutScore(userPred, official);
 };
 
 const encodeState = (state, username) => {
@@ -265,6 +273,55 @@ export const CupPage = () => {
   const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewingUser, setViewingUser] = useState(null);
+  const [leaderboardTab, setLeaderboardTab] = useState('overall'); // 'overall' | 'group' | 'knockout'
+
+  const activePred = useMemo(() => {
+    if (viewingUser) {
+      return viewingUser.predictionData;
+    }
+    if (isSharedView) {
+      const groupStage = Object.keys(decodedState?.groupAdvancers || {}).map(gId => ({
+        group: gId,
+        selected: decodedState.groupAdvancers[gId] || []
+      }));
+      return {
+        groupStage,
+        bracket: {
+          roundOf32Winners: decodedState?.roundOf32Winners || {},
+          roundOf16Winners: decodedState?.roundOf16Winners || {},
+          quarterWinners: decodedState?.quarterWinners || {},
+          semiWinners: decodedState?.semiWinners || {},
+          champion: decodedState?.finalWinner || null
+        }
+      };
+    }
+    const groupStage = Object.keys(groupAdvancers).map(gId => ({
+      group: gId,
+      selected: groupAdvancers[gId] || []
+    }));
+    return {
+      groupStage,
+      bracket: {
+        roundOf32Winners,
+        roundOf16Winners,
+        quarterWinners,
+        semiWinners,
+        champion: finalWinner
+      }
+    };
+  }, [viewingUser, isSharedView, decodedState, groupAdvancers, roundOf32Winners, roundOf16Winners, quarterWinners, semiWinners, finalWinner]);
+
+  const displayGroupScore = useMemo(() => {
+    return calculateGroupScore(activePred, officialResult);
+  }, [activePred, officialResult]);
+
+  const displayKnockoutScore = useMemo(() => {
+    return calculateKnockoutScore(activePred, officialResult);
+  }, [activePred, officialResult]);
+
+  const displayOverallScore = useMemo(() => {
+    return displayGroupScore + displayKnockoutScore;
+  }, [displayGroupScore, displayKnockoutScore]);
 
   const handleSelectLeaderboardUser = (user) => {
     if (!user.predictionData) return;
@@ -361,12 +418,18 @@ export const CupPage = () => {
       const list = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const score = calculateScore(data, official);
+        const gScore = calculateGroupScore(data, official);
+        const kScore = calculateKnockoutScore(data, official);
+        const oScore = gScore + kScore;
         list.push({
           id: doc.id,
           name: data.username || 'Anonymous',
-          score: score,
-          accuracy: Math.round((score / MAX_POSSIBLE_SCORE) * 100),
+          groupScore: gScore,
+          knockoutScore: kScore,
+          score: oScore,
+          accuracy: Math.round((oScore / MAX_POSSIBLE_SCORE) * 100),
+          groupAccuracy: Math.round((gScore / 64) * 100),
+          knockoutAccuracy: Math.round((kScore / 112) * 100),
           createdAt: data.savedAt || '',
           predictionData: data,
         });
@@ -380,6 +443,18 @@ export const CupPage = () => {
       setIsLoadingLeaderboard(false);
     }
   }, []);
+
+  // Memoized and sorted leaderboard based on selected tab
+  const sortedLeaderboard = useMemo(() => {
+    const list = [...leaderboard];
+    if (leaderboardTab === 'group') {
+      return list.sort((a, b) => b.groupScore - a.groupScore || b.score - a.score || a.name.localeCompare(b.name));
+    }
+    if (leaderboardTab === 'knockout') {
+      return list.sort((a, b) => b.knockoutScore - a.knockoutScore || b.score - a.score || a.name.localeCompare(b.name));
+    }
+    return list.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
+  }, [leaderboard, leaderboardTab]);
 
   // Listen to official results and lock status in real-time
   useEffect(() => {
@@ -1144,8 +1219,30 @@ export const CupPage = () => {
                       placeholder="Cari nama..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-zinc-900/80 border border-zinc-800 rounded-lg pl-8 pr-2.5 py-1.5 text-[11px] text-white placeholder-zinc-600 focus:outline-none focus:border-amber-500/50"
+                      className="w-full bg-zinc-900/80 border border-zinc-800 rounded-lg pl-8 pr-2.5 py-1.5 text-[11px] text-white placeholder-zinc-650 focus:outline-none focus:border-amber-500/50"
                     />
+                  </div>
+
+                  {/* Leaderboard Tab Selector */}
+                  <div className="flex bg-zinc-900/80 border border-white/5 rounded-xl p-0.5 gap-0.5 text-[9px] font-bold">
+                    <button
+                      onClick={() => setLeaderboardTab('overall')}
+                      className={`flex-1 py-1 rounded-lg transition-all ${leaderboardTab === 'overall' ? 'bg-amber-500 text-black font-extrabold' : 'text-zinc-400 hover:text-white'}`}
+                    >
+                      Overall
+                    </button>
+                    <button
+                      onClick={() => setLeaderboardTab('group')}
+                      className={`flex-1 py-1 rounded-lg transition-all ${leaderboardTab === 'group' ? 'bg-amber-500 text-black font-extrabold' : 'text-zinc-400 hover:text-white'}`}
+                    >
+                      Grup
+                    </button>
+                    <button
+                      onClick={() => setLeaderboardTab('knockout')}
+                      className={`flex-1 py-1 rounded-lg transition-all ${leaderboardTab === 'knockout' ? 'bg-amber-500 text-black font-extrabold' : 'text-zinc-400 hover:text-white'}`}
+                    >
+                      Knockout
+                    </button>
                   </div>
 
                   {isLoadingLeaderboard ? (
@@ -1155,10 +1252,12 @@ export const CupPage = () => {
                     </div>
                   ) : (
                     <div className="space-y-1.5 max-h-[170px] overflow-y-auto pr-1.5 leaderboard-scroll">
-                      {leaderboard
+                      {sortedLeaderboard
                         .filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
                         .map((user, idx) => {
                           const isUser = user.name === inputName;
+                          const displayScore = leaderboardTab === 'group' ? user.groupScore : leaderboardTab === 'knockout' ? user.knockoutScore : user.score;
+                          const displayAccuracy = leaderboardTab === 'group' ? user.groupAccuracy : leaderboardTab === 'knockout' ? user.knockoutAccuracy : user.accuracy;
                           return (
                             <div
                               key={user.id || idx}
@@ -1181,18 +1280,19 @@ export const CupPage = () => {
                                 <span className="truncate">{user.name}</span>
                               </div>
                               <span className="font-mono font-bold text-right shrink-0">
-                                {user.score} Pts <span className="text-[8px] text-zinc-500">({user.accuracy}%)</span>
+                                {displayScore} Pts <span className="text-[8px] text-zinc-500">({displayAccuracy}%)</span>
                               </span>
                             </div>
                           );
                         })}
-                      {leaderboard.filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
-                        <div className="text-center py-6 text-[10px] text-zinc-600 italic">
+                      {sortedLeaderboard.filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                        <div className="text-center py-6 text-[10px] text-zinc-650 italic">
                           Tidak ada hasil
                         </div>
                       )}
                     </div>
                   )}
+
                 </div>
               ) : (
                 // Locked Leaderboard view
@@ -1227,9 +1327,9 @@ export const CupPage = () => {
                     <p className="text-[9px] text-zinc-400 mt-1 max-w-[180px] leading-relaxed">
                       Akan dibuka setelah tanggal 17 Juni 2026
                     </p>
-                    <p className="text-[8px] text-amber-400/80 mt-1.5 max-w-[160px] leading-normal italic">
+                    {/* <p className="text-[8px] text-amber-400/80 mt-1.5 max-w-[160px] leading-normal italic">
                       (Akan ada pengisian prediksi khusus babak Knockout saja)
-                    </p>
+                    </p> */}
                   </div>
                 </div>
               )}
@@ -1268,7 +1368,7 @@ export const CupPage = () => {
                   className="mt-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-950/5"
                 >
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                  Lihat Hasil Resmi
+                  Lihat Bracket Sementara
                 </Link>
                 <div className="flex mt-2 bg-zinc-900/80 p-1 rounded-lg border border-white/5 self-start sm:self-center">
                   {['A-F', 'G-L'].map(tab => (
@@ -1784,15 +1884,39 @@ export const CupPage = () => {
 
                 {officialResult?.leaderboardOpened ? (
                   <div className="flex-grow flex flex-col min-h-0 space-y-4 text-left">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-500" />
-                      <input
-                        type="text"
-                        placeholder="Cari nama peserta..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-zinc-900/60 border border-zinc-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500/50"
-                      />
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <div className="relative flex-grow">
+                        <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-500" />
+                        <input
+                          type="text"
+                          placeholder="Cari nama peserta..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full bg-zinc-900/60 border border-zinc-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500/50"
+                        />
+                      </div>
+
+                      {/* Leaderboard Tab Selector */}
+                      <div className="flex bg-zinc-900/80 border border-white/5 rounded-xl p-0.5 gap-0.5 text-[10px] font-bold sm:w-64">
+                        <button
+                          onClick={() => setLeaderboardTab('overall')}
+                          className={`flex-1 py-1.5 rounded-lg transition-all ${leaderboardTab === 'overall' ? 'bg-amber-500 text-black font-extrabold' : 'text-zinc-400 hover:text-white'}`}
+                        >
+                          Overall
+                        </button>
+                        <button
+                          onClick={() => setLeaderboardTab('group')}
+                          className={`flex-1 py-1.5 rounded-lg transition-all ${leaderboardTab === 'group' ? 'bg-amber-500 text-black font-extrabold' : 'text-zinc-400 hover:text-white'}`}
+                        >
+                          Grup
+                        </button>
+                        <button
+                          onClick={() => setLeaderboardTab('knockout')}
+                          className={`flex-1 py-1.5 rounded-lg transition-all ${leaderboardTab === 'knockout' ? 'bg-amber-500 text-black font-extrabold' : 'text-zinc-400 hover:text-white'}`}
+                        >
+                          Knockout
+                        </button>
+                      </div>
                     </div>
 
                     {isLoadingLeaderboard ? (
@@ -1802,10 +1926,12 @@ export const CupPage = () => {
                       </div>
                     ) : (
                       <div className="flex-grow overflow-y-auto pr-1 leaderboard-scroll space-y-2 max-h-[350px]">
-                        {leaderboard
+                        {sortedLeaderboard
                           .filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
                           .map((user, idx) => {
                             const isUser = user.name === inputName;
+                            const displayScore = leaderboardTab === 'group' ? user.groupScore : leaderboardTab === 'knockout' ? user.knockoutScore : user.score;
+                            const displayAccuracy = leaderboardTab === 'group' ? user.groupAccuracy : leaderboardTab === 'knockout' ? user.knockoutAccuracy : user.accuracy;
                             return (
                               <div
                                 key={user.id || idx}
@@ -1828,12 +1954,12 @@ export const CupPage = () => {
                                   <span className="truncate">{user.name}</span>
                                 </div>
                                 <span className="font-mono font-bold text-right shrink-0">
-                                  {user.score} Pts <span className="text-[10px] text-zinc-500 font-medium">({user.accuracy}%)</span>
+                                  {displayScore} Pts <span className="text-[10px] text-zinc-500 font-medium">({displayAccuracy}%)</span>
                                 </span>
                               </div>
                             );
                           })}
-                        {leaderboard.filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                        {sortedLeaderboard.filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
                           <div className="text-center py-10 text-xs text-zinc-500 italic bg-zinc-900/10 border border-dashed border-zinc-800 rounded-xl">
                             Nama peserta tidak ditemukan
                           </div>
