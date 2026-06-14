@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, CheckCircle2, RotateCcw, Star, Swords, Save, Send, Loader2, X, AlertTriangle, Lock, Download, Share2, Search, ArrowLeft, HelpCircle, FileText, ExternalLink } from 'lucide-react';
+import { Trophy, CheckCircle2, RotateCcw, Star, Swords, Save, Send, Loader2, X, AlertTriangle, Lock, Download, Share2, Search, ArrowLeft, HelpCircle, FileText, ExternalLink, Edit } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { useSearchParams, Link } from 'react-router-dom';
 import DownloadTemplate from './DownloadTemplate';
@@ -11,7 +11,7 @@ import pialaImg from '../../../assets/images/ImagesWorldCup/piala.png';
 import logoWorldCupImg from '../../../assets/images/ImagesWorldCup/logo-world-cup.png';
 import FlagIcon from './FlagIcon';
 import { db } from '../../../database/firebase';
-import { collection, addDoc, getDocs, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, getDoc, onSnapshot, setDoc, query, where } from 'firebase/firestore';
 
 const STORAGE_KEY = 'worldcup_2026_bracket_v4';
 const NUM_GROUPS = 12;
@@ -261,7 +261,7 @@ export const CupPage = () => {
   const [saveFlash, setSaveFlash] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [inputName, setInputName] = useState(() => decodedState?.username || localStorage.getItem('worldcup_username') || '');
-  const [inputContact, setInputContact] = useState('');
+  const [inputContact, setInputContact] = useState(() => localStorage.getItem('worldcup_contact') || '');
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null); // 'success' | 'error' | null
   const [errorMsg, setErrorMsg] = useState('');
@@ -269,6 +269,54 @@ export const CupPage = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadType, setDownloadType] = useState('all'); // 'all' | 'group'
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
+  const [usernameStatus, setUsernameStatus] = useState(null); // 'new' | 'existing_mine' | 'existing_others' | null
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+
+  const checkUsernameAvailability = useCallback(async (name) => {
+    const trimmed = name.trim();
+    if (!trimmed) {
+      setUsernameStatus(null);
+      return;
+    }
+    setIsCheckingUsername(true);
+    try {
+      const localUsername = localStorage.getItem('worldcup_username') || '';
+      const localDocId = localStorage.getItem('worldcup_doc_id');
+
+      const q = query(collection(db, "worldCup"), where("username", "==", trimmed));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        setUsernameStatus('new');
+      } else {
+        const docs = querySnapshot.docs;
+        const matchedDocId = docs[0].id;
+        // Check if this matches our local record (either local doc id, or local username matching the query result name)
+        if (localDocId === matchedDocId || localUsername.toLowerCase() === trimmed.toLowerCase()) {
+          setUsernameStatus('existing_mine');
+          // Update the localStorage doc ID to match just in case
+          localStorage.setItem('worldcup_doc_id', matchedDocId);
+        } else {
+          setUsernameStatus('existing_others');
+        }
+      }
+    } catch (err) {
+      console.error("Error checking username availability:", err);
+    } finally {
+      setIsCheckingUsername(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isSaveModalOpen) {
+      setUsernameStatus(null);
+      return;
+    }
+    const timer = setTimeout(() => {
+      checkUsernameAvailability(inputName);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [inputName, isSaveModalOpen, checkUsernameAvailability]);
 
   // Real-time leaderboard states
   const [officialResult, setOfficialResult] = useState(null);
@@ -686,10 +734,16 @@ export const CupPage = () => {
       return;
     }
 
+    if (usernameStatus === 'existing_others') {
+      setErrorMsg('Username sudah digunakan oleh peserta lain. Harap gunakan nama lain.');
+      return;
+    }
+
     setIsSaving(true);
     setErrorMsg('');
     try {
       localStorage.setItem('worldcup_username', inputName.trim());
+      localStorage.setItem('worldcup_contact', inputContact.trim());
 
       const predictionData = {
         ...buildPredictionJSON(),
@@ -697,8 +751,33 @@ export const CupPage = () => {
         contact: inputContact.trim() || '',
       };
 
-      const docRef = await addDoc(collection(db, "worldCup"), predictionData);
-      console.log("Document written with ID: ", docRef.id);
+      let existingDocId = localStorage.getItem('worldcup_doc_id');
+
+      // Fallback: If no doc ID in localStorage, but username matches previous local submission, query Firestore to prevent duplicate names
+      if (!existingDocId && localStorage.getItem('worldcup_username') === inputName.trim()) {
+        try {
+          const q = query(collection(db, "worldCup"), where("username", "==", inputName.trim()));
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            const docs = querySnapshot.docs;
+            // Sort to find the most recent prediction document in case there are duplicates already
+            docs.sort((a, b) => new Date(b.data().savedAt || 0) - new Date(a.data().savedAt || 0));
+            existingDocId = docs[0].id;
+            localStorage.setItem('worldcup_doc_id', existingDocId);
+          }
+        } catch (e) {
+          console.error("Gagal melakukan pencarian nama duplikat:", e);
+        }
+      }
+
+      if (existingDocId) {
+        await setDoc(doc(db, "worldCup", existingDocId), predictionData);
+        console.log("Document updated with ID: ", existingDocId);
+      } else {
+        const docRef = await addDoc(collection(db, "worldCup"), predictionData);
+        console.log("Document written with ID: ", docRef.id);
+        localStorage.setItem('worldcup_doc_id', docRef.id);
+      }
 
       localStorage.setItem('worldcup_submitted', 'true');
       setHasSubmitted(true);
@@ -1206,8 +1285,18 @@ export const CupPage = () => {
                     <Lock className="w-3.5 h-3.5 text-zinc-500" /> Pengisian Ditutup
                   </button>
                 ) : hasSubmitted ? (
-                  <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 select-none shadow-md shadow-emerald-950/10">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse" /> Terkirim: {inputName}
+                  <div className="flex items-center gap-2">
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 select-none shadow-md shadow-emerald-950/10">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse" /> Terkirim: {inputName}
+                    </div>
+                    {!viewingUser && (
+                      <button
+                        onClick={() => setHasSubmitted(false)}
+                        className="bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/25 text-blue-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-md shadow-blue-950/10 hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                        <Edit className="w-3.5 h-3.5 text-blue-400" /> Ubah Prediksi
+                      </button>
+                    )}
                   </div>
                 ) : (
                   <>
@@ -1776,8 +1865,30 @@ export const CupPage = () => {
                               placeholder="Masukkan nama Anda..."
                               maxLength={30}
                               disabled={isSaving}
-                              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-blue-500 transition-colors disabled:opacity-50"
+                              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-650 focus:outline-none focus:border-blue-500 transition-colors disabled:opacity-50"
                             />
+                            {isCheckingUsername && (
+                              <p className="text-[10px] text-zinc-500 mt-1.5 pl-1 flex items-center gap-1">
+                                <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-450" /> Memeriksa ketersediaan nama...
+                              </p>
+                            )}
+                            {!isCheckingUsername && usernameStatus === 'existing_mine' && (
+                              <div className="mt-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2 text-[10px] text-amber-400 font-medium leading-relaxed">
+                                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                                <span>Username ini terdaftar sebagai milik Anda di perangkat ini. Mengirim ulang akan <strong>memperbarui/mengganti</strong> data prediksi Anda sebelumnya.</span>
+                              </div>
+                            )}
+                            {!isCheckingUsername && usernameStatus === 'existing_others' && (
+                              <div className="mt-2.5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-start gap-2 text-[10px] text-rose-400 font-medium leading-relaxed">
+                                <X className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                                <span>Username ini sudah digunakan oleh peserta lain. Harap gunakan nama/username lain.</span>
+                              </div>
+                            )}
+                            {!isCheckingUsername && usernameStatus === 'new' && inputName.trim() && (
+                              <p className="text-[10px] text-emerald-400 mt-1.5 pl-1 flex items-center gap-1 font-medium">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-450" /> Username tersedia!
+                              </p>
+                            )}
                           </div>
 
                           <div>
@@ -1800,7 +1911,7 @@ export const CupPage = () => {
                               *Hanya untuk dihubungi jika Anda menang. Tidak akan dipublikasikan.
                             </p>
                             <p className="text-[9px] text-zinc-500 mt-1.5 pl-1 italic">
-                              (PS: Pemenang dan Hadiah sepenuhnya kuasa Admin, menyesuaikan budget. Jangan berharap banyak!!)
+                              (PS: Hadiah bisa ada dan tidak, tergantung mood admin. jangan berharap banyak!!)
                             </p>
                           </div>
 
@@ -1831,7 +1942,7 @@ export const CupPage = () => {
                             <button
                               type="button"
                               onClick={submitPredictionToFirebase}
-                              disabled={isSaving || !inputName.trim() || !finalWinner}
+                              disabled={isSaving || !inputName.trim() || !finalWinner || usernameStatus === 'existing_others' || isCheckingUsername}
                               className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/30 disabled:text-zinc-500 text-white font-bold py-3 rounded-xl text-xs transition-all flex items-center justify-center gap-2"
                             >
                               {isSaving ? (
