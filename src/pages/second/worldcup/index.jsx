@@ -1074,7 +1074,7 @@ export const CupPage = () => {
               {!isSharedView && (
                 <button
                   onClick={resetPrediction}
-                  disabled={hasSubmitted || officialResult?.submissionsLocked}
+                  disabled={hasSubmitted || officialResult?.submissionsLocked || viewingUser}
                   className={`border border-white/5 text-zinc-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${hasSubmitted || officialResult?.submissionsLocked ? 'bg-zinc-950/20 text-zinc-500 cursor-not-allowed opacity-50' : 'bg-zinc-900/60 hover:bg-zinc-800'}`}
                 >
                   <RotateCcw className="w-3.5 h-3.5" /> Reset
@@ -1108,130 +1108,136 @@ export const CupPage = () => {
                     <CheckCircle2 className="w-3.5 h-3.5 text-zinc-500" /> Sudah Submit
                   </button>
                 ) : (
-                  <button onClick={handleSaveToFirebase} className="bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5">
-                    <Save className="w-3.5 h-3.5" /> Simpan Hasil
-                  </button>
+                  <>
+                    {!viewingUser && (
+                      <button onClick={handleSaveToFirebase} className="bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5">
+                        <Save className="w-3.5 h-3.5" /> Simpan Hasil
+                      </button>
+                    )}
+                  </>
                 )
               )}
             </div>
           </div>
 
           {/* Leaderboard di Kanan */}
-          <div className="flex-shrink-0 w-64 bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 shadow-xl relative overflow-hidden backdrop-blur-sm">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
-            <div className="flex items-center justify-between mb-3 pb-2 border-b border-zinc-900">
-              <h3 className="text-xs font-extrabold text-amber-400 tracking-wider flex items-center gap-1.5 uppercase">
-                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 animate-pulse" /> Leaderboard
-              </h3>
-              <span className="text-[9px] font-bold text-zinc-500 bg-zinc-900 px-2 py-0.5 rounded border border-white/5">Live</span>
-            </div>
-
-            {officialResult?.leaderboardOpened ? (
-              // Live Leaderboard view
-              <div className="space-y-3">
-                <div className="relative">
-                  <Search className="absolute left-2.5 top-2 w-3.5 h-3.5 text-zinc-500" />
-                  <input
-                    type="text"
-                    placeholder="Cari nama..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-zinc-900/80 border border-zinc-800 rounded-lg pl-8 pr-2.5 py-1.5 text-[11px] text-white placeholder-zinc-600 focus:outline-none focus:border-amber-500/50"
-                  />
-                </div>
-
-                {isLoadingLeaderboard ? (
-                  <div className="flex flex-col items-center justify-center py-10 gap-2">
-                    <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
-                    <span className="text-[10px] text-zinc-500">Loading data...</span>
-                  </div>
-                ) : (
-                  <div className="space-y-1.5 max-h-[170px] overflow-y-auto pr-1.5 leaderboard-scroll">
-                    {leaderboard
-                      .filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
-                      .map((user, idx) => {
-                        const isUser = user.name === inputName;
-                        return (
-                          <div
-                            key={user.id || idx}
-                            onClick={() => handleSelectLeaderboardUser(user)}
-                            className={`flex items-center justify-between px-3 py-1.5 rounded-xl border text-[11px] font-semibold transition-all cursor-pointer hover:bg-white/5 active:scale-[0.98] ${idx === 0
-                              ? 'bg-amber-500/10 border-amber-500/20 text-amber-300'
-                              : idx === 1
-                                ? 'bg-zinc-900/60 border-zinc-800 text-zinc-300'
-                                : idx === 2
-                                  ? 'bg-orange-950/10 border-orange-900/20 text-orange-300'
-                                  : isUser
-                                    ? 'bg-blue-950/25 border-blue-500/20 text-blue-300'
-                                    : 'bg-zinc-950/40 border-white/5 text-zinc-400'
-                              }`}
-                          >
-                            <div className="flex items-center gap-2 truncate">
-                              <span className="w-4 h-4 rounded bg-zinc-950 flex items-center justify-center text-[9px] font-black border border-white/5 text-zinc-500">
-                                {idx + 1}
-                              </span>
-                              <span className="truncate">{user.name}</span>
-                            </div>
-                            <span className="font-mono font-bold text-right shrink-0">
-                              {user.score} Pts <span className="text-[8px] text-zinc-500">({user.accuracy}%)</span>
-                            </span>
-                          </div>
-                        );
-                      })}
-                    {leaderboard.filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
-                      <div className="text-center py-6 text-[10px] text-zinc-600 italic">
-                        Tidak ada hasil
-                      </div>
-                    )}
-                  </div>
-                )}
+          {!officialResult?.submissionsLocked ? (
+            <div className="flex-shrink-0 w-64 bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 shadow-xl relative overflow-hidden backdrop-blur-sm">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
+              <div className="flex items-center justify-between mb-3 pb-2 border-b border-zinc-900">
+                <h3 className="text-xs font-extrabold text-amber-400 tracking-wider flex items-center gap-1.5 uppercase">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 animate-pulse" /> Leaderboard
+                </h3>
+                <span className="text-[9px] font-bold text-zinc-500 bg-zinc-900 px-2 py-0.5 rounded border border-white/5">Live</span>
               </div>
-            ) : (
-              // Locked Leaderboard view
-              <div className="relative">
-                {/* Leaderboard items (blurred) */}
-                <div className="space-y-1.5 max-h-[170px] overflow-y-auto pr-1.5 leaderboard-scroll blur-sm opacity-20 select-none pointer-events-none">
-                  {[
-                    { rank: 1, name: 'Alfitra (You)', score: '94%', bg: 'bg-amber-500/10 border-amber-500/20 text-amber-300' },
-                    { rank: 2, name: 'Budi Hartono', score: '88%', bg: 'bg-zinc-900/60 border-zinc-800 text-zinc-300' },
-                    { rank: 3, name: 'Rian Hidayat', score: '81%', bg: 'bg-orange-950/10 border-orange-900/20 text-orange-300' },
-                    { rank: 4, name: 'Candra Wijaya', score: '76%', bg: 'bg-zinc-950/40 border-white/5 text-zinc-400' },
-                    { rank: 5, name: 'Dewi Lestari', score: '72%', bg: 'bg-zinc-950/40 border-white/5 text-zinc-400' },
-                  ].map((user) => (
-                    <div key={user.rank} className={`flex items-center justify-between px-3 py-1.5 rounded-xl border text-[11px] font-semibold transition-all ${user.bg}`}>
-                      <div className="flex items-center gap-2 truncate">
-                        <span className="w-4 h-4 rounded bg-zinc-950 flex items-center justify-center text-[9px] font-black border border-white/5 text-zinc-500">
-                          {user.rank}
-                        </span>
-                        <span className="truncate">{user.name}</span>
-                      </div>
-                      <span className="font-mono font-bold">{user.score}</span>
+
+              {officialResult?.leaderboardOpened ? (
+                // Live Leaderboard view
+                <div className="space-y-3">
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-2 w-3.5 h-3.5 text-zinc-500" />
+                    <input
+                      type="text"
+                      placeholder="Cari nama..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-zinc-900/80 border border-zinc-800 rounded-lg pl-8 pr-2.5 py-1.5 text-[11px] text-white placeholder-zinc-600 focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
+
+                  {isLoadingLeaderboard ? (
+                    <div className="flex flex-col items-center justify-center py-10 gap-2">
+                      <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
+                      <span className="text-[10px] text-zinc-500">Loading data...</span>
                     </div>
-                  ))}
+                  ) : (
+                    <div className="space-y-1.5 max-h-[170px] overflow-y-auto pr-1.5 leaderboard-scroll">
+                      {leaderboard
+                        .filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                        .map((user, idx) => {
+                          const isUser = user.name === inputName;
+                          return (
+                            <div
+                              key={user.id || idx}
+                              onClick={() => handleSelectLeaderboardUser(user)}
+                              className={`flex items-center justify-between px-3 py-1.5 rounded-xl border text-[11px] font-semibold transition-all cursor-pointer hover:bg-white/5 active:scale-[0.98] ${idx === 0
+                                ? 'bg-amber-500/10 border-amber-500/20 text-amber-300'
+                                : idx === 1
+                                  ? 'bg-zinc-900/60 border-zinc-800 text-zinc-300'
+                                  : idx === 2
+                                    ? 'bg-orange-950/10 border-orange-900/20 text-orange-300'
+                                    : isUser
+                                      ? 'bg-blue-950/25 border-blue-500/20 text-blue-300'
+                                      : 'bg-zinc-950/40 border-white/5 text-zinc-400'
+                                }`}
+                            >
+                              <div className="flex items-center gap-2 truncate">
+                                <span className="w-4 h-4 rounded bg-zinc-950 flex items-center justify-center text-[9px] font-black border border-white/5 text-zinc-500">
+                                  {idx + 1}
+                                </span>
+                                <span className="truncate">{user.name}</span>
+                              </div>
+                              <span className="font-mono font-bold text-right shrink-0">
+                                {user.score} Pts <span className="text-[8px] text-zinc-500">({user.accuracy}%)</span>
+                              </span>
+                            </div>
+                          );
+                        })}
+                      {leaderboard.filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                        <div className="text-center py-6 text-[10px] text-zinc-600 italic">
+                          Tidak ada hasil
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-
-                {/* Locked Overlay */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 bg-zinc-950/20 backdrop-blur-[1.5px] rounded-xl">
-                  <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-2 shadow-lg shadow-amber-500/5 animate-pulse">
-                    <Lock className="w-4.5 h-4.5" />
+              ) : (
+                // Locked Leaderboard view
+                <div className="relative">
+                  {/* Leaderboard items (blurred) */}
+                  <div className="space-y-1.5 max-h-[170px] overflow-y-auto pr-1.5 leaderboard-scroll blur-sm opacity-20 select-none pointer-events-none">
+                    {[
+                      { rank: 1, name: 'Alfitra (You)', score: '94%', bg: 'bg-amber-500/10 border-amber-500/20 text-amber-300' },
+                      { rank: 2, name: 'Budi Hartono', score: '88%', bg: 'bg-zinc-900/60 border-zinc-800 text-zinc-300' },
+                      { rank: 3, name: 'Rian Hidayat', score: '81%', bg: 'bg-orange-950/10 border-orange-900/20 text-orange-300' },
+                      { rank: 4, name: 'Candra Wijaya', score: '76%', bg: 'bg-zinc-950/40 border-white/5 text-zinc-400' },
+                      { rank: 5, name: 'Dewi Lestari', score: '72%', bg: 'bg-zinc-950/40 border-white/5 text-zinc-400' },
+                    ].map((user) => (
+                      <div key={user.rank} className={`flex items-center justify-between px-3 py-1.5 rounded-xl border text-[11px] font-semibold transition-all ${user.bg}`}>
+                        <div className="flex items-center gap-2 truncate">
+                          <span className="w-4 h-4 rounded bg-zinc-950 flex items-center justify-center text-[9px] font-black border border-white/5 text-zinc-500">
+                            {user.rank}
+                          </span>
+                          <span className="truncate">{user.name}</span>
+                        </div>
+                        <span className="font-mono font-bold">{user.score}</span>
+                      </div>
+                    ))}
                   </div>
-                  <h4 className="text-[11px] font-black text-white tracking-wide uppercase">Leaderboard Terkunci</h4>
-                  <p className="text-[9px] text-zinc-400 mt-1 max-w-[180px] leading-relaxed">
-                    Akan dibuka oleh Admin ketika Babak Gugur dimulai.
-                  </p>
+
+                  {/* Locked Overlay */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2 bg-zinc-950/20 backdrop-blur-[1.5px] rounded-xl">
+                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-2 shadow-lg shadow-amber-500/5 animate-pulse">
+                      <Lock className="w-4.5 h-4.5" />
+                    </div>
+                    <h4 className="text-[11px] font-black text-white tracking-wide uppercase">Leaderboard Terkunci</h4>
+                    <p className="text-[9px] text-zinc-400 mt-1 max-w-[180px] leading-relaxed">
+                      Akan dibuka oleh Admin ketika Babak Gugur dimulai.
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )}
-            <p className="text-[9px] text-zinc-600 mt-3 text-center mb-2">
-              * Skor terupdate berdasarkan tingkat keakuratan prediksi Anda.
-            </p>
-            <button
-              onClick={() => setIsRulesOpen(true)}
-              className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 font-extrabold py-2 px-3 rounded-xl text-[10px] transition-all flex items-center justify-center gap-1.5 mt-2"
-            >
-              <HelpCircle className="w-3.5 h-3.5" /> Rules Perhitungan Poin
-            </button>
-          </div>
+              )}
+              <p className="text-[9px] text-zinc-600 mt-3 text-center mb-2">
+                * Skor terupdate berdasarkan tingkat keakuratan prediksi Anda.
+              </p>
+              <button
+                onClick={() => setIsRulesOpen(true)}
+                className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 font-extrabold py-2 px-3 rounded-xl text-[10px] transition-all flex items-center justify-center gap-1.5 mt-2"
+              >
+                <HelpCircle className="w-3.5 h-3.5" /> Rules Perhitungan Poin
+              </button>
+            </div>
+          ) : <div></div>}
         </motion.div>
 
 
@@ -1733,11 +1739,13 @@ export const CupPage = () => {
             )}
           </div>
           {officialResult?.submissionsLocked && !isSharedView && !viewingUser && (
+
             <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-30 rounded-3xl flex flex-col items-center justify-center p-4 sm:p-8 border border-white/5 min-h-[600px]">
               <div className="w-full max-w-2xl bg-zinc-950/90 border border-zinc-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-md flex flex-col max-h-[85%]">
+
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 border-b border-zinc-900 pb-4">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 border-b border-zinc-900 pb-2">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 shadow-xl shadow-amber-500/5">
                       <Lock className="w-6 h-6" />
@@ -1749,6 +1757,14 @@ export const CupPage = () => {
                   </div>
                   <span className="text-[10px] font-bold text-zinc-500 bg-zinc-900 px-3 py-1 rounded-full border border-white/5">Submissions Locked</span>
                 </div>
+
+                <Link
+                  to="/world-cup-table"
+                  className="mb-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-950/5"
+                >
+                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                  Lihat Hasil Resmi
+                </Link>
 
                 {officialResult?.leaderboardOpened ? (
                   <div className="flex-grow flex flex-col min-h-0 space-y-4 text-left">
