@@ -1799,6 +1799,9 @@ export const CupPage = () => {
                             <p className="text-[9px] text-zinc-500 mt-1.5 pl-1 italic">
                               *Hanya untuk dihubungi jika Anda menang. Tidak akan dipublikasikan.
                             </p>
+                            <p className="text-[9px] text-zinc-500 mt-1.5 pl-1 italic">
+                              (PS: Pemenang dan Hadiah sepenuhnya kuasa Admin, menyesuaikan dengan budget. Jangan berharap banyak!!)
+                            </p>
                           </div>
 
                           <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-3 text-[11px] text-zinc-400 space-y-1">
