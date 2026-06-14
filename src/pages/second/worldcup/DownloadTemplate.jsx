@@ -249,7 +249,7 @@ export const DownloadTemplate = forwardRef(({
         {/* LEFT COLUMN: GROUPS */}
         <div style={{ width: '640px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <h2 style={{ fontSize: '12px', fontWeight: '900', textTransform: 'uppercase', color: '#60a5fa', borderBottom: '1px solid #1f2937', paddingBottom: '6px', margin: 0 }}>
-            Fase Grup (Tim Lolos)
+            Fase Grup
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', overflow: 'hidden' }}>
             {WORLD_CUP_GROUPS.map((group) => {
@@ -261,34 +261,37 @@ export const DownloadTemplate = forwardRef(({
                     <span style={{ fontSize: '9px', color: '#71717a' }}>{sel.length} Lolos</span>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    {sel.map((team, idx) => (
+                    {[
+                      ...sel.map(team => ({ team, rank: sel.indexOf(team) + 1, isSelected: true })),
+                      ...group.teams.filter(t => !sel.includes(t)).map(team => ({ team, rank: null, isSelected: false }))
+                    ].map(({ team, rank, isSelected }) => (
                       <div
                         key={team}
                         style={{
                           display: 'flex',
                           alignItems: 'center',
                           gap: '6px',
-                          padding: '4px 6px',
+                          padding: '3px 6px',
                           borderRadius: '6px',
-                          backgroundColor: idx === 2 ? '#2d1f05' : '#07070a',
-                          border: `1px solid ${idx === 0 ? '#3b82f622' : idx === 1 ? '#10b98122' : '#f59e0b22'}`,
+                          backgroundColor: isSelected ? (rank === 3 ? '#2d1f05' : '#07070a') : 'transparent',
+                          border: isSelected 
+                            ? `1px solid ${rank === 1 ? '#3b82f644' : rank === 2 ? '#10b98144' : '#f59e0b44'}`
+                            : '1px solid transparent',
+                          opacity: isSelected ? 1 : 0.45,
                           fontSize: '10px'
                         }}
                       >
                         <div style={{ width: '14px', height: '10px', overflow: 'hidden', borderRadius: '1px', display: 'flex', alignItems: 'center' }}>
                           <FlagIcon teamName={team} className="w-full h-full object-cover" />
                         </div>
-                        <span style={{ flex: 1, color: '#e4e4e7', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{team}</span>
-                        <span style={{ fontSize: '8px', fontWeight: '900', color: idx === 0 ? '#60a5fa' : idx === 1 ? '#34d399' : '#fbbf24' }}>
-                          R{idx + 1}
-                        </span>
+                        <span style={{ flex: 1, color: isSelected ? '#e4e4e7' : '#71717a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{team}</span>
+                        {isSelected && (
+                          <span style={{ fontSize: '8px', fontWeight: '900', color: rank === 1 ? '#60a5fa' : rank === 2 ? '#34d399' : '#fbbf24' }}>
+                            R{rank}
+                          </span>
+                        )}
                       </div>
                     ))}
-                    {sel.length === 0 && (
-                      <div style={{ fontSize: '10px', color: '#4b5563', fontStyle: 'italic', textAlign: 'center', padding: '10px 0' }}>
-                        Belum ada prediksi
-                      </div>
-                    )}
                   </div>
                 </div>
               );
