@@ -213,7 +213,7 @@ export const DownloadTemplate = forwardRef(({
         backgroundImage:
           'radial-gradient(ellipse 900px 600px at 15% 10%, #1e3a5f15 0%, transparent 80%), ' +
           'radial-gradient(ellipse 800px 500px at 85% 90%, #064e3b15 0%, transparent 80%)',
-        padding: '32px 48px',
+        padding: isKnockoutPhase ? '32px 20px' : '32px 48px',
         boxSizing: 'border-box',
         fontFamily: 'system-ui, -apple-system, sans-serif',
         color: '#f4f4f5',
@@ -245,23 +245,23 @@ export const DownloadTemplate = forwardRef(({
       </div>
 
       {/* MAIN LAYOUT */}
-      <div style={{ display: 'flex', gap: '32px', flex: 1, marginTop: '24px', marginBottom: '16px', height: 'calc(100% - 140px)', overflow: 'hidden', justifyContent: isKnockoutPhase ? 'stretch' : 'center', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: isKnockoutPhase ? '16px' : '32px', flex: 1, marginTop: '24px', marginBottom: '16px', height: 'calc(100% - 140px)', overflow: 'hidden', justifyContent: isKnockoutPhase ? 'stretch' : 'center', alignItems: 'center' }}>
 
         {/* LEFT COLUMN: GROUPS */}
-        <div style={{ width: isKnockoutPhase ? '640px' : '1760px', display: 'flex', flexDirection: 'column', gap: isKnockoutPhase ? '12px' : '24px', justifyContent: 'center' }}>
-          <h2 style={{ fontSize: isKnockoutPhase ? '12px' : '18px', fontWeight: '900', textTransform: 'uppercase', color: '#60a5fa', borderBottom: '1px solid #1f2937', paddingBottom: '6px', margin: 0, textAlign: isKnockoutPhase ? 'left' : 'center' }}>
+        <div style={{ width: isKnockoutPhase ? '450px' : '1760px', display: 'flex', flexDirection: 'column', gap: isKnockoutPhase ? '8px' : '24px', justifyContent: 'center' }}>
+          <h2 style={{ fontSize: isKnockoutPhase ? '11px' : '18px', fontWeight: '900', textTransform: 'uppercase', color: '#60a5fa', borderBottom: '1px solid #1f2937', paddingBottom: '6px', margin: 0, textAlign: isKnockoutPhase ? 'left' : 'center' }}>
             Fase Grup
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: isKnockoutPhase ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)', gap: isKnockoutPhase ? '10px' : '20px', overflow: 'hidden' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isKnockoutPhase ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)', gap: isKnockoutPhase ? '8px' : '20px', overflow: 'hidden' }}>
             {WORLD_CUP_GROUPS.map((group) => {
               const sel = groupAdvancers[group.id] || [];
               return (
-                <div key={group.id} style={{ backgroundColor: '#0d0d12', border: '1px solid #27272a', borderRadius: '12px', padding: isKnockoutPhase ? '10px' : '18px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1f2937', paddingBottom: '6px', marginBottom: isKnockoutPhase ? '8px' : '12px' }}>
-                    <span style={{ fontSize: isKnockoutPhase ? '11px' : '15px', fontWeight: '900', color: '#60a5fa' }}>GRUP {group.id}</span>
-                    <span style={{ fontSize: isKnockoutPhase ? '9px' : '12px', color: '#71717a', fontWeight: '700' }}>{sel.length} Lolos</span>
+                <div key={group.id} style={{ backgroundColor: '#0d0d12', border: '1px solid #27272a', borderRadius: '12px', padding: isKnockoutPhase ? '8px 10px' : '18px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1f2937', paddingBottom: '6px', marginBottom: isKnockoutPhase ? '6px' : '12px' }}>
+                    <span style={{ fontSize: isKnockoutPhase ? '10px' : '15px', fontWeight: '900', color: '#60a5fa' }}>GRUP {group.id}</span>
+                    <span style={{ fontSize: isKnockoutPhase ? '8px' : '12px', color: '#71717a', fontWeight: '700' }}>{sel.length} Lolos</span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: isKnockoutPhase ? '4px' : '8px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: isKnockoutPhase ? '2px' : '8px' }}>
                     {[
                       ...sel.map(team => ({ team, rank: sel.indexOf(team) + 1, isSelected: true })),
                       ...group.teams.filter(t => !sel.includes(t)).map(team => ({ team, rank: null, isSelected: false }))
@@ -271,23 +271,23 @@ export const DownloadTemplate = forwardRef(({
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: isKnockoutPhase ? '6px' : '10px',
-                          padding: isKnockoutPhase ? '3px 6px' : '8px 12px',
-                          borderRadius: isKnockoutPhase ? '6px' : '10px',
+                          gap: isKnockoutPhase ? '4px' : '10px',
+                          padding: isKnockoutPhase ? '2px 6px' : '8px 12px',
+                          borderRadius: isKnockoutPhase ? '4px' : '10px',
                           backgroundColor: isSelected ? (rank === 3 ? '#2d1f05' : '#07070a') : 'transparent',
                           border: isSelected
                             ? `1px solid ${rank === 1 ? '#3b82f644' : rank === 2 ? '#10b98144' : '#f59e0b44'}`
                             : '1px solid transparent',
                           opacity: isSelected ? 1 : 0.45,
-                          fontSize: isKnockoutPhase ? '10px' : '14px'
+                          fontSize: isKnockoutPhase ? '9px' : '14px'
                         }}
                       >
-                        <div style={{ width: isKnockoutPhase ? '14px' : '22px', height: isKnockoutPhase ? '10px' : '15px', overflow: 'hidden', borderRadius: isKnockoutPhase ? '1px' : '3px', display: 'flex', alignItems: 'center' }}>
+                        <div style={{ width: isKnockoutPhase ? '12px' : '22px', height: isKnockoutPhase ? '8px' : '15px', overflow: 'hidden', borderRadius: isKnockoutPhase ? '1px' : '3px', display: 'flex', alignItems: 'center' }}>
                           <FlagIcon teamName={team} className="w-full h-full object-cover" />
                         </div>
                         <span style={{ flex: 1, color: isSelected ? '#e4e4e7' : '#71717a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: isSelected ? '700' : '500' }}>{team}</span>
                         {isSelected && (
-                          <span style={{ fontSize: isKnockoutPhase ? '8px' : '11px', fontWeight: '900', color: rank === 1 ? '#60a5fa' : rank === 2 ? '#34d399' : '#fbbf24', backgroundColor: rank === 1 ? '#3b82f615' : rank === 2 ? '#10b98115' : '#f59e0b15', padding: '1px 6px', borderRadius: '4px', border: `1px solid ${rank === 1 ? '#3b82f633' : rank === 2 ? '#10b98133' : '#f59e0b33'}` }}>
+                          <span style={{ fontSize: isKnockoutPhase ? '7.5px' : '11px', fontWeight: '900', color: rank === 1 ? '#60a5fa' : rank === 2 ? '#34d399' : '#fbbf24', backgroundColor: rank === 1 ? '#3b82f615' : rank === 2 ? '#10b98115' : '#f59e0b15', padding: '1px 6px', borderRadius: '4px', border: `1px solid ${rank === 1 ? '#3b82f633' : rank === 2 ? '#10b98133' : '#f59e0b33'}` }}>
                             {rank}
                           </span>
                         )}
@@ -308,10 +308,10 @@ export const DownloadTemplate = forwardRef(({
             </h2>
 
             {isComplete ? (
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: 1, gap: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: 1, gap: isKnockoutPhase ? '8px' : '16px' }}>
 
                 {/* Left Bracket columns */}
-                <div style={{ display: 'flex', gap: '12px', flex: 1, alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: isKnockoutPhase ? '6px' : '12px', flex: 1, alignItems: 'center' }}>
                   {/* R32 Left */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
                     <div style={{ fontSize: '9px', fontWeight: '900', color: '#60a5fa', textAlign: 'center', marginBottom: '4px' }}>R32 (KIRI)</div>
@@ -344,7 +344,7 @@ export const DownloadTemplate = forwardRef(({
                 </div>
 
                 {/* CENTER: CHAMPION */}
-                <div style={{ width: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: isKnockoutPhase ? '170px' : '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', backgroundColor: '#2d1f05', border: '1px solid #fbbf2433', padding: '4px 12px', borderRadius: '9999px' }}>
                     <img src={pialaImg} alt="Trophy" style={{ width: '16px', height: '16px' }} />
                     <span style={{ fontSize: '9px', fontWeight: '900', color: '#fbbf24', textTransform: 'uppercase' }}>GRAND FINAL</span>
@@ -381,7 +381,7 @@ export const DownloadTemplate = forwardRef(({
                 </div>
 
                 {/* Right Bracket columns */}
-                <div style={{ display: 'flex', gap: '12px', flex: 1, alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: isKnockoutPhase ? '6px' : '12px', flex: 1, alignItems: 'center' }}>
                   {/* SF Right */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '120px', flex: 1 }}>
                     <div style={{ fontSize: '9px', fontWeight: '900', color: '#34d399', textAlign: 'center', marginBottom: '4px' }}>SF</div>

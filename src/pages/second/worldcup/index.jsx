@@ -261,6 +261,7 @@ export const CupPage = () => {
   const [saveFlash, setSaveFlash] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [inputName, setInputName] = useState(() => decodedState?.username || localStorage.getItem('worldcup_username') || '');
+  const [inputContact, setInputContact] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null); // 'success' | 'error' | null
   const [errorMsg, setErrorMsg] = useState('');
@@ -693,6 +694,7 @@ export const CupPage = () => {
       const predictionData = {
         ...buildPredictionJSON(),
         username: inputName.trim(),
+        contact: inputContact.trim() || '',
       };
 
       const docRef = await addDoc(collection(db, "worldCup"), predictionData);
@@ -1204,9 +1206,9 @@ export const CupPage = () => {
                     <Lock className="w-3.5 h-3.5 text-zinc-500" /> Pengisian Ditutup
                   </button>
                 ) : hasSubmitted ? (
-                  <button disabled className="bg-zinc-900/40 border border-white/5 text-zinc-500 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-not-allowed">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-zinc-500" /> Sudah Submit
-                  </button>
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 select-none shadow-md shadow-emerald-950/10">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse" /> Terkirim: {inputName}
+                  </div>
                 ) : (
                   <>
                     {!viewingUser && (
@@ -1776,6 +1778,27 @@ export const CupPage = () => {
                               disabled={isSaving}
                               className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-blue-500 transition-colors disabled:opacity-50"
                             />
+                          </div>
+
+                          <div>
+                            <div className="flex items-center justify-between mb-2 pl-1">
+                              <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                                Kontak (No. WA / Akun Sosmed)
+                              </label>
+                              <span className="text-[9px] text-zinc-500 font-bold uppercase italic">Opsional</span>
+                            </div>
+                            <input
+                              type="text"
+                              value={inputContact}
+                              onChange={(e) => setInputContact(e.target.value)}
+                              placeholder="Contoh: @username / 081234..."
+                              maxLength={50}
+                              disabled={isSaving}
+                              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-blue-500 transition-colors disabled:opacity-50"
+                            />
+                            <p className="text-[9px] text-zinc-500 mt-1.5 pl-1 italic">
+                              *Hanya untuk dihubungi jika Anda menang. Tidak akan dipublikasikan.
+                            </p>
                           </div>
 
                           <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-3 text-[11px] text-zinc-400 space-y-1">
