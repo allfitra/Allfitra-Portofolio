@@ -264,6 +264,66 @@ export const CupPage = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewingUser, setViewingUser] = useState(null);
+
+  const handleSelectLeaderboardUser = (user) => {
+    if (!user.predictionData) return;
+    const pred = user.predictionData;
+    const groupAdv = {};
+    if (pred.groupStage) {
+      pred.groupStage.forEach(g => {
+        groupAdv[g.group] = g.selected || [];
+      });
+    }
+    setGroupAdvancers(groupAdv);
+    setRoundOf32Winners(pred.bracket?.roundOf32Winners || {});
+    setRoundOf16Winners(pred.bracket?.roundOf16Winners || {});
+    setQuarterWinners(pred.bracket?.quarterWinners || {});
+    setSemiWinners(pred.bracket?.semiWinners || {});
+    setFinalWinner(pred.bracket?.champion || null);
+    setViewingUser(user);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBackToMyPrediction = () => {
+    setViewingUser(null);
+    if (sharedKey) {
+      setSearchParams({});
+      return;
+    }
+
+    // If user has submitted, restore their own prediction from leaderboard
+    if (hasSubmitted) {
+      const myUsername = localStorage.getItem('worldcup_username') || inputName;
+      const myEntry = leaderboard.find(u => u.name === myUsername);
+      if (myEntry?.predictionData) {
+        const pred = myEntry.predictionData;
+        const groupAdv = {};
+        if (pred.groupStage) {
+          pred.groupStage.forEach(g => {
+            groupAdv[g.group] = g.selected || [];
+          });
+        }
+        setGroupAdvancers(groupAdv);
+        setRoundOf32Winners(pred.bracket?.roundOf32Winners || {});
+        setRoundOf16Winners(pred.bracket?.roundOf16Winners || {});
+        setQuarterWinners(pred.bracket?.quarterWinners || {});
+        setSemiWinners(pred.bracket?.semiWinners || {});
+        setFinalWinner(pred.bracket?.champion || null);
+        setInputName(myUsername);
+        return;
+      }
+    }
+
+    // Not submitted or own entry not found — clear everything
+    localStorage.removeItem(STORAGE_KEY);
+    setGroupAdvancers({});
+    setRoundOf32Winners({});
+    setRoundOf16Winners({});
+    setQuarterWinners({});
+    setSemiWinners({});
+    setFinalWinner(null);
+  };
 
   const templateRef = useRef(null);
   const [isRulesOpen, setIsRulesOpen] = useState(false);
@@ -281,7 +341,7 @@ export const CupPage = () => {
       setSemiWinners(decodedState.semiWinners || {});
       setFinalWinner(decodedState.finalWinner || null);
       setInputName(decodedState.username || '');
-    } else {
+    } else if (!viewingUser) {
       const savedState = loadFromStorage();
       setGroupAdvancers(savedState?.groupAdvancers ?? {});
       setRoundOf32Winners(savedState?.roundOf32Winners ?? {});
@@ -291,7 +351,7 @@ export const CupPage = () => {
       setFinalWinner(savedState?.finalWinner ?? null);
       setInputName(localStorage.getItem('worldcup_username') || '');
     }
-  }, [decodedState]);
+  }, [decodedState, viewingUser]);
 
   // Load live leaderboard submissions
   const fetchLeaderboardSubmissions = useCallback(async (official) => {
@@ -308,6 +368,7 @@ export const CupPage = () => {
           score: score,
           accuracy: Math.round((score / MAX_POSSIBLE_SCORE) * 100),
           createdAt: data.savedAt || '',
+          predictionData: data,
         });
       });
 
@@ -435,7 +496,7 @@ export const CupPage = () => {
 
   // ── Group selection ───────────────────────────────────────────────────────
   const handleTeamClick = (groupId, team) => {
-    if (hasSubmitted) return;
+    if (hasSubmitted || isSharedView || viewingUser || officialResult?.submissionsLocked) return;
     const current = groupAdvancers[groupId] || [];
     const currentGroupsWithThree = Object.values(groupAdvancers).filter(t => t.length === 3).length;
 
@@ -585,7 +646,7 @@ export const CupPage = () => {
   };
 
   const resetPrediction = () => {
-    if (hasSubmitted || isSharedView) return;
+    if (hasSubmitted || isSharedView || viewingUser || officialResult?.submissionsLocked) return;
     setGroupAdvancers({}); setRoundOf32Winners({}); setRoundOf16Winners({});
     setQuarterWinners({}); setSemiWinners({}); setFinalWinner(null);
     localStorage.removeItem(STORAGE_KEY);
@@ -678,7 +739,7 @@ export const CupPage = () => {
     const isT1 = winnerState[match.id] === match.t1;
     const isT2 = winnerState[match.id] === match.t2;
     const TeamBtn = ({ team, isWinner, onClick }) => {
-      const isClickable = team && !hasSubmitted && !isSharedView;
+      const isClickable = team && !hasSubmitted && !isSharedView && !viewingUser && !officialResult?.submissionsLocked;
       let btnStyle = "";
       if (isWinner) {
         btnStyle = "bg-blue-600 text-white shadow-md shadow-blue-700/30 cursor-default";
@@ -951,7 +1012,7 @@ export const CupPage = () => {
       <div className="max-w-7xl mx-auto relative z-20 pt-10 px-4 sm:px-6 lg:px-8">
 
         {/* ── SHARED VIEW TOP BANNER ── */}
-        {isSharedView && (
+        {(isSharedView || viewingUser) && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -960,14 +1021,15 @@ export const CupPage = () => {
             <div className="flex items-center gap-2.5">
               <Trophy className="w-5 h-5 text-amber-400" />
               <span className="text-xs text-zinc-300">
-                Melihat hasil prediksi dari: <strong className="text-white font-extrabold">{inputName || 'Guest'}</strong>
+                Melihat hasil prediksi dari: <strong className="text-white font-extrabold">{viewingUser ? viewingUser.name : (decodedState?.username || inputName || 'Guest')}</strong>
+                {viewingUser && <span className="ml-2 text-amber-400 font-bold">({viewingUser.score} Pts)</span>}
               </span>
             </div>
             <button
-              onClick={() => setSearchParams({})}
+              onClick={handleBackToMyPrediction}
               className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
             >
-              <ArrowLeft className="w-3.5 h-3.5" /> Buat Prediksi Saya Sendiri
+              <ArrowLeft className="w-3.5 h-3.5" /> Kembali / buat Prediksi Saya
             </button>
           </motion.div>
         )}
@@ -1092,7 +1154,8 @@ export const CupPage = () => {
                         return (
                           <div
                             key={user.id || idx}
-                            className={`flex items-center justify-between px-3 py-1.5 rounded-xl border text-[11px] font-semibold transition-all ${idx === 0
+                            onClick={() => handleSelectLeaderboardUser(user)}
+                            className={`flex items-center justify-between px-3 py-1.5 rounded-xl border text-[11px] font-semibold transition-all cursor-pointer hover:bg-white/5 active:scale-[0.98] ${idx === 0
                               ? 'bg-amber-500/10 border-amber-500/20 text-amber-300'
                               : idx === 1
                                 ? 'bg-zinc-900/60 border-zinc-800 text-zinc-300'
@@ -1173,7 +1236,7 @@ export const CupPage = () => {
 
 
         <div className="relative">
-          <div className={officialResult?.submissionsLocked && !isSharedView ? 'blur-md pointer-events-none select-none' : ''}>
+          <div className={officialResult?.submissionsLocked && !isSharedView && !viewingUser ? 'blur-md pointer-events-none select-none' : ''}>
             {/* ── STEP 1: GROUP SELECTION ── */}
             <div className="mb-10 mt-2">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7 border-b border-zinc-800 pb-5">
@@ -1410,7 +1473,14 @@ export const CupPage = () => {
                               className="w-full centerpiece-actions mt-2"
                             >
                               <div className="w-full flex flex-col gap-2">
-                                {isSharedView ? (
+                                {viewingUser ? (
+                                  <button
+                                    onClick={handleBackToMyPrediction}
+                                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all"
+                                  >
+                                    <ArrowLeft className="w-3.5 h-3.5" /> Kembali ke Prediksi Saya
+                                  </button>
+                                ) : isSharedView ? (
                                   <button
                                     onClick={() => setSearchParams({})}
                                     className="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all"
@@ -1662,18 +1732,99 @@ export const CupPage = () => {
               </motion.div>
             )}
           </div>
-          {officialResult?.submissionsLocked && !isSharedView && (
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-30 rounded-3xl flex flex-col items-center justify-center text-center p-8 border border-white/5 min-h-[500px]">
-              <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 mb-4 shadow-xl shadow-amber-500/5 animate-pulse">
-                <Lock className="w-8 h-8" />
+          {officialResult?.submissionsLocked && !isSharedView && !viewingUser && (
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-30 rounded-3xl flex flex-col items-center justify-center p-4 sm:p-8 border border-white/5 min-h-[600px]">
+              <div className="w-full max-w-2xl bg-zinc-950/90 border border-zinc-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-md flex flex-col max-h-[85%]">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 border-b border-zinc-900 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 shadow-xl shadow-amber-500/5">
+                      <Lock className="w-6 h-6" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-xl font-black text-white tracking-tight uppercase">Pengisian Prediksi Ditutup</h3>
+                      <p className="text-zinc-450 text-[11px] mt-0.5">Seluruh pilihan bracket dikunci. Klik nama di bawah untuk melihat detail prediksi mereka.</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-zinc-500 bg-zinc-900 px-3 py-1 rounded-full border border-white/5">Submissions Locked</span>
+                </div>
+
+                {officialResult?.leaderboardOpened ? (
+                  <div className="flex-grow flex flex-col min-h-0 space-y-4 text-left">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-500" />
+                      <input
+                        type="text"
+                        placeholder="Cari nama peserta..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full bg-zinc-900/60 border border-zinc-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500/50"
+                      />
+                    </div>
+
+                    {isLoadingLeaderboard ? (
+                      <div className="flex-grow flex flex-col items-center justify-center py-20 gap-3">
+                        <Loader2 className="w-6 h-6 text-amber-400 animate-spin" />
+                        <span className="text-xs text-zinc-500">Memuat data leaderboard...</span>
+                      </div>
+                    ) : (
+                      <div className="flex-grow overflow-y-auto pr-1 leaderboard-scroll space-y-2 max-h-[350px]">
+                        {leaderboard
+                          .filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                          .map((user, idx) => {
+                            const isUser = user.name === inputName;
+                            return (
+                              <div
+                                key={user.id || idx}
+                                onClick={() => handleSelectLeaderboardUser(user)}
+                                className={`flex items-center justify-between px-4 py-3 rounded-xl border text-xs font-semibold transition-all cursor-pointer hover:bg-white/5 active:scale-[0.99] ${idx === 0
+                                  ? 'bg-amber-500/10 border-amber-500/20 text-amber-300 shadow-lg shadow-amber-500/5'
+                                  : idx === 1
+                                    ? 'bg-zinc-900/80 border-zinc-800 text-zinc-300'
+                                    : idx === 2
+                                      ? 'bg-orange-950/15 border-orange-900/20 text-orange-300'
+                                      : isUser
+                                        ? 'bg-blue-950/25 border-blue-500/20 text-blue-300'
+                                        : 'bg-zinc-900/40 border-white/5 text-zinc-400'
+                                  }`}
+                              >
+                                <div className="flex items-center gap-3 truncate">
+                                  <span className="w-5 h-5 rounded-md bg-zinc-950 flex items-center justify-center text-[10px] font-black border border-white/5 text-zinc-500">
+                                    {idx + 1}
+                                  </span>
+                                  <span className="truncate">{user.name}</span>
+                                </div>
+                                <span className="font-mono font-bold text-right shrink-0">
+                                  {user.score} Pts <span className="text-[10px] text-zinc-500 font-medium">({user.accuracy}%)</span>
+                                </span>
+                              </div>
+                            );
+                          })}
+                        {leaderboard.filter(user => user.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                          <div className="text-center py-10 text-xs text-zinc-500 italic bg-zinc-900/10 border border-dashed border-zinc-800 rounded-xl">
+                            Nama peserta tidak ditemukan
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex-grow flex flex-col items-center justify-center py-12 text-center">
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/5 border border-amber-500/20 flex items-center justify-center text-amber-500 mb-3 animate-pulse">
+                      <Lock className="w-5 h-5" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white uppercase tracking-wider">Leaderboard Belum Dibuka</h4>
+                    <p className="text-[11px] text-zinc-400 mt-1 max-w-sm leading-relaxed">
+                      Skor dan klasemen realtime peserta akan dibuka oleh Admin saat Babak Gugur resmi dimulai.
+                    </p>
+                  </div>
+                )}
+
+                <p className="text-[10px] text-zinc-500 mt-5 text-center leading-relaxed border-t border-zinc-900 pt-3">
+                  * Klik nama peserta di atas untuk menginspeksi tebakan tebakan bracket mereka.
+                </p>
               </div>
-              <h3 className="text-2xl font-black text-white tracking-tight uppercase">Pengisian Prediksi Ditutup</h3>
-              <p className="text-zinc-300 text-sm mt-2 max-w-md leading-relaxed">
-                Batas waktu pengisian prediksi telah berakhir pada 17 Juni 2026. Seluruh pilihan bracket Anda telah dikunci dan tidak dapat diubah kembali.
-              </p>
-              <p className="text-zinc-500 text-xs mt-3">
-                Silakan pantau leaderboard di atas untuk melihat perolehan skor dan peringkat Anda secara real-time.
-              </p>
             </div>
           )}
         </div>
