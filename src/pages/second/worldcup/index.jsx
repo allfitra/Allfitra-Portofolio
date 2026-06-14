@@ -1800,7 +1800,7 @@ export const CupPage = () => {
                               *Hanya untuk dihubungi jika Anda menang. Tidak akan dipublikasikan.
                             </p>
                             <p className="text-[9px] text-zinc-500 mt-1.5 pl-1 italic">
-                              (PS: Pemenang dan Hadiah sepenuhnya kuasa Admin, menyesuaikan dengan budget. Jangan berharap banyak!!)
+                              (PS: Pemenang dan Hadiah sepenuhnya kuasa Admin, menyesuaikan budget. Jangan berharap banyak!!)
                             </p>
                           </div>
 
