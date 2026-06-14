@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, Share2, MessageCircle, Instagram, Check, Copy } from 'lucide-react';
 
-const DownloadPreviewModal = ({ isOpen, onClose, imageUrl, onDownload, shareUrl }) => {
+const DownloadPreviewModal = ({ isOpen, onClose, imageUrl, onDownload, shareUrl, downloadType = 'all', onChangeType, isGenerating }) => {
   const [copied, setCopied] = React.useState(false);
   const [showIgToast, setShowIgToast] = React.useState(false);
 
@@ -110,13 +110,33 @@ const DownloadPreviewModal = ({ isOpen, onClose, imageUrl, onDownload, shareUrl 
               </button>
             </div>
 
+            {/* Opsi Unduhan */}
+            <div className="flex justify-center relative z-10">
+              <div className="flex bg-blue-950/80 border border-white/10 rounded-xl p-0.5 gap-0.5 text-[10px] font-bold">
+                <button
+                  type="button"
+                  onClick={() => onChangeType && onChangeType('all')}
+                  className={`px-4 py-1.5 rounded-lg transition-all ${downloadType === 'all' ? 'bg-cyan-500 text-slate-950 font-extrabold' : 'text-zinc-400 hover:text-white'}`}
+                >
+                  Semua (Grup + Gugur)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onChangeType && onChangeType('group')}
+                  className={`px-4 py-1.5 rounded-lg transition-all ${downloadType === 'group' ? 'bg-cyan-500 text-slate-950 font-extrabold' : 'text-zinc-400 hover:text-white'}`}
+                >
+                  Fase Grup Saja
+                </button>
+              </div>
+            </div>
+
             {/* Image Preview Window (Blue layout center) */}
             <div className="flex-1 overflow-y-auto min-h-0 relative z-10 flex items-center justify-center bg-blue-950/60 border border-white/5 rounded-xl p-4 shadow-inner">
-              {imageUrl ? (
+              {imageUrl && !isGenerating ? (
                 <img
                   src={imageUrl}
                   alt="Preview Bracket Prediksi"
-                  className="max-h-[55vh] w-auto object-contain rounded-lg border border-white/10 shadow-2xl"
+                  className="max-h-[50vh] w-auto object-contain rounded-lg border border-white/10 shadow-2xl"
                 />
               ) : (
                 <div className="flex flex-col items-center gap-2 text-white/40 py-20">

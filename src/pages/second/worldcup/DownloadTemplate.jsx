@@ -72,7 +72,8 @@ export const DownloadTemplate = forwardRef(({
   quarterWinners = {},
   semiWinners = {},
   finalWinner = null,
-  username
+  username,
+  isKnockoutPhase = true
 }, ref) => {
 
   const groupsWithThreeCount = useMemo(() =>
@@ -228,10 +229,10 @@ export const DownloadTemplate = forwardRef(({
           <img src={logoWorldCupImg} alt="World Cup Logo" style={{ height: '72px', width: 'auto', objectContain: 'contain' }} />
           <div>
             <span style={{ fontSize: '10px', fontWeight: '900', color: '#60a5fa', textTransform: 'uppercase', tracking: '0.1em', backgroundColor: '#1e3a5f33', border: '1px solid #3b82f633', padding: '3px 12px', borderRadius: '9999px', display: 'inline-block' }}>
-              FIFA World Cup 2026 Prediction Bracket
+              {isKnockoutPhase ? 'FIFA World Cup 2026 Prediction Bracket' : 'FIFA World Cup 2026 — Prediksi Fase Grup'}
             </span>
             <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#ffffff', margin: '4px 0 0 0', letterSpacing: '-0.025em' }}>
-              Hasil Prediksi Saya
+              {isKnockoutPhase ? 'Hasil Prediksi Saya' : 'Prediksi Fase Grup Saya'}
             </h1>
           </div>
         </div>
@@ -244,23 +245,23 @@ export const DownloadTemplate = forwardRef(({
       </div>
 
       {/* MAIN LAYOUT */}
-      <div style={{ display: 'flex', gap: '32px', flex: 1, marginTop: '24px', marginBottom: '16px', height: 'calc(100% - 140px)', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', gap: '32px', flex: 1, marginTop: '24px', marginBottom: '16px', height: 'calc(100% - 140px)', overflow: 'hidden', justifyContent: isKnockoutPhase ? 'stretch' : 'center', alignItems: 'center' }}>
 
         {/* LEFT COLUMN: GROUPS */}
-        <div style={{ width: '640px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <h2 style={{ fontSize: '12px', fontWeight: '900', textTransform: 'uppercase', color: '#60a5fa', borderBottom: '1px solid #1f2937', paddingBottom: '6px', margin: 0 }}>
+        <div style={{ width: isKnockoutPhase ? '640px' : '1760px', display: 'flex', flexDirection: 'column', gap: isKnockoutPhase ? '12px' : '24px', justifyContent: 'center' }}>
+          <h2 style={{ fontSize: isKnockoutPhase ? '12px' : '18px', fontWeight: '900', textTransform: 'uppercase', color: '#60a5fa', borderBottom: '1px solid #1f2937', paddingBottom: '6px', margin: 0, textAlign: isKnockoutPhase ? 'left' : 'center' }}>
             Fase Grup
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', overflow: 'hidden' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isKnockoutPhase ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)', gap: isKnockoutPhase ? '10px' : '20px', overflow: 'hidden' }}>
             {WORLD_CUP_GROUPS.map((group) => {
               const sel = groupAdvancers[group.id] || [];
               return (
-                <div key={group.id} style={{ backgroundColor: '#0d0d12', border: '1px solid #27272a', borderRadius: '12px', padding: '10px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1f2937', paddingBottom: '4px', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: '900', color: '#60a5fa' }}>GRUP {group.id}</span>
-                    <span style={{ fontSize: '9px', color: '#71717a' }}>{sel.length} Lolos</span>
+                <div key={group.id} style={{ backgroundColor: '#0d0d12', border: '1px solid #27272a', borderRadius: '12px', padding: isKnockoutPhase ? '10px' : '18px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1f2937', paddingBottom: '6px', marginBottom: isKnockoutPhase ? '8px' : '12px' }}>
+                    <span style={{ fontSize: isKnockoutPhase ? '11px' : '15px', fontWeight: '900', color: '#60a5fa' }}>GRUP {group.id}</span>
+                    <span style={{ fontSize: isKnockoutPhase ? '9px' : '12px', color: '#71717a', fontWeight: '700' }}>{sel.length} Lolos</span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: isKnockoutPhase ? '4px' : '8px' }}>
                     {[
                       ...sel.map(team => ({ team, rank: sel.indexOf(team) + 1, isSelected: true })),
                       ...group.teams.filter(t => !sel.includes(t)).map(team => ({ team, rank: null, isSelected: false }))
@@ -270,24 +271,24 @@ export const DownloadTemplate = forwardRef(({
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '6px',
-                          padding: '3px 6px',
-                          borderRadius: '6px',
+                          gap: isKnockoutPhase ? '6px' : '10px',
+                          padding: isKnockoutPhase ? '3px 6px' : '8px 12px',
+                          borderRadius: isKnockoutPhase ? '6px' : '10px',
                           backgroundColor: isSelected ? (rank === 3 ? '#2d1f05' : '#07070a') : 'transparent',
                           border: isSelected
                             ? `1px solid ${rank === 1 ? '#3b82f644' : rank === 2 ? '#10b98144' : '#f59e0b44'}`
                             : '1px solid transparent',
                           opacity: isSelected ? 1 : 0.45,
-                          fontSize: '10px'
+                          fontSize: isKnockoutPhase ? '10px' : '14px'
                         }}
                       >
-                        <div style={{ width: '14px', height: '10px', overflow: 'hidden', borderRadius: '1px', display: 'flex', alignItems: 'center' }}>
+                        <div style={{ width: isKnockoutPhase ? '14px' : '22px', height: isKnockoutPhase ? '10px' : '15px', overflow: 'hidden', borderRadius: isKnockoutPhase ? '1px' : '3px', display: 'flex', alignItems: 'center' }}>
                           <FlagIcon teamName={team} className="w-full h-full object-cover" />
                         </div>
-                        <span style={{ flex: 1, color: isSelected ? '#e4e4e7' : '#71717a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{team}</span>
+                        <span style={{ flex: 1, color: isSelected ? '#e4e4e7' : '#71717a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: isSelected ? '700' : '500' }}>{team}</span>
                         {isSelected && (
-                          <span style={{ fontSize: '8px', fontWeight: '900', color: rank === 1 ? '#60a5fa' : rank === 2 ? '#34d399' : '#fbbf24' }}>
-                            R{rank}
+                          <span style={{ fontSize: isKnockoutPhase ? '8px' : '11px', fontWeight: '900', color: rank === 1 ? '#60a5fa' : rank === 2 ? '#34d399' : '#fbbf24', backgroundColor: rank === 1 ? '#3b82f615' : rank === 2 ? '#10b98115' : '#f59e0b15', padding: '1px 6px', borderRadius: '4px', border: `1px solid ${rank === 1 ? '#3b82f633' : rank === 2 ? '#10b98133' : '#f59e0b33'}` }}>
+                            {rank}
                           </span>
                         )}
                       </div>
@@ -300,126 +301,128 @@ export const DownloadTemplate = forwardRef(({
         </div>
 
         {/* RIGHT COLUMN: KNOCKOUT BRACKET */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <h2 style={{ fontSize: '12px', fontWeight: '900', textTransform: 'uppercase', color: '#10b981', borderBottom: '1px solid #1f2937', paddingBottom: '6px', margin: 0 }}>
-            Bagan Gugur (Knockout Stage)
-          </h2>
+        {isKnockoutPhase && (
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <h2 style={{ fontSize: '12px', fontWeight: '900', textTransform: 'uppercase', color: '#10b981', borderBottom: '1px solid #1f2937', paddingBottom: '6px', margin: 0 }}>
+              Bagan Gugur (Knockout Stage)
+            </h2>
 
-          {isComplete ? (
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: 1, gap: '16px' }}>
+            {isComplete ? (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: 1, gap: '16px' }}>
 
-              {/* Left Bracket columns */}
-              <div style={{ display: 'flex', gap: '12px', flex: 1, alignItems: 'center' }}>
-                {/* R32 Left */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-                  <div style={{ fontSize: '9px', fontWeight: '900', color: '#60a5fa', textAlign: 'center', marginBottom: '4px' }}>R32 (KIRI)</div>
-                  {r32.left.map(m => (
-                    <MatchBlock key={m.id} match={m} winners={roundOf32Winners} />
-                  ))}
-                </div>
-
-                {/* R16 Left */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', flex: 1 }}>
-                  <div style={{ fontSize: '9px', fontWeight: '900', color: '#60a5fa', textAlign: 'center', marginBottom: '4px' }}>R16</div>
-                  {r16.left.map(m => (
-                    <MatchBlock key={m.id} match={m} winners={roundOf16Winners} />
-                  ))}
-                </div>
-
-                {/* QF Left */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '72px', flex: 1 }}>
-                  <div style={{ fontSize: '9px', fontWeight: '900', color: '#60a5fa', textAlign: 'center', marginBottom: '4px' }}>QF</div>
-                  {qf.left.map(m => (
-                    <MatchBlock key={m.id} match={m} winners={quarterWinners} />
-                  ))}
-                </div>
-
-                {/* SF Left */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '120px', flex: 1 }}>
-                  <div style={{ fontSize: '9px', fontWeight: '900', color: '#60a5fa', textAlign: 'center', marginBottom: '4px' }}>SF</div>
-                  {sf.left ? <MatchBlock match={sf.left} winners={semiWinners} /> : null}
-                </div>
-              </div>
-
-              {/* CENTER: CHAMPION */}
-              <div style={{ width: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', backgroundColor: '#2d1f05', border: '1px solid #fbbf2433', padding: '4px 12px', borderRadius: '9999px' }}>
-                  <img src={pialaImg} alt="Trophy" style={{ width: '16px', height: '16px' }} />
-                  <span style={{ fontSize: '9px', fontWeight: '900', color: '#fbbf24', textTransform: 'uppercase' }}>GRAND FINAL</span>
-                </div>
-
-                {finalMatch ? (
-                  <div style={{ width: '100%', marginBottom: '16px' }}>
-                    <MatchBlock match={finalMatch} winners={{ F_1: finalWinner }} />
+                {/* Left Bracket columns */}
+                <div style={{ display: 'flex', gap: '12px', flex: 1, alignItems: 'center' }}>
+                  {/* R32 Left */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#60a5fa', textAlign: 'center', marginBottom: '4px' }}>R32 (KIRI)</div>
+                    {r32.left.map(m => (
+                      <MatchBlock key={m.id} match={m} winners={roundOf32Winners} />
+                    ))}
                   </div>
-                ) : null}
 
-                {finalWinner && (
-                  <div style={{
-                    width: '100%',
-                    backgroundColor: '#0d0d12',
-                    border: '2px solid #fbbf24',
-                    borderRadius: '16px',
-                    padding: '16px 12px',
-                    textAlign: 'center',
-                    boxShadow: '0 0 20px rgba(251, 191, 36, 0.1)',
-                    position: 'relative'
-                  }}>
-                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '0.1em' }}>JUARA DUNIA</div>
-                    <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
-                      <div style={{ width: '48px', height: '32px', overflow: 'hidden', borderRadius: '4px', border: '1px solid #27272a' }}>
-                        <FlagIcon teamName={finalWinner} className="w-full h-full object-cover" />
+                  {/* R16 Left */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', flex: 1 }}>
+                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#60a5fa', textAlign: 'center', marginBottom: '4px' }}>R16</div>
+                    {r16.left.map(m => (
+                      <MatchBlock key={m.id} match={m} winners={roundOf16Winners} />
+                    ))}
+                  </div>
+
+                  {/* QF Left */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '72px', flex: 1 }}>
+                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#60a5fa', textAlign: 'center', marginBottom: '4px' }}>QF</div>
+                    {qf.left.map(m => (
+                      <MatchBlock key={m.id} match={m} winners={quarterWinners} />
+                    ))}
+                  </div>
+
+                  {/* SF Left */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '120px', flex: 1 }}>
+                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#60a5fa', textAlign: 'center', marginBottom: '4px' }}>SF</div>
+                    {sf.left ? <MatchBlock match={sf.left} winners={semiWinners} /> : null}
+                  </div>
+                </div>
+
+                {/* CENTER: CHAMPION */}
+                <div style={{ width: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', backgroundColor: '#2d1f05', border: '1px solid #fbbf2433', padding: '4px 12px', borderRadius: '9999px' }}>
+                    <img src={pialaImg} alt="Trophy" style={{ width: '16px', height: '16px' }} />
+                    <span style={{ fontSize: '9px', fontWeight: '900', color: '#fbbf24', textTransform: 'uppercase' }}>GRAND FINAL</span>
+                  </div>
+
+                  {finalMatch ? (
+                    <div style={{ width: '100%', marginBottom: '16px' }}>
+                      <MatchBlock match={finalMatch} winners={{ F_1: finalWinner }} />
+                    </div>
+                  ) : null}
+
+                  {finalWinner && (
+                    <div style={{
+                      width: '100%',
+                      backgroundColor: '#0d0d12',
+                      border: '2px solid #fbbf24',
+                      borderRadius: '16px',
+                      padding: '16px 12px',
+                      textAlign: 'center',
+                      boxShadow: '0 0 20px rgba(251, 191, 36, 0.1)',
+                      position: 'relative'
+                    }}>
+                      <div style={{ fontSize: '9px', fontWeight: '900', color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '0.1em' }}>JUARA DUNIA</div>
+                      <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
+                        <div style={{ width: '48px', height: '32px', overflow: 'hidden', borderRadius: '4px', border: '1px solid #27272a' }}>
+                          <FlagIcon teamName={finalWinner} className="w-full h-full object-cover" />
+                        </div>
+                      </div>
+                      <div style={{ fontSize: '18px', fontWeight: '900', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {finalWinner}
                       </div>
                     </div>
-                    <div style={{ fontSize: '18px', fontWeight: '900', color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {finalWinner}
-                    </div>
+                  )}
+                </div>
+
+                {/* Right Bracket columns */}
+                <div style={{ display: 'flex', gap: '12px', flex: 1, alignItems: 'center' }}>
+                  {/* SF Right */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '120px', flex: 1 }}>
+                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#34d399', textAlign: 'center', marginBottom: '4px' }}>SF</div>
+                    {sf.right ? <MatchBlock match={sf.right} winners={semiWinners} /> : null}
                   </div>
-                )}
+
+                  {/* QF Right */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '72px', flex: 1 }}>
+                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#34d399', textAlign: 'center', marginBottom: '4px' }}>QF</div>
+                    {qf.right.map(m => (
+                      <MatchBlock key={m.id} match={m} winners={quarterWinners} />
+                    ))}
+                  </div>
+
+                  {/* R16 Right */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', flex: 1 }}>
+                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#34d399', textAlign: 'center', marginBottom: '4px' }}>R16</div>
+                    {r16.right.map(m => (
+                      <MatchBlock key={m.id} match={m} winners={roundOf16Winners} />
+                    ))}
+                  </div>
+
+                  {/* R32 Right */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                    <div style={{ fontSize: '9px', fontWeight: '900', color: '#34d399', textAlign: 'center', marginBottom: '4px' }}>R32 (KANAN)</div>
+                    {r32.right.map(m => (
+                      <MatchBlock key={m.id} match={m} winners={roundOf32Winners} />
+                    ))}
+                  </div>
+                </div>
+
               </div>
-
-              {/* Right Bracket columns */}
-              <div style={{ display: 'flex', gap: '12px', flex: 1, alignItems: 'center' }}>
-                {/* SF Right */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '120px', flex: 1 }}>
-                  <div style={{ fontSize: '9px', fontWeight: '900', color: '#34d399', textAlign: 'center', marginBottom: '4px' }}>SF</div>
-                  {sf.right ? <MatchBlock match={sf.right} winners={semiWinners} /> : null}
-                </div>
-
-                {/* QF Right */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '72px', flex: 1 }}>
-                  <div style={{ fontSize: '9px', fontWeight: '900', color: '#34d399', textAlign: 'center', marginBottom: '4px' }}>QF</div>
-                  {qf.right.map(m => (
-                    <MatchBlock key={m.id} match={m} winners={quarterWinners} />
-                  ))}
-                </div>
-
-                {/* R16 Right */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', flex: 1 }}>
-                  <div style={{ fontSize: '9px', fontWeight: '900', color: '#34d399', textAlign: 'center', marginBottom: '4px' }}>R16</div>
-                  {r16.right.map(m => (
-                    <MatchBlock key={m.id} match={m} winners={roundOf16Winners} />
-                  ))}
-                </div>
-
-                {/* R32 Right */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-                  <div style={{ fontSize: '9px', fontWeight: '900', color: '#34d399', textAlign: 'center', marginBottom: '4px' }}>R32 (KANAN)</div>
-                  {r32.right.map(m => (
-                    <MatchBlock key={m.id} match={m} winners={roundOf32Winners} />
-                  ))}
+            ) : (
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed #27272a', borderRadius: '16px', backgroundColor: '#07070a' }}>
+                <div style={{ textAlign: 'center', color: '#71717a', fontSize: '12px' }}>
+                  Lengkapi prediksi Fase Grup terlebih dahulu untuk membuka Bagan Gugur.
                 </div>
               </div>
-
-            </div>
-          ) : (
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed #27272a', borderRadius: '16px', backgroundColor: '#07070a' }}>
-              <div style={{ textAlign: 'center', color: '#71717a', fontSize: '12px' }}>
-                Lengkapi prediksi Fase Grup terlebih dahulu untuk membuka Bagan Gugur.
-              </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
       </div>
 

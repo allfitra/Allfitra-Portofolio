@@ -266,6 +266,8 @@ export const CupPage = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [hasSubmitted, setHasSubmitted] = useState(() => localStorage.getItem('worldcup_submitted') === 'true');
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadType, setDownloadType] = useState('all'); // 'all' | 'group'
+  const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
 
   // Real-time leaderboard states
   const [officialResult, setOfficialResult] = useState(null);
@@ -730,15 +732,13 @@ export const CupPage = () => {
   const handleDownloadBracket = async () => {
     if (!templateRef.current) return;
 
-    // Open the modal immediately with a loading state to make the UI responsive
     setPreviewImageUrl('');
     setIsPreviewOpen(true);
     setIsDownloading(true);
+    setDownloadType('all'); // Reset back to default 'all' when opening
 
-    // Defer the heavy rendering process slightly to allow the modal opening animation to run smoothly first
     setTimeout(async () => {
       try {
-        // Generate share URL in advance for the preview modal
         const stateToShare = {
           groupAdvancers,
           roundOf32Winners,
@@ -751,7 +751,6 @@ export const CupPage = () => {
         const shareUrl = `${window.location.origin}${window.location.pathname}?p=${code}`;
         setGeneratedShareUrl(shareUrl);
 
-        // html-to-image is much cleaner and supports modern CSS grids, rounded corners and transparent borders perfectly
         const dataUrl = await toPng(templateRef.current, {
           quality: 0.95,
           backgroundColor: '#07070a',
@@ -763,7 +762,7 @@ export const CupPage = () => {
         setPreviewImageUrl(dataUrl);
       } catch (error) {
         console.error('Gagal membuat gambar prediksi:', error);
-        setIsPreviewOpen(false); // Close the modal if generation fails
+        setIsPreviewOpen(false);
         alert('Gagal membuat preview gambar.');
       } finally {
         setIsDownloading(false);
@@ -771,11 +770,34 @@ export const CupPage = () => {
     }, 150);
   };
 
+  const handleDownloadTypeChange = async (type) => {
+    setDownloadType(type);
+    setPreviewImageUrl('');
+    setIsGeneratingPreview(true);
+
+    setTimeout(async () => {
+      try {
+        const dataUrl = await toPng(templateRef.current, {
+          quality: 0.95,
+          backgroundColor: '#07070a',
+          style: {
+            transform: 'scale(1)',
+          }
+        });
+        setPreviewImageUrl(dataUrl);
+      } catch (error) {
+        console.error('Gagal memperbarui preview gambar:', error);
+      } finally {
+        setIsGeneratingPreview(false);
+      }
+    }, 200);
+  };
+
   const triggerActualDownload = () => {
     if (!previewImageUrl) return;
     const a = document.createElement('a');
     a.href = previewImageUrl;
-    a.download = `WorldCup2026_Predictions_${inputName || 'User'}.png`;
+    a.download = `WorldCup2026_Predictions_${downloadType === 'group' ? 'FaseGrup' : ''}_${inputName || 'User'}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1998,6 +2020,7 @@ export const CupPage = () => {
             semiWinners={semiWinners}
             finalWinner={finalWinner}
             username={inputName}
+            isKnockoutPhase={downloadType === 'all'}
           />
         </div>
 
@@ -2011,6 +2034,9 @@ export const CupPage = () => {
           imageUrl={previewImageUrl}
           onDownload={triggerActualDownload}
           shareUrl={generatedShareUrl}
+          downloadType={downloadType}
+          onChangeType={handleDownloadTypeChange}
+          isGenerating={isGeneratingPreview}
         />
       </div>
       <Footer />
