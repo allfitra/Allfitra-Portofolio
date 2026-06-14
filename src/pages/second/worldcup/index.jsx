@@ -290,12 +290,13 @@ export const CupPage = () => {
         setUsernameStatus('new');
       } else {
         const docs = querySnapshot.docs;
-        const matchedDocId = docs[0].id;
-        // Check if this matches our local record (either local doc id, or local username matching the query result name)
-        if (localDocId === matchedDocId || localUsername.toLowerCase() === trimmed.toLowerCase()) {
+        const hasMatchedLocalDocId = docs.some(d => d.id === localDocId);
+        
+        if (hasMatchedLocalDocId || (localUsername && localUsername.toLowerCase() === trimmed.toLowerCase())) {
           setUsernameStatus('existing_mine');
-          // Update the localStorage doc ID to match just in case
-          localStorage.setItem('worldcup_doc_id', matchedDocId);
+          // Use existing matched doc ID if possible, otherwise use the first one (most recent)
+          const activeDoc = docs.find(d => d.id === localDocId) || docs[0];
+          localStorage.setItem('worldcup_doc_id', activeDoc.id);
         } else {
           setUsernameStatus('existing_others');
         }
