@@ -47,12 +47,12 @@ const Footer = () => {
               <Instagram className="w-3.5 h-3.5" /> Instagram
             </a>
             <a
-              href="https://alfitrafadjri.dev"
+              href="/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-white transition-colors"
             >
-              <Globe className="w-3.5 h-3.5" /> Portofolio
+              <Globe className="w-3.5 h-3.5" /> About me
             </a>
           </div>
           <p className="text-[10px] text-zinc-500 flex items-center gap-1 select-none">

@@ -954,7 +954,7 @@ export const CupPage = () => {
               World Cup Predictor
             </h1>
             <p className="text-zinc-400 text-xs mb-4">
-              Pilih tim yang lolos dari setiap grup (Rank 1, 2, dan opsional Rank 3). Prediksi pemenang di setiap babak.
+              Pilih tim yang lolos dari setiap grup (Rank 1, 2, dan Rank 3 (8 group)). Prediksi pemenang di setiap babak.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-2.5 predictor-actions">
@@ -1131,7 +1131,7 @@ export const CupPage = () => {
 
 
         {/* ── STEP 1: GROUP SELECTION ── */}
-        <div className="mb-10">
+        <div className="mb-10 mt-2">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7 border-b border-zinc-800 pb-5">
             <div className="flex items-center gap-3">
               <span className="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-xs border border-blue-500/25">1</span>
