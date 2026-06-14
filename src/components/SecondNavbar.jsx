@@ -12,9 +12,10 @@ export const SecondNavbar = () => {
   const location = useLocation();
   const [navigation, setNavigation] = useState([
     { name: 'Base', href: '/world/home', current: location.pathname === '/world/home' },
-    { name: 'PitBooth', href: '/world/pitbooth', current: location.pathname === '/world/pitbooth' },
-    { name: 'Galery', href: '/world/galery', current: location.pathname === '/world/galery' },
-    { name: 'Support Me', href: '/world/support-me', current: location.pathname === '/world/support-me' },
+    { name: 'World Cup', href: '/world/cup', current: location.pathname === '/world/cup' },
+    // { name: 'PitBooth', href: '/world/pitbooth', current: location.pathname === '/world/pitbooth' },
+    // { name: 'Galery', href: '/world/galery', current: location.pathname === '/world/galery' },
+    // { name: 'Support Me', href: '/world/support-me', current: location.pathname === '/world/support-me' },
   ]);
 
   useEffect(() => {
@@ -47,15 +48,14 @@ const WebNavbar = ({ navigation }) => {
 
   return (
     <nav
-      className={`fixed top-0 z-50 w-full transition-all duration-300 hidden md:block ${
-        isScrolled 
-          ? 'bg-[var(--bg-primary)] shadow-[0_4px_30px_rgba(0,240,255,0.05)] py-2 border-b border-[var(--glass-border)]' 
+      className={`fixed top-0 z-50 w-full transition-all duration-300 hidden md:block ${isScrolled
+          ? 'bg-[var(--bg-primary)] shadow-[0_4px_30px_rgba(0,240,255,0.05)] py-2 border-b border-[var(--glass-border)]'
           : 'bg-transparent py-4'
-      }`}
+        }`}
     >
       <div className="flex justify-center">
         <div className="relative flex h-16 w-full max-w-6xl items-center justify-between px-6 md:px-10">
-          
+
           {/* Logo Section */}
           <div className="flex items-center gap-3">
             <Link to={'/'} className="transition-transform duration-300 hover:scale-105">
@@ -75,8 +75,8 @@ const WebNavbar = ({ navigation }) => {
                 key={item.name}
                 to={item.href}
                 className={classNames(
-                  item.current 
-                    ? 'text-[var(--accent-cyan)] font-bold bg-[rgba(0,240,255,0.1)] shadow-[0_0_15px_rgba(0,240,255,0.15)]' 
+                  item.current
+                    ? 'text-[var(--accent-cyan)] font-bold bg-[rgba(0,240,255,0.1)] shadow-[0_0_15px_rgba(0,240,255,0.15)]'
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(255,255,255,0.05)]',
                   'rounded-full px-5 py-2 font-heading text-sm transition-all duration-300'
                 )}
@@ -98,10 +98,10 @@ const WebNavbar = ({ navigation }) => {
               {theme === 'dark' ? <SunIcon className="w-5 h-5 text-yellow-400" /> : <MoonIcon className="w-5 h-5" />}
             </button>
           </div>
-          
+
         </div>
       </div>
-      
+
       {/* Decorative Divider */}
       <div className={`flex justify-center transition-opacity duration-300 ${isScrolled ? 'opacity-0' : 'opacity-100'} mt-2`}>
         <hr className="w-[75%] border-t border-[var(--glass-border)]" />
@@ -125,15 +125,14 @@ const MobileNavbar = ({ navigation }) => {
 
   return (
     <nav
-      className={`fixed top-0 z-50 w-full transition-all duration-300 md:hidden ${
-        isScrolled || isOpen
-          ? 'bg-[var(--bg-primary)] shadow-[0_4px_30px_rgba(0,240,255,0.05)] border-b border-[var(--glass-border)]' 
+      className={`fixed top-0 z-50 w-full transition-all duration-300 md:hidden ${isScrolled || isOpen
+          ? 'bg-[var(--bg-primary)] shadow-[0_4px_30px_rgba(0,240,255,0.05)] border-b border-[var(--glass-border)]'
           : 'bg-transparent'
-      }`}
+        }`}
     >
       <div className="flex justify-center px-4 py-3">
         <div className="relative flex w-full items-center justify-between">
-          
+
           {/* Theme Toggle */}
           <div className="flex items-center">
             <button
@@ -212,8 +211,8 @@ const MobileNavbar = ({ navigation }) => {
               key={item.name}
               to={item.href}
               className={classNames(
-                item.current 
-                  ? 'bg-[rgba(0,240,255,0.1)] text-[var(--accent-cyan)] font-bold border border-[rgba(0,240,255,0.2)]' 
+                item.current
+                  ? 'bg-[rgba(0,240,255,0.1)] text-[var(--accent-cyan)] font-bold border border-[rgba(0,240,255,0.2)]'
                   : 'text-[var(--text-primary)] border border-transparent',
                 'block rounded-xl px-4 py-3 text-center text-sm transition-colors'
               )}

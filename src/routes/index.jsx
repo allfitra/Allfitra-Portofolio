@@ -10,11 +10,14 @@ import { ProjectPage } from '@/pages/main/project';
 import { BlogPage } from '@/pages/second/blog';
 import { HomePage } from '@/pages/main/home';
 import { BasePage } from '@/pages/second/base';
+import { CupPage } from '@/pages/second/worldcup';
+import { WorldCupAdminPage } from '@/pages/second/worldcup/admin';
 import { SupportMe } from '@/pages/second/support-me';
 import { useEffect } from 'react';
 import { MyGalery } from '@/pages/second/galery';
 import { Pitbooth } from '@/pages/second/pitbooth';
 import { FinancialReport } from '@/pages/silent/financial-report';
+import { InvestPage } from '@/pages/finance/invest';
 
 export const AppRoutes = () => {
   return (
@@ -30,15 +33,20 @@ export const AppRoutes = () => {
 
         {/* Second */}
         <Route path="/world/home" element={<BasePage />} />
+        <Route path="/world-cup" element={<CupPage />} />
+        <Route path="/world-cup-admin" element={<WorldCupAdminPage />} />
         {/* <Route path="/blog" element={<BlogPage />} /> */}
-        <Route path="/world/pitbooth" element={<Pitbooth />} />
+        {/* <Route path="/world/pitbooth" element={<Pitbooth />} />
         <Route path="/world/galery" element={<MyGalery />} />
-        <Route path="/world/support-me" element={<SupportMe />} />
+        <Route path="/world/support-me" element={<SupportMe />} /> */}
 
         {/* Extra */}
         <Route path="/send-message" element={<AnonymousPage />} />
         <Route path="/230701" element={<MessagesListPage />} />
         <Route path="/balanjo" element={<FinancialReport />} />
+
+        {/* Finance */}
+        <Route path="/finance/invest" element={<InvestPage />} />
 
         {/* Not Found */}
         <Route path="/not-found" element={<NotFoundPage />} />
