@@ -231,7 +231,7 @@ export const DownloadTemplate = forwardRef(({
               FIFA World Cup 2026 Prediction Bracket
             </span>
             <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#ffffff', margin: '4px 0 0 0', letterSpacing: '-0.025em' }}>
-              Hasil Prediksi Lengkap Turnamen
+              Hasil Prediksi Saya
             </h1>
           </div>
         </div>
@@ -274,7 +274,7 @@ export const DownloadTemplate = forwardRef(({
                           padding: '3px 6px',
                           borderRadius: '6px',
                           backgroundColor: isSelected ? (rank === 3 ? '#2d1f05' : '#07070a') : 'transparent',
-                          border: isSelected 
+                          border: isSelected
                             ? `1px solid ${rank === 1 ? '#3b82f644' : rank === 2 ? '#10b98144' : '#f59e0b44'}`
                             : '1px solid transparent',
                           opacity: isSelected ? 1 : 0.45,
@@ -426,7 +426,7 @@ export const DownloadTemplate = forwardRef(({
       {/* FOOTER */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #1f2937', paddingTop: '12px', fontSize: '10px', color: '#52525b' }}>
         <span>FIFA World Cup 2026 Predictor</span>
-        <span>CREATTED BY @ALLFITRA</span>
+        <span>SUPPORT BY @ALLFITRA</span>
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import { BlogPage } from '@/pages/second/blog';
 import { HomePage } from '@/pages/main/home';
 import { BasePage } from '@/pages/second/base';
 import { CupPage } from '@/pages/second/worldcup';
+import { CupResultPage } from '@/pages/second/worldcup/result';
 import { WorldCupAdminPage } from '@/pages/second/worldcup/admin';
 import { SupportMe } from '@/pages/second/support-me';
 import { useEffect } from 'react';
@@ -34,6 +35,7 @@ export const AppRoutes = () => {
         {/* Second */}
         <Route path="/world/home" element={<BasePage />} />
         <Route path="/world-cup" element={<CupPage />} />
+        <Route path="/world-cup-table" element={<CupResultPage />} />
         <Route path="/world-cup-admin" element={<WorldCupAdminPage />} />
         {/* <Route path="/blog" element={<BlogPage />} /> */}
         {/* <Route path="/world/pitbooth" element={<Pitbooth />} />

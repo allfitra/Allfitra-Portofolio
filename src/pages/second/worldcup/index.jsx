@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, CheckCircle2, RotateCcw, Star, Swords, Save, Send, Loader2, X, AlertTriangle, Lock, Download, Share2, Search, ArrowLeft, HelpCircle } from 'lucide-react';
 import { toPng } from 'html-to-image';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import DownloadTemplate from './DownloadTemplate';
 import RulesModal from './RulesModal';
 import DownloadPreviewModal from './DownloadPreviewModal';
@@ -1144,7 +1144,14 @@ export const CupPage = () => {
                 </p>
               </div>
             </div>
-            <div className="flex bg-zinc-900/80 p-1 rounded-lg border border-white/5 self-start sm:self-center">
+            <Link
+              to="/world-cup-table"
+              className="mt-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-950/5"
+            >
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              Lihat Hasil Resmi
+            </Link>
+            <div className="flex mt-2 bg-zinc-900/80 p-1 rounded-lg border border-white/5 self-start sm:self-center">
               {['A-F', 'G-L'].map(tab => (
                 <button key={tab} onClick={() => setActiveGroupTab(tab)}
                   className={`px-4 py-1.5 rounded-md text-xs font-bold tracking-wider transition-all ${activeGroupTab === tab ? 'bg-blue-600 text-white' : 'text-zinc-400 hover:text-zinc-200'}`}>
@@ -1381,14 +1388,14 @@ export const CupPage = () => {
                                 <Send className="w-3.5 h-3.5" /> Submit Hasil Prediksi
                               </button>
                             )}
-                            {isComplete && (
+                            {/* {isComplete && (
                               <button
                                 onClick={handleShareLink}
                                 className="w-full bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 text-blue-400 font-extrabold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5"
                               >
                                 <Share2 className="w-3.5 h-3.5" /> Bagikan Hasil (Copy Link)
                               </button>
-                            )}
+                            )} */}
                             <button
                               onClick={handleDownloadBracket}
                               disabled={isDownloading}
