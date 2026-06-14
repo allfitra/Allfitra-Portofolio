@@ -1053,8 +1053,11 @@ export const CupPage = () => {
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-500 mb-3 leading-none">
               World Cup Predictor
             </h1>
-            <p className="text-zinc-400 text-xs mb-4">
+            <p className="text-zinc-400 text-xs mb-2">
               Pilih tim yang lolos dari setiap grup (Rank 1, 2, dan Rank 3 (8 group)). Prediksi pemenang di setiap babak.
+            </p>
+            <p className="text-amber-400 text-[10px] font-semibold mb-4 italic">
+              *Note: Akan ada pengisian prediksi khusus untuk babak knockout saja setelah fase grup selesai.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-2.5 predictor-actions">
@@ -1222,7 +1225,10 @@ export const CupPage = () => {
                     </div>
                     <h4 className="text-[11px] font-black text-white tracking-wide uppercase">Leaderboard Terkunci</h4>
                     <p className="text-[9px] text-zinc-400 mt-1 max-w-[180px] leading-relaxed">
-                      Akan dibuka oleh Admin ketika Babak Gugur dimulai.
+                      Akan dibuka setelah tanggal 17 Juni 2026
+                    </p>
+                    <p className="text-[8px] text-amber-400/80 mt-1.5 max-w-[160px] leading-normal italic">
+                      (Akan ada pengisian prediksi khusus babak Knockout saja)
                     </p>
                   </div>
                 </div>
