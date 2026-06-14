@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, CheckCircle2, RotateCcw, Star, Swords, Save, Send, Loader2, X, AlertTriangle, Lock, Download, Share2, Search, ArrowLeft, HelpCircle } from 'lucide-react';
+import { Trophy, CheckCircle2, RotateCcw, Star, Swords, Save, Send, Loader2, X, AlertTriangle, Lock, Download, Share2, Search, ArrowLeft, HelpCircle, FileText, ExternalLink } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { useSearchParams, Link } from 'react-router-dom';
 import DownloadTemplate from './DownloadTemplate';
@@ -1713,9 +1713,19 @@ export const CupPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-5 shadow-lg"
               >
-                <h3 className="text-xs font-black text-blue-400 tracking-wider uppercase mb-3 flex items-center gap-1.5">
-                  <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-pulse" /> Skema Penentuan Peringkat 3 Terbaik
-                </h3>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-zinc-900/40">
+                  <h3 className="text-xs font-black text-blue-400 tracking-wider uppercase flex items-center gap-1.5">
+                    <HelpCircle className="w-3.5 h-3.5 text-blue-400 animate-pulse" /> Skema Penentuan Peringkat 3 Terbaik
+                  </h3>
+                  <a
+                    href="https://drive.google.com/file/d/1FdeTcKumM7h65ALOnY_K548WK2x3igXm/view?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/25 text-blue-400 font-extrabold px-3.5 py-1.5 rounded-xl text-[10px] transition-all self-start sm:self-auto"
+                  >
+                    <FileText className="w-3 h-3 text-blue-400" /> Lihat Format Resmi FIFA <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                  </a>
+                </div>
                 <p className="text-[11px] text-zinc-400 mb-4 leading-relaxed">
                   Sesuai regulasi resmi FIFA 2026, 8 tim peringkat 3 terbaik dari 12 grup dialokasikan ke slot babak gugur (Babak 32 Besar) menggunakan algoritma pencocokan optimal. Berikut adalah alokasi otomatis untuk prediksi Anda:
                 </p>
