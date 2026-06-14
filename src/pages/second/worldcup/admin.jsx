@@ -138,6 +138,7 @@ export const WorldCupAdminPage = () => {
   const [sfWinners, setSfWinners] = useState({});
   const [champion, setChampion] = useState(null);
   const [leaderboardOpened, setLeaderboardOpened] = useState(false);
+  const [submissionsLocked, setSubmissionsLocked] = useState(false);
 
   // UI
   const [activeTab, setActiveTab] = useState('groups');
@@ -172,6 +173,7 @@ export const WorldCupAdminPage = () => {
         setSfWinners(d.sfWinners ?? {});
         setChampion(d.champion ?? null);
         setLeaderboardOpened(d.leaderboardOpened ?? true);
+        setSubmissionsLocked(d.submissionsLocked ?? false);
         setLastSaved(d.updatedAt ?? null);
       }
       setStatus(null);
@@ -199,6 +201,7 @@ export const WorldCupAdminPage = () => {
         sfWinners,
         champion,
         leaderboardOpened,
+        submissionsLocked,
         updatedAt: new Date().toISOString(),
       };
       await setDoc(doc(db, 'worldCupResult', 'official'), payload);
@@ -409,29 +412,53 @@ export const WorldCupAdminPage = () => {
           </div>
         </motion.div>
 
-        {/* ── Settings Panel (Leaderboard Lock Switch) ── */}
+        {/* ── Settings Panel (Double Settings Switch) ── */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 mb-8 flex items-center justify-between"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
         >
-          <div className="flex items-center gap-3">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${leaderboardOpened ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-zinc-900 text-zinc-600 border border-zinc-800'}`}>
-              <Star className={`w-4 h-4 ${leaderboardOpened ? 'fill-amber-400 text-amber-400' : 'text-zinc-600'}`} />
+          {/* Leaderboard Lock Switch */}
+          <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${leaderboardOpened ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-zinc-900 text-zinc-600 border border-zinc-800'}`}>
+                <Star className={`w-4 h-4 ${leaderboardOpened ? 'fill-amber-400 text-amber-400' : 'text-zinc-600'}`} />
+              </div>
+              <div>
+                <h3 className="text-xs font-extrabold text-white uppercase">Status Leaderboard</h3>
+                <p className="text-[10px] text-zinc-500 mt-0.5">
+                  {leaderboardOpened ? 'Leaderboard dibuka untuk semua user (Real-Time)' : 'Leaderboard dikunci (Hanya admin yang bisa membuka)'}
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xs font-extrabold text-white uppercase">Status Leaderboard</h3>
-              <p className="text-[10px] text-zinc-500 mt-0.5">
-                {leaderboardOpened ? 'Leaderboard dibuka untuk semua user (Real-Time)' : 'Leaderboard dikunci (Hanya admin yang bisa mengakses/membuka)'}
-              </p>
-            </div>
+            <button
+              onClick={() => setLeaderboardOpened(!leaderboardOpened)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${leaderboardOpened ? 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20' : 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20'}`}
+            >
+              {leaderboardOpened ? 'Kunci Leaderboard' : 'Buka Leaderboard'}
+            </button>
           </div>
-          <button
-            onClick={() => setLeaderboardOpened(!leaderboardOpened)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${leaderboardOpened ? 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20' : 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20'}`}
-          >
-            {leaderboardOpened ? 'Kunci Leaderboard' : 'Buka Leaderboard'}
-          </button>
+
+          {/* Submission Lock Switch */}
+          <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${!submissionsLocked ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}`}>
+                <Lock className={`w-4 h-4 ${!submissionsLocked ? 'text-emerald-400' : 'text-rose-400'}`} />
+              </div>
+              <div>
+                <h3 className="text-xs font-extrabold text-white uppercase">Status Pengisian Bracket</h3>
+                <p className="text-[10px] text-zinc-500 mt-0.5">
+                  {submissionsLocked ? 'Pengisian ditutup (dikunci)' : 'Pengisian dibuka (bisa diisi user)'}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setSubmissionsLocked(!submissionsLocked)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!submissionsLocked ? 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20' : 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20'}`}
+            >
+              {submissionsLocked ? 'Buka Pengisian' : 'Tutup Pengisian'}
+            </button>
+          </div>
         </motion.div>
 
         {/* ── Tab Nav ── */}

@@ -876,8 +876,46 @@ export const CupPage = () => {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#07070a] text-zinc-100 pt-10 pb-4 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#07070a] text-zinc-100 pb-4 relative overflow-hidden">
+      {/* ── RUNNING TEXT MARQUEE ── */}
+      <div className="w-full bg-[#0c0c14] border-b border-zinc-800/40 py-2.5 relative z-50 overflow-hidden flex select-none pointer-events-none">
+        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#07070a] to-transparent z-10" />
+        <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#07070a] to-transparent z-10" />
+
+        <div className="animate-marquee flex shrink-0 justify-around min-w-full gap-8">
+          <span className="text-[11px] font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-amber-400 to-emerald-400 uppercase">
+            {officialResult?.submissionsLocked
+              ? '🔒 PENGISIAN PREDIKSI TELAH DITUTUP! SELURUH BRACKET TELAH DIKUNCI UNTUK PENILAIAN POIN LEADERBOARD. SELAMAT BERTANDING!'
+              : '🏆 PENGISIAN PREDIKSI AKAN DITUTUP PADA 17 JUNI 2026! SEGERA LENGKAPI DAN SUBMIT PREDIKSI TERBAIKMU SEBELUM BATAS WAKTU!'}
+          </span>
+          <span className="text-[11px] font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-amber-400 to-emerald-400 uppercase">
+            {officialResult?.submissionsLocked
+              ? '🔒 PENGISIAN PREDIKSI TELAH DITUTUP! SELURUH BRACKET TELAH DIKUNCI UNTUK PENILAIAN POIN LEADERBOARD. SELAMAT BERTANDING!'
+              : '🏆 PENGISIAN PREDIKSI AKAN DITUTUP PADA 17 JUNI 2026! SEGERA LENGKAPI DAN SUBMIT PREDIKSI TERBAIKMU SEBELUM BATAS WAKTU!'}
+          </span>
+        </div>
+        <div className="animate-marquee flex shrink-0 justify-around min-w-full gap-8" aria-hidden="true">
+          <span className="text-[11px] font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-amber-400 to-emerald-400 uppercase">
+            {officialResult?.submissionsLocked
+              ? '🔒 PENGISIAN PREDIKSI TELAH DITUTUP! SELURUH BRACKET TELAH DIKUNCI UNTUK PENILAIAN POIN LEADERBOARD. SELAMAT BERTANDING!'
+              : '🏆 PENGISIAN PREDIKSI AKAN DITUTUP PADA 17 JUNI 2026! SEGERA LENGKAPI DAN SUBMIT PREDIKSI TERBAIKMU SEBELUM BATAS WAKTU!'}
+          </span>
+          <span className="text-[11px] font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-amber-400 to-emerald-400 uppercase">
+            {officialResult?.submissionsLocked
+              ? '🔒 PENGISIAN PREDIKSI TELAH DITUTUP! SELURUH BRACKET TELAH DIKUNCI UNTUK PENILAIAN POIN LEADERBOARD. SELAMAT BERTANDING!'
+              : '🏆 PENGISIAN PREDIKSI AKAN DITUTUP PADA 17 JUNI 2026! SEGERA LENGKAPI DAN SUBMIT PREDIKSI TERBAIKMU SEBELUM BATAS WAKTU!'}
+          </span>
+        </div>
+      </div>
+
       <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+          animation: marquee 30s linear infinite;
+        }
         .bracket-scroll::-webkit-scrollbar {
           height: 10px;
         }
@@ -910,7 +948,7 @@ export const CupPage = () => {
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-700/8 rounded-full blur-[130px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-emerald-700/5 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto relative z-20">
+      <div className="max-w-7xl mx-auto relative z-20 pt-10 px-4 sm:px-6 lg:px-8">
 
         {/* ── SHARED VIEW TOP BANNER ── */}
         {isSharedView && (
@@ -974,8 +1012,8 @@ export const CupPage = () => {
               {!isSharedView && (
                 <button
                   onClick={resetPrediction}
-                  disabled={hasSubmitted}
-                  className={`border border-white/5 text-zinc-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${hasSubmitted ? 'bg-zinc-950/20 text-zinc-500 cursor-not-allowed opacity-50' : 'bg-zinc-900/60 hover:bg-zinc-800'}`}
+                  disabled={hasSubmitted || officialResult?.submissionsLocked}
+                  className={`border border-white/5 text-zinc-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${hasSubmitted || officialResult?.submissionsLocked ? 'bg-zinc-950/20 text-zinc-500 cursor-not-allowed opacity-50' : 'bg-zinc-900/60 hover:bg-zinc-800'}`}
                 >
                   <RotateCcw className="w-3.5 h-3.5" /> Reset
                 </button>
@@ -999,7 +1037,11 @@ export const CupPage = () => {
                 </button>
               )}
               {!isSharedView && (
-                hasSubmitted ? (
+                officialResult?.submissionsLocked ? (
+                  <button disabled className="bg-zinc-900/40 border border-white/5 text-zinc-500 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-not-allowed">
+                    <Lock className="w-3.5 h-3.5 text-zinc-500" /> Pengisian Ditutup
+                  </button>
+                ) : hasSubmitted ? (
                   <button disabled className="bg-zinc-900/40 border border-white/5 text-zinc-500 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-not-allowed">
                     <CheckCircle2 className="w-3.5 h-3.5 text-zinc-500" /> Sudah Submit
                   </button>
@@ -1130,265 +1172,267 @@ export const CupPage = () => {
         </motion.div>
 
 
-        {/* ── STEP 1: GROUP SELECTION ── */}
-        <div className="mb-10 mt-2">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7 border-b border-zinc-800 pb-5">
-            <div className="flex items-center gap-3">
-              <span className="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-xs border border-blue-500/25">1</span>
-              <div>
-                <h2 className="text-base font-bold text-white mt-1">Pilih Tim Lolos</h2>
-                <p className="text-[11px] text-zinc-500">Klik sesuai urutan rank. Kuota Rank 3:
-                  <span className={`font-bold ml-1 ${groupsWithThreeCount >= MAX_GROUPS_WITH_THREE ? 'text-amber-400' : 'text-blue-400'}`}>
-                    {groupsWithThreeCount}/{MAX_GROUPS_WITH_THREE} grup
-                  </span>
-                </p>
-              </div>
-            </div>
-            <Link
-              to="/world-cup-table"
-              className="mt-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-950/5"
-            >
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-              Lihat Hasil Resmi
-            </Link>
-            <div className="flex mt-2 bg-zinc-900/80 p-1 rounded-lg border border-white/5 self-start sm:self-center">
-              {['A-F', 'G-L'].map(tab => (
-                <button key={tab} onClick={() => setActiveGroupTab(tab)}
-                  className={`px-4 py-1.5 rounded-md text-xs font-bold tracking-wider transition-all ${activeGroupTab === tab ? 'bg-blue-600 text-white' : 'text-zinc-400 hover:text-zinc-200'}`}>
-                  Grup {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {getFilteredGroups().map(group => {
-              const sel = groupAdvancers[group.id] || [];
-              const isFull = sel.length >= 3;
-              const canAddThird = sel.length === 2 && groupsWithThreeCount < MAX_GROUPS_WITH_THREE;
-              return (
-                <div key={group.id} className="bg-zinc-950/50 border border-white/5 rounded-2xl p-5 shadow-md">
-                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-900">
-                    <h3 className="text-sm font-extrabold text-blue-400 tracking-wider">GRUP {group.id}</h3>
-                    <div className="text-[9px] font-bold text-right">
-                      {sel.length === 0 && <span className="text-zinc-600">Pilih Rank 1 & 2</span>}
-                      {sel.length === 1 && <span className="text-blue-500">Pilih Rank 2</span>}
-                      {sel.length === 2 && canAddThird && <span className="text-amber-400 animate-pulse">Optional: Rank 3</span>}
-                      {sel.length === 2 && !canAddThird && <span className="text-emerald-400 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" />Selesai</span>}
-                      {sel.length === 3 && <span className="text-amber-400 flex items-center gap-1"><Star className="w-3 h-3 fill-amber-400" />3 Lolos</span>}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    {[
-                      // Selected teams first, in rank order
-                      ...sel.map(team => ({ team, rank: sel.indexOf(team) + 1, isSelected: true })),
-                      // Unselected teams below
-                      ...group.teams
-                        .filter(t => !sel.includes(t))
-                        .map(t => ({ team: t, rank: null, isSelected: false })),
-                    ].map(({ team, rank, isSelected }) => {
-                      const isDisabled = hasSubmitted || (!isSelected && (isFull || (sel.length === 2 && !canAddThird)));
-                      return (
-                        <motion.button
-                          key={team}
-                          layout
-                          transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-                          onClick={() => handleTeamClick(group.id, team)}
-                          disabled={isDisabled}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border transition-colors duration-200 ${isSelected
-                            ? rank === 1 ? 'bg-gradient-to-r from-blue-950/30 to-zinc-950 border-blue-500/30 text-white'
-                              : rank === 2 ? 'bg-gradient-to-r from-emerald-950/20 to-zinc-950 border-emerald-500/30 text-white'
-                                : 'bg-gradient-to-r from-amber-950/20 to-zinc-950 border-amber-500/30 text-amber-200'
-                            : isDisabled ? 'bg-black/10 border-white/5 text-zinc-700 cursor-not-allowed opacity-40'
-                              : 'bg-zinc-950/40 border-white/5 text-zinc-400 hover:bg-zinc-900/60 hover:text-white'
-                            }`}
-                        >
-                          <div className="flex items-center gap-2.5 truncate">
-                            <FlagIcon teamName={team} />
-                            <span className="text-xs font-semibold truncate">{team}</span>
-                          </div>
-                          {isSelected && (
-                            <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full flex-shrink-0 ${rank === 1 ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30' :
-                              rank === 2 ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' :
-                                'bg-amber-600/20 text-amber-400 border border-amber-500/30'
-                              }`}>
-                              Rank {rank}
-                            </span>
-                          )}
-                        </motion.button>
-                      );
-                    })}
+        <div className="relative">
+          <div className={officialResult?.submissionsLocked && !isSharedView ? 'blur-md pointer-events-none select-none' : ''}>
+            {/* ── STEP 1: GROUP SELECTION ── */}
+            <div className="mb-10 mt-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7 border-b border-zinc-800 pb-5">
+                <div className="flex items-center gap-3">
+                  <span className="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-xs border border-blue-500/25">1</span>
+                  <div>
+                    <h2 className="text-base font-bold text-white mt-1">Pilih Tim Lolos</h2>
+                    <p className="text-[11px] text-zinc-500">Klik sesuai urutan rank. Kuota Rank 3:
+                      <span className={`font-bold ml-1 ${groupsWithThreeCount >= MAX_GROUPS_WITH_THREE ? 'text-amber-400' : 'text-blue-400'}`}>
+                        {groupsWithThreeCount}/{MAX_GROUPS_WITH_THREE} grup
+                      </span>
+                    </p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-
-          {isComplete && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              className="mt-5 flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-xl text-sm font-semibold">
-              <CheckCircle2 className="w-4 h-4" />
-              Semua grup selesai! 32 tim siap berlomba di babak gugur. ↓
-            </motion.div>
-          )}
-        </div>
-
-        {/* ── STEP 2: BRACKET ── */}
-        <AnimatePresence>
-          {isComplete && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-              <div className="flex items-center gap-3 border-b border-zinc-800 pb-5">
-                <span className="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-xs border border-blue-500/25">2</span>
-                <div>
-                  <h2 className="text-base font-bold text-white">Bagan Gugur — 32 Tim</h2>
-                  <p className="text-[11px] text-zinc-500">Klik pemenang setiap laga untuk melaju ke babak berikutnya.</p>
+                <Link
+                  to="/world-cup-table"
+                  className="mt-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-950/5"
+                >
+                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                  Lihat Hasil Resmi
+                </Link>
+                <div className="flex mt-2 bg-zinc-900/80 p-1 rounded-lg border border-white/5 self-start sm:self-center">
+                  {['A-F', 'G-L'].map(tab => (
+                    <button key={tab} onClick={() => setActiveGroupTab(tab)}
+                      className={`px-4 py-1.5 rounded-md text-xs font-bold tracking-wider transition-all ${activeGroupTab === tab ? 'bg-blue-600 text-white' : 'text-zinc-400 hover:text-zinc-200'}`}>
+                      Grup {tab}
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Dummy Top Scrollbar */}
-              <div
-                ref={topScrollRef}
-                onScroll={handleTopScroll}
-                className="overflow-x-auto w-full bracket-scroll mb-1"
-              >
-                <div style={{ width: `${contentWidth}px`, height: '1px' }} />
-              </div>
-
-              {/* ── UNIFIED HORIZONTAL BRACKET ── */}
-              <div
-                ref={bracketScrollRef}
-                onScroll={handleBracketScroll}
-                className="overflow-x-auto pt-4 pb-2 bracket-scroll"
-              >
-                <div className="flex gap-8 min-w-max px-4 py-6 items-start justify-start min-[1900px]:justify-center bracket-scroll-content relative">
-
-                  {/* SVG Connector Lines */}
-                  <svg className="absolute inset-0 pointer-events-none z-0 overflow-visible w-full h-full">
-                    {svgPaths.map((path, idx) => (
-                      <path
-                        key={idx}
-                        d={path.d}
-                        fill="none"
-                        stroke={path.isActive ? '#3b82f6' : '#27272a'}
-                        strokeWidth={path.isActive ? 2 : 1}
-                        strokeOpacity={path.isActive ? 0.8 : 0.3}
-                        style={path.isActive ? { filter: 'drop-shadow(0 0 3px rgba(59, 130, 246, 0.5))' } : {}}
-                        strokeDasharray={path.isActive ? 'none' : '3 3'}
-                      />
-                    ))}
-                  </svg>
-
-                  {/* Left Bracket (Grup A-F) */}
-                  <div className="flex gap-6 items-start">
-                    <BracketColumn title="Babak 32 Besar" matches={r32.left} winnerState={roundOf32Winners} setWinnerState={setRoundOf32Winners} titleColor="text-blue-400" type="r32" />
-                    <BracketColumn title="16 Besar" matches={r16.left} winnerState={roundOf16Winners} setWinnerState={setRoundOf16Winners} titleColor="text-blue-400" type="r16" />
-                    <BracketColumn title="Perempat Final" matches={qf.left} winnerState={quarterWinners} setWinnerState={setQuarterWinners} titleColor="text-blue-400" type="qf" />
-                    <BracketColumn title="Semi Final" matches={sf.left ? [sf.left] : []} winnerState={semiWinners} setWinnerState={setSemiWinners} titleColor="text-blue-400" type="sf" />
-                  </div>
-
-                  {/* Grand Final Centerpiece */}
-                  <div className="flex-shrink-0 w-64 flex flex-col items-center px-4 self-start pt-[312px]">
-
-                    <div className="flex items-center gap-2 mb-4 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-full">
-                      <Trophy className="w-4 h-4 text-amber-400 animate-pulse" />
-                      <h3 className="text-[10px] font-black text-amber-400 uppercase tracking-widest">Grand Final</h3>
-                      <Swords className="w-3.5 h-3.5 text-amber-400" />
-                    </div>
-
-                    <div className="w-full mb-6">
-                      {finalMatch ? (
-                        <div className="bg-gradient-to-b from-amber-500/20 to-zinc-950 p-[1px] rounded-2xl border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
-                          <MatchCard
-                            match={finalMatch}
-                            winnerState={{ F_1: finalWinner }}
-                            setWinnerState={(val) => {
-                              const r = typeof val === 'function' ? val({ F_1: finalWinner }) : val;
-                              setFinalWinner(r.F_1);
-                            }}
-                          />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {getFilteredGroups().map(group => {
+                  const sel = groupAdvancers[group.id] || [];
+                  const isFull = sel.length >= 3;
+                  const canAddThird = sel.length === 2 && groupsWithThreeCount < MAX_GROUPS_WITH_THREE;
+                  return (
+                    <div key={group.id} className="bg-zinc-950/50 border border-white/5 rounded-2xl p-5 shadow-md">
+                      <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-900">
+                        <h3 className="text-sm font-extrabold text-blue-400 tracking-wider">GRUP {group.id}</h3>
+                        <div className="text-[9px] font-bold text-right">
+                          {sel.length === 0 && <span className="text-zinc-600">Pilih Rank 1 & 2</span>}
+                          {sel.length === 1 && <span className="text-blue-500">Pilih Rank 2</span>}
+                          {sel.length === 2 && canAddThird && <span className="text-amber-400 animate-pulse">Optional: Rank 3</span>}
+                          {sel.length === 2 && !canAddThird && <span className="text-emerald-400 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" />Selesai</span>}
+                          {sel.length === 3 && <span className="text-amber-400 flex items-center gap-1"><Star className="w-3 h-3 fill-amber-400" />3 Lolos</span>}
                         </div>
-                      ) : null}
-                    </div>
-
-                    {/* Winner Banner below MatchCard */}
-                    <AnimatePresence mode="wait">
-                      {finalWinner ? (
-                        <motion.div
-                          key="winner-banner"
-                          initial={{ opacity: 0, scale: 0.9, y: 15 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.9, y: 15 }}
-                          className="w-full flex flex-col items-center gap-4 mt-2"
-                        >
-                          <div className="relative w-full group mb-2">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 rounded-2xl blur-md opacity-45 group-hover:opacity-75 transition-opacity duration-500 animate-pulse" />
-                            <div className="relative w-full py-5 px-4 bg-zinc-950/90 rounded-2xl border border-amber-500/30 flex flex-col items-center text-center overflow-hidden">
-                              {/* Background Logo Samar */}
-                              <img
-                                src={logoWorldCupImg}
-                                alt=""
-                                className="absolute inset-0 w-full h-full object-contain opacity-[0.05] pointer-events-none z-0 select-none scale-110"
-                              />
-                              <div className="relative z-10 flex flex-col items-center">
-                                {/* Winner flag backdrop behind piala */}
-                                <div className="absolute top-4 left-1/2 -translate-x-1/2 w-44 h-28 opacity-30 blur-[1px] pointer-events-none select-none z-0">
-                                  <FlagIcon teamName={finalWinner} className="w-full h-full object-cover rounded-xl border border-white/5 shadow-2xl" />
-                                </div>
-                                <img src={pialaImg} alt="Piala World Cup" className="relative z-10 w-36 h-36 object-contain drop-shadow-[0_0_12px_rgba(245,158,11,0.5)] animate-bounce" style={{ animationDuration: '3s' }} />
-                                <h2 className="relative z-10 text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 truncate max-w-full mt-[-10px]">
-                                  {finalWinner}
-                                </h2>
+                      </div>
+                      <div className="space-y-2">
+                        {[
+                          // Selected teams first, in rank order
+                          ...sel.map(team => ({ team, rank: sel.indexOf(team) + 1, isSelected: true })),
+                          // Unselected teams below
+                          ...group.teams
+                            .filter(t => !sel.includes(t))
+                            .map(t => ({ team: t, rank: null, isSelected: false })),
+                        ].map(({ team, rank, isSelected }) => {
+                          const isDisabled = hasSubmitted || (!isSelected && (isFull || (sel.length === 2 && !canAddThird)));
+                          return (
+                            <motion.button
+                              key={team}
+                              layout
+                              transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                              onClick={() => handleTeamClick(group.id, team)}
+                              disabled={isDisabled}
+                              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border transition-colors duration-200 ${isSelected
+                                ? rank === 1 ? 'bg-gradient-to-r from-blue-950/30 to-zinc-950 border-blue-500/30 text-white'
+                                  : rank === 2 ? 'bg-gradient-to-r from-emerald-950/20 to-zinc-950 border-emerald-500/30 text-white'
+                                    : 'bg-gradient-to-r from-amber-950/20 to-zinc-950 border-amber-500/30 text-amber-200'
+                                : isDisabled ? 'bg-black/10 border-white/5 text-zinc-700 cursor-not-allowed opacity-40'
+                                  : 'bg-zinc-950/40 border-white/5 text-zinc-400 hover:bg-zinc-900/60 hover:text-white'
+                                }`}
+                            >
+                              <div className="flex items-center gap-2.5 truncate">
+                                <FlagIcon teamName={team} />
+                                <span className="text-xs font-semibold truncate">{team}</span>
                               </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          key="placeholder"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 0.2 }}
-                          exit={{ opacity: 0 }}
-                          className="flex flex-col items-center justify-center py-6 select-none pointer-events-none"
-                        >
-                          <Trophy className="w-24 h-24 text-zinc-700 stroke-[1]" />
-                          <span className="text-[10px] uppercase tracking-widest text-zinc-600 font-black mt-2">Juara Dunia</span>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                              {isSelected && (
+                                <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full flex-shrink-0 ${rank === 1 ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30' :
+                                  rank === 2 ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' :
+                                    'bg-amber-600/20 text-amber-400 border border-amber-500/30'
+                                  }`}>
+                                  Rank {rank}
+                                </span>
+                              )}
+                            </motion.button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
 
-                    {/* ── ACTIONS ── */}
-                    <AnimatePresence>
-                      {finalWinner && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          className="w-full centerpiece-actions mt-2"
-                        >
-                          <div className="w-full flex flex-col gap-2">
-                            {isSharedView ? (
-                              <button
-                                onClick={() => setSearchParams({})}
-                                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all"
-                              >
-                                <ArrowLeft className="w-3.5 h-3.5" /> Buat Prediksi Saya Sendiri
-                              </button>
-                            ) : hasSubmitted ? (
-                              <button
-                                disabled
-                                className="w-full bg-zinc-900 border border-white/5 text-zinc-500 font-extrabold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-not-allowed"
-                              >
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Prediksi Sudah Terkirim
-                              </button>
-                            ) : (
-                              <button
-                                onClick={handleSaveToFirebase}
-                                className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black font-extrabold py-2.5 px-4 rounded-xl text-xs shadow-lg shadow-emerald-950/20 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5"
-                              >
-                                <Send className="w-3.5 h-3.5" /> Submit Hasil Prediksi
-                              </button>
-                            )}
-                            {/* {isComplete && (
+              {isComplete && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="mt-5 flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-3 rounded-xl text-sm font-semibold">
+                  <CheckCircle2 className="w-4 h-4" />
+                  Semua grup selesai! 32 tim siap berlomba di babak gugur. ↓
+                </motion.div>
+              )}
+            </div>
+
+            {/* ── STEP 2: BRACKET ── */}
+            <AnimatePresence>
+              {isComplete && (
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                  <div className="flex items-center gap-3 border-b border-zinc-800 pb-5">
+                    <span className="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-xs border border-blue-500/25">2</span>
+                    <div>
+                      <h2 className="text-base font-bold text-white">Bagan Gugur — 32 Tim</h2>
+                      <p className="text-[11px] text-zinc-500">Klik pemenang setiap laga untuk melaju ke babak berikutnya.</p>
+                    </div>
+                  </div>
+
+                  {/* Dummy Top Scrollbar */}
+                  <div
+                    ref={topScrollRef}
+                    onScroll={handleTopScroll}
+                    className="overflow-x-auto w-full bracket-scroll mb-1"
+                  >
+                    <div style={{ width: `${contentWidth}px`, height: '1px' }} />
+                  </div>
+
+                  {/* ── UNIFIED HORIZONTAL BRACKET ── */}
+                  <div
+                    ref={bracketScrollRef}
+                    onScroll={handleBracketScroll}
+                    className="overflow-x-auto pt-4 pb-2 bracket-scroll"
+                  >
+                    <div className="flex gap-8 min-w-max px-4 py-6 items-start justify-start min-[1900px]:justify-center bracket-scroll-content relative">
+
+                      {/* SVG Connector Lines */}
+                      <svg className="absolute inset-0 pointer-events-none z-0 overflow-visible w-full h-full">
+                        {svgPaths.map((path, idx) => (
+                          <path
+                            key={idx}
+                            d={path.d}
+                            fill="none"
+                            stroke={path.isActive ? '#3b82f6' : '#27272a'}
+                            strokeWidth={path.isActive ? 2 : 1}
+                            strokeOpacity={path.isActive ? 0.8 : 0.3}
+                            style={path.isActive ? { filter: 'drop-shadow(0 0 3px rgba(59, 130, 246, 0.5))' } : {}}
+                            strokeDasharray={path.isActive ? 'none' : '3 3'}
+                          />
+                        ))}
+                      </svg>
+
+                      {/* Left Bracket (Grup A-F) */}
+                      <div className="flex gap-6 items-start">
+                        <BracketColumn title="Babak 32 Besar" matches={r32.left} winnerState={roundOf32Winners} setWinnerState={setRoundOf32Winners} titleColor="text-blue-400" type="r32" />
+                        <BracketColumn title="16 Besar" matches={r16.left} winnerState={roundOf16Winners} setWinnerState={setRoundOf16Winners} titleColor="text-blue-400" type="r16" />
+                        <BracketColumn title="Perempat Final" matches={qf.left} winnerState={quarterWinners} setWinnerState={setQuarterWinners} titleColor="text-blue-400" type="qf" />
+                        <BracketColumn title="Semi Final" matches={sf.left ? [sf.left] : []} winnerState={semiWinners} setWinnerState={setSemiWinners} titleColor="text-blue-400" type="sf" />
+                      </div>
+
+                      {/* Grand Final Centerpiece */}
+                      <div className="flex-shrink-0 w-64 flex flex-col items-center px-4 self-start pt-[312px]">
+
+                        <div className="flex items-center gap-2 mb-4 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-full">
+                          <Trophy className="w-4 h-4 text-amber-400 animate-pulse" />
+                          <h3 className="text-[10px] font-black text-amber-400 uppercase tracking-widest">Grand Final</h3>
+                          <Swords className="w-3.5 h-3.5 text-amber-400" />
+                        </div>
+
+                        <div className="w-full mb-6">
+                          {finalMatch ? (
+                            <div className="bg-gradient-to-b from-amber-500/20 to-zinc-950 p-[1px] rounded-2xl border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
+                              <MatchCard
+                                match={finalMatch}
+                                winnerState={{ F_1: finalWinner }}
+                                setWinnerState={(val) => {
+                                  const r = typeof val === 'function' ? val({ F_1: finalWinner }) : val;
+                                  setFinalWinner(r.F_1);
+                                }}
+                              />
+                            </div>
+                          ) : null}
+                        </div>
+
+                        {/* Winner Banner below MatchCard */}
+                        <AnimatePresence mode="wait">
+                          {finalWinner ? (
+                            <motion.div
+                              key="winner-banner"
+                              initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.9, y: 15 }}
+                              className="w-full flex flex-col items-center gap-4 mt-2"
+                            >
+                              <div className="relative w-full group mb-2">
+                                <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 rounded-2xl blur-md opacity-45 group-hover:opacity-75 transition-opacity duration-500 animate-pulse" />
+                                <div className="relative w-full py-5 px-4 bg-zinc-950/90 rounded-2xl border border-amber-500/30 flex flex-col items-center text-center overflow-hidden">
+                                  {/* Background Logo Samar */}
+                                  <img
+                                    src={logoWorldCupImg}
+                                    alt=""
+                                    className="absolute inset-0 w-full h-full object-contain opacity-[0.05] pointer-events-none z-0 select-none scale-110"
+                                  />
+                                  <div className="relative z-10 flex flex-col items-center">
+                                    {/* Winner flag backdrop behind piala */}
+                                    <div className="absolute top-4 left-1/2 -translate-x-1/2 w-44 h-28 opacity-30 blur-[1px] pointer-events-none select-none z-0">
+                                      <FlagIcon teamName={finalWinner} className="w-full h-full object-cover rounded-xl border border-white/5 shadow-2xl" />
+                                    </div>
+                                    <img src={pialaImg} alt="Piala World Cup" className="relative z-10 w-36 h-36 object-contain drop-shadow-[0_0_12px_rgba(245,158,11,0.5)] animate-bounce" style={{ animationDuration: '3s' }} />
+                                    <h2 className="relative z-10 text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 truncate max-w-full mt-[-10px]">
+                                      {finalWinner}
+                                    </h2>
+                                  </div>
+                                </div>
+                              </div>
+                            </motion.div>
+                          ) : (
+                            <motion.div
+                              key="placeholder"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 0.2 }}
+                              exit={{ opacity: 0 }}
+                              className="flex flex-col items-center justify-center py-6 select-none pointer-events-none"
+                            >
+                              <Trophy className="w-24 h-24 text-zinc-700 stroke-[1]" />
+                              <span className="text-[10px] uppercase tracking-widest text-zinc-600 font-black mt-2">Juara Dunia</span>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+
+                        {/* ── ACTIONS ── */}
+                        <AnimatePresence>
+                          {finalWinner && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 10 }}
+                              className="w-full centerpiece-actions mt-2"
+                            >
+                              <div className="w-full flex flex-col gap-2">
+                                {isSharedView ? (
+                                  <button
+                                    onClick={() => setSearchParams({})}
+                                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all"
+                                  >
+                                    <ArrowLeft className="w-3.5 h-3.5" /> Buat Prediksi Saya Sendiri
+                                  </button>
+                                ) : hasSubmitted ? (
+                                  <button
+                                    disabled
+                                    className="w-full bg-zinc-900 border border-white/5 text-zinc-500 font-extrabold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-not-allowed"
+                                  >
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Prediksi Sudah Terkirim
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={handleSaveToFirebase}
+                                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black font-extrabold py-2.5 px-4 rounded-xl text-xs shadow-lg shadow-emerald-950/20 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5"
+                                  >
+                                    <Send className="w-3.5 h-3.5" /> Submit Hasil Prediksi
+                                  </button>
+                                )}
+                                {/* {isComplete && (
                               <button
                                 onClick={handleShareLink}
                                 className="w-full bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 text-blue-400 font-extrabold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5"
@@ -1396,35 +1440,35 @@ export const CupPage = () => {
                                 <Share2 className="w-3.5 h-3.5" /> Bagikan Hasil (Copy Link)
                               </button>
                             )} */}
-                            <button
-                              onClick={handleDownloadBracket}
-                              disabled={isDownloading}
-                              className="w-full bg-zinc-900 hover:bg-zinc-800 border border-white/5 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
-                            >
-                              {isDownloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-                              {isDownloading ? 'Mengunduh...' : 'Unduh Hasil (Gambar)'}
-                            </button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                                <button
+                                  onClick={handleDownloadBracket}
+                                  disabled={isDownloading}
+                                  className="w-full bg-zinc-900 hover:bg-zinc-800 border border-white/5 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
+                                >
+                                  {isDownloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                                  {isDownloading ? 'Mengunduh...' : 'Unduh Hasil (Gambar)'}
+                                </button>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      {/* Right Bracket (Grup G-L) */}
+                      <div className="flex gap-6 items-start">
+                        <BracketColumn title="Semi Final" matches={sf.right ? [sf.right] : []} winnerState={semiWinners} setWinnerState={setSemiWinners} titleColor="text-emerald-400" type="sf" />
+                        <BracketColumn title="Perempat Final" matches={qf.right} winnerState={quarterWinners} setWinnerState={setQuarterWinners} titleColor="text-emerald-400" type="qf" />
+                        <BracketColumn title="16 Besar" matches={r16.right} winnerState={roundOf16Winners} setWinnerState={setRoundOf16Winners} titleColor="text-emerald-400" type="r16" />
+                        <BracketColumn title="Babak 32 Besar" matches={r32.right} winnerState={roundOf32Winners} setWinnerState={setRoundOf32Winners} titleColor="text-emerald-400" type="r32" />
+                      </div>
+
+                    </div>
                   </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-                  {/* Right Bracket (Grup G-L) */}
-                  <div className="flex gap-6 items-start">
-                    <BracketColumn title="Semi Final" matches={sf.right ? [sf.right] : []} winnerState={semiWinners} setWinnerState={setSemiWinners} titleColor="text-emerald-400" type="sf" />
-                    <BracketColumn title="Perempat Final" matches={qf.right} winnerState={quarterWinners} setWinnerState={setQuarterWinners} titleColor="text-emerald-400" type="qf" />
-                    <BracketColumn title="16 Besar" matches={r16.right} winnerState={roundOf16Winners} setWinnerState={setRoundOf16Winners} titleColor="text-emerald-400" type="r16" />
-                    <BracketColumn title="Babak 32 Besar" matches={r32.right} winnerState={roundOf32Winners} setWinnerState={setRoundOf32Winners} titleColor="text-emerald-400" type="r32" />
-                  </div>
-
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ── JSON PREVIEW ──
+            {/* ── JSON PREVIEW ──
         <AnimatePresence>
           {finalWinner && (
             <motion.details initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -1439,184 +1483,200 @@ export const CupPage = () => {
           )}
         </AnimatePresence> */}
 
-        {/* ── MODAL KIRIM/SIMPAN KE FIREBASE ── */}
-        <AnimatePresence>
-          {isSaveModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => !isSaving && setIsSaveModalOpen(false)}
-                className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-              />
+            {/* ── MODAL KIRIM/SIMPAN KE FIREBASE ── */}
+            <AnimatePresence>
+              {isSaveModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                  {/* Backdrop */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => !isSaving && setIsSaveModalOpen(false)}
+                    className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                  />
 
-              {/* Modal Card */}
-              <motion.div
-                initial={{ scale: 0.95, y: 15, opacity: 0 }}
-                animate={{ scale: 1, y: 0, opacity: 1 }}
-                exit={{ scale: 0.95, y: 15, opacity: 0 }}
-                className="relative w-full max-w-md bg-zinc-950 border border-zinc-800/80 rounded-2xl p-6 shadow-2xl overflow-hidden z-10"
-              >
-                {/* Decorative Blur BG */}
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
-                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
-
-                {/* Close Button */}
-                {!isSaving && (
-                  <button
-                    onClick={() => setIsSaveModalOpen(false)}
-                    className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors"
+                  {/* Modal Card */}
+                  <motion.div
+                    initial={{ scale: 0.95, y: 15, opacity: 0 }}
+                    animate={{ scale: 1, y: 0, opacity: 1 }}
+                    exit={{ scale: 0.95, y: 15, opacity: 0 }}
+                    className="relative w-full max-w-md bg-zinc-950 border border-zinc-800/80 rounded-2xl p-6 shadow-2xl overflow-hidden z-10"
                   >
-                    <X className="w-5 h-5" />
-                  </button>
-                )}
+                    {/* Decorative Blur BG */}
+                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
+                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
 
-                {saveStatus === 'success' ? (
-                  // Success State
-                  <div className="flex flex-col items-center text-center py-6">
-                    <motion.div
-                      initial={{ scale: 0.5, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4 shadow-lg shadow-emerald-500/10"
-                    >
-                      <CheckCircle2 className="w-8 h-8" />
-                    </motion.div>
-                    <h3 className="text-lg font-bold text-white mb-2">Prediksi Berhasil Disimpan!</h3>
-                    <p className="text-xs text-zinc-400 max-w-xs">
-                      Terima kasih <strong>{inputName}</strong>! Prediksi Anda telah terkirim.
-                    </p>
-                  </div>
-                ) : (
-                  // Input/Form and Error States
-                  <div>
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                        <Trophy className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h3 className="text-base font-bold text-white">Simpan Prediksi Anda</h3>
-                        <p className="text-[11px] text-zinc-500">
-                          {finalWinner ? 'Kirim prediksi lengkap Anda ke Leaderboard' : 'Simpan progress prediksi Anda'}
+                    {/* Close Button */}
+                    {!isSaving && (
+                      <button
+                        onClick={() => setIsSaveModalOpen(false)}
+                        className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    )}
+
+                    {saveStatus === 'success' ? (
+                      // Success State
+                      <div className="flex flex-col items-center text-center py-6">
+                        <motion.div
+                          initial={{ scale: 0.5, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                          className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4 shadow-lg shadow-emerald-500/10"
+                        >
+                          <CheckCircle2 className="w-8 h-8" />
+                        </motion.div>
+                        <h3 className="text-lg font-bold text-white mb-2">Prediksi Berhasil Disimpan!</h3>
+                        <p className="text-xs text-zinc-400 max-w-xs">
+                          Terima kasih <strong>{inputName}</strong>! Prediksi Anda telah terkirim.
                         </p>
                       </div>
-                    </div>
-
-                    {errorMsg && (
-                      <div className="mb-4 flex items-start gap-2 bg-rose-500/15 border border-rose-500/30 text-rose-400 px-3.5 py-2.5 rounded-xl text-xs font-semibold">
-                        <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                        <span>{errorMsg}</span>
-                      </div>
-                    )}
-
-                    <div className="space-y-4">
+                    ) : (
+                      // Input/Form and Error States
                       <div>
-                        <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 pl-1">
-                          Nama / Username
-                        </label>
-                        <input
-                          type="text"
-                          value={inputName}
-                          onChange={(e) => {
-                            setInputName(e.target.value);
-                            if (errorMsg) setErrorMsg('');
-                          }}
-                          placeholder="Masukkan nama Anda..."
-                          maxLength={30}
-                          disabled={isSaving}
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-blue-500 transition-colors disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-3 text-[11px] text-zinc-400 space-y-1">
-                        <div className="flex justify-between">
-                          <span>Status Prediksi:</span>
-                          <span className={finalWinner ? 'text-amber-400 font-bold' : 'text-blue-400 font-bold'}>
-                            {finalWinner ? 'Complete' : 'Draft (Belum Lengkap)'}
-                          </span>
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                            <Trophy className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h3 className="text-base font-bold text-white">Simpan Prediksi Anda</h3>
+                            <p className="text-[11px] text-zinc-500">
+                              {finalWinner ? 'Kirim prediksi lengkap Anda ke Leaderboard' : 'Simpan progress prediksi Anda'}
+                            </p>
+                          </div>
                         </div>
-                        {finalWinner && (
-                          <div className="flex justify-between">
-                            <span>Prediksi Juara:</span>
-                            <span className="text-white font-extrabold">{finalWinner}</span>
+
+                        {errorMsg && (
+                          <div className="mb-4 flex items-start gap-2 bg-rose-500/15 border border-rose-500/30 text-rose-400 px-3.5 py-2.5 rounded-xl text-xs font-semibold">
+                            <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                            <span>{errorMsg}</span>
                           </div>
                         )}
-                      </div>
 
-                      <div className="flex gap-3 pt-2">
-                        <button
-                          type="button"
-                          onClick={() => setIsSaveModalOpen(false)}
-                          disabled={isSaving}
-                          className="flex-1 bg-zinc-900 hover:bg-zinc-800 border border-white/5 text-zinc-400 font-bold py-3 rounded-xl text-xs transition-colors disabled:opacity-50"
-                        >
-                          Batal
-                        </button>
-                        <button
-                          type="button"
-                          onClick={submitPredictionToFirebase}
-                          disabled={isSaving || !inputName.trim() || !finalWinner}
-                          className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/30 disabled:text-zinc-500 text-white font-bold py-3 rounded-xl text-xs transition-all flex items-center justify-center gap-2"
-                        >
-                          {isSaving ? (
-                            <>
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                              Menyimpan...
-                            </>
-                          ) : (
-                            <>
-                              <Send className="w-3.5 h-3.5" />
-                              Kirim Prediksi
-                            </>
-                          )}
-                        </button>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2 pl-1">
+                              Nama / Username
+                            </label>
+                            <input
+                              type="text"
+                              value={inputName}
+                              onChange={(e) => {
+                                setInputName(e.target.value);
+                                if (errorMsg) setErrorMsg('');
+                              }}
+                              placeholder="Masukkan nama Anda..."
+                              maxLength={30}
+                              disabled={isSaving}
+                              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-blue-500 transition-colors disabled:opacity-50"
+                            />
+                          </div>
+
+                          <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-3 text-[11px] text-zinc-400 space-y-1">
+                            <div className="flex justify-between">
+                              <span>Status Prediksi:</span>
+                              <span className={finalWinner ? 'text-amber-400 font-bold' : 'text-blue-400 font-bold'}>
+                                {finalWinner ? 'Complete' : 'Draft (Belum Lengkap)'}
+                              </span>
+                            </div>
+                            {finalWinner && (
+                              <div className="flex justify-between">
+                                <span>Prediksi Juara:</span>
+                                <span className="text-white font-extrabold">{finalWinner}</span>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex gap-3 pt-2">
+                            <button
+                              type="button"
+                              onClick={() => setIsSaveModalOpen(false)}
+                              disabled={isSaving}
+                              className="flex-1 bg-zinc-900 hover:bg-zinc-800 border border-white/5 text-zinc-400 font-bold py-3 rounded-xl text-xs transition-colors disabled:opacity-50"
+                            >
+                              Batal
+                            </button>
+                            <button
+                              type="button"
+                              onClick={submitPredictionToFirebase}
+                              disabled={isSaving || !inputName.trim() || !finalWinner}
+                              className="flex-1 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/30 disabled:text-zinc-500 text-white font-bold py-3 rounded-xl text-xs transition-all flex items-center justify-center gap-2"
+                            >
+                              {isSaving ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  Menyimpan...
+                                </>
+                              ) : (
+                                <>
+                                  <Send className="w-3.5 h-3.5" />
+                                  Kirim Prediksi
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                )}
+                    )}
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
+            {/* ── TRANSPARENCY: 3RD PLACE QUALIFICATION ── */}
+            {isComplete && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-5 shadow-lg"
+              >
+                <h3 className="text-xs font-black text-blue-400 tracking-wider uppercase mb-3 flex items-center gap-1.5">
+                  <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-pulse" /> Skema Penentuan Peringkat 3 Terbaik
+                </h3>
+                <p className="text-[11px] text-zinc-400 mb-4 leading-relaxed">
+                  Sesuai regulasi resmi FIFA 2026, 8 tim peringkat 3 terbaik dari 12 grup dialokasikan ke slot babak gugur (Babak 32 Besar) menggunakan algoritma pencocokan optimal. Berikut adalah alokasi otomatis untuk prediksi Anda:
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {THIRD_PLACE_SLOTS.map((slot) => {
+                    const assigned = thirdPlaceAssignment[slot.key];
+                    return (
+                      <div key={slot.key} className="bg-zinc-900/60 border border-zinc-800/50 rounded-xl p-3 flex flex-col gap-1.5 hover:border-blue-500/20 transition-all">
+                        <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">{slot.key} Slot</span>
+                        {assigned ? (
+                          <div className="flex items-center gap-1.5">
+                            <div className="w-4 h-2.5 overflow-hidden rounded-[1px] flex-shrink-0">
+                              <FlagIcon teamName={assigned.team} className="w-full h-full object-cover" />
+                            </div>
+                            <span className="text-[10px] font-bold text-white truncate">{assigned.team}</span>
+                            <span className="text-[8px] font-black text-amber-400 bg-amber-400/10 px-1 py-0.2 rounded border border-amber-400/20">Grup {assigned.group}</span>
+                          </div>
+                        ) : (
+                          <span className="text-[10px] text-zinc-600 italic">Kosong</span>
+                        )}
+                        <span className="text-[8.5px] text-zinc-600 font-medium">Kandidat: {slot.groups.join(', ')}</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </motion.div>
+            )}
+          </div>
+          {officialResult?.submissionsLocked && !isSharedView && (
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-30 rounded-3xl flex flex-col items-center justify-center text-center p-8 border border-white/5 min-h-[500px]">
+              <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 mb-4 shadow-xl shadow-amber-500/5 animate-pulse">
+                <Lock className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-black text-white tracking-tight uppercase">Pengisian Prediksi Ditutup</h3>
+              <p className="text-zinc-300 text-sm mt-2 max-w-md leading-relaxed">
+                Batas waktu pengisian prediksi telah berakhir pada 17 Juni 2026. Seluruh pilihan bracket Anda telah dikunci dan tidak dapat diubah kembali.
+              </p>
+              <p className="text-zinc-500 text-xs mt-3">
+                Silakan pantau leaderboard di atas untuk melihat perolehan skor dan peringkat Anda secara real-time.
+              </p>
             </div>
           )}
-        </AnimatePresence>
-        {/* ── TRANSPARENCY: 3RD PLACE QUALIFICATION ── */}
-        {isComplete && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-5 shadow-lg"
-          >
-            <h3 className="text-xs font-black text-blue-400 tracking-wider uppercase mb-3 flex items-center gap-1.5">
-              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400 animate-pulse" /> Skema Penentuan Peringkat 3 Terbaik
-            </h3>
-            <p className="text-[11px] text-zinc-400 mb-4 leading-relaxed">
-              Sesuai regulasi resmi FIFA 2026, 8 tim peringkat 3 terbaik dari 12 grup dialokasikan ke slot babak gugur (Babak 32 Besar) menggunakan algoritma pencocokan optimal. Berikut adalah alokasi otomatis untuk prediksi Anda:
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {THIRD_PLACE_SLOTS.map((slot) => {
-                const assigned = thirdPlaceAssignment[slot.key];
-                return (
-                  <div key={slot.key} className="bg-zinc-900/60 border border-zinc-800/50 rounded-xl p-3 flex flex-col gap-1.5 hover:border-blue-500/20 transition-all">
-                    <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">{slot.key} Slot</span>
-                    {assigned ? (
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-4 h-2.5 overflow-hidden rounded-[1px] flex-shrink-0">
-                          <FlagIcon teamName={assigned.team} className="w-full h-full object-cover" />
-                        </div>
-                        <span className="text-[10px] font-bold text-white truncate">{assigned.team}</span>
-                        <span className="text-[8px] font-black text-amber-400 bg-amber-400/10 px-1 py-0.2 rounded border border-amber-400/20">Grup {assigned.group}</span>
-                      </div>
-                    ) : (
-                      <span className="text-[10px] text-zinc-600 italic">Kosong</span>
-                    )}
-                    <span className="text-[8.5px] text-zinc-600 font-medium">Kandidat: {slot.groups.join(', ')}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
+        </div>
 
         {/* Hidden Download Template */}
         <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', overflow: 'hidden', width: '0', height: '0' }}>
