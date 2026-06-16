@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, CheckCircle2, Star, Swords, Loader2, ArrowLeft } from 'lucide-react';
+import { Trophy, CheckCircle2, Star, Swords, Loader2, ArrowLeft, Calendar, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import FlagIcon from './FlagIcon';
 import { db } from '../../../database/firebase';
@@ -72,10 +72,67 @@ const assignThirdPlaceTeams = (groupAdvancers) => {
   return result;
 };
 
+const mapApiToLocalTeam = (name) => {
+  if (name === 'Bosnia & Herzegovina') return 'Bosnia and Herzegovina';
+  if (name === 'USA') return 'United States';
+  if (name === 'Turkey') return 'Turkiye';
+  if (name === 'Curaçao') return 'Curacao';
+  return name;
+};
+
+const isApiPlaceholder = (name) => {
+  if (!name) return true;
+  return /^[0-9]+[A-L]/i.test(name) || /^[WL][0-9]+/i.test(name);
+};
+
+const parseMatchDateTimeToWIB = (dateStr, timeStr) => {
+  if (!timeStr) {
+    return { date: dateStr, time: 'TBD' };
+  }
+
+  try {
+    const match = timeStr.match(/^(\d{2}):(\d{2})\s+UTC([+-]\d+)?$/);
+    if (!match) {
+      return { date: dateStr, time: timeStr };
+    }
+
+    const [_, hh, mm, offset] = match;
+    let utcHourDiff = 0;
+    if (offset) {
+      utcHourDiff = parseInt(offset, 10);
+    }
+
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const utcHour = parseInt(hh, 10) - utcHourDiff;
+    const utcMinute = parseInt(mm, 10);
+
+    const dateUTC = Date.UTC(year, month - 1, day, utcHour, utcMinute);
+    const dateObj = new Date(dateUTC);
+
+    const wibOffset = 7 * 60 * 60 * 1000;
+    const wibDate = new Date(dateObj.getTime() + wibOffset);
+
+    const wibYear = wibDate.getUTCFullYear();
+    const wibMonth = String(wibDate.getUTCMonth() + 1).padStart(2, '0');
+    const wibDay = String(wibDate.getUTCDate()).padStart(2, '0');
+    const wibDateStr = `${wibYear}-${wibMonth}-${wibDay}`;
+
+    const wibH = String(wibDate.getUTCHours()).padStart(2, '0');
+    const wibM = String(wibDate.getUTCMinutes()).padStart(2, '0');
+    const wibTimeStr = `${wibH}:${wibM} WIB`;
+
+    return { date: wibDateStr, time: wibTimeStr };
+  } catch (e) {
+    console.error("Failed to parse time:", e);
+    return { date: dateStr, time: timeStr };
+  }
+};
+
 const pialaImg = new URL('../../../assets/images/ImagesWorldCup/piala.png', import.meta.url).href;
 const logoWorldCupImg = new URL('../../../assets/images/ImagesWorldCup/logo-world-cup.png', import.meta.url).href;
 
 export const CupResultPage = () => {
+  const [showKnockoutBracket, setShowKnockoutBracket] = useState(false);
   const [groupAdvancers, setGroupAdvancers] = useState({});
   const [roundOf32Winners, setRoundOf32Winners] = useState({});
   const [roundOf16Winners, setRoundOf16Winners] = useState({});
@@ -84,6 +141,240 @@ export const CupResultPage = () => {
   const [finalWinner, setFinalWinner] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeGroupTab, setActiveGroupTab] = useState('A-F');
+
+  // Live Scores & Schedule States
+  const [viewTab, setViewTab] = useState('bracket'); // 'bracket' | 'schedule'
+  const [apiMatches, setApiMatches] = useState([]);
+  const [selectedRoundFilter, setSelectedRoundFilter] = useState('all'); // 'all', 'groups', 'r32', 'r16', 'qf', 'sf', 'final'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSyncingMatches, setIsSyncingMatches] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState(new Date());
+  const [isSilentSyncing, setIsSilentSyncing] = useState(false);
+
+  // Load schedules and live results from API with automatic background polling
+  useEffect(() => {
+    const fetchMatches = async (silent = false) => {
+      if (!silent) setIsSyncingMatches(true);
+      else setIsSilentSyncing(true);
+
+      try {
+        const res = await fetch('https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json');
+        const data = await res.json();
+        if (data && data.matches) {
+          setApiMatches(data.matches);
+          setLastSyncTime(new Date());
+        }
+      } catch (err) {
+        console.error("Gagal mengambil data jadwal pertandingan:", err);
+      } finally {
+        setIsSyncingMatches(false);
+        setIsSilentSyncing(false);
+      }
+    };
+
+    fetchMatches(false);
+
+    // Poll the API for score updates every 60 seconds (1 minute)
+    const intervalId = setInterval(() => {
+      fetchMatches(true);
+    }, 60000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // Filter matches based on user selections
+  const filteredMatches = useMemo(() => {
+    let list = apiMatches.map(m => {
+      const wibInfo = parseMatchDateTimeToWIB(m.date, m.time);
+      return {
+        ...m,
+        date: wibInfo.date,
+        time: wibInfo.time,
+        team1Mapped: mapApiToLocalTeam(m.team1),
+        team2Mapped: mapApiToLocalTeam(m.team2),
+        originalDate: m.date,
+        originalTime: m.time,
+      };
+    });
+
+    if (selectedRoundFilter !== 'all') {
+      if (selectedRoundFilter === 'groups') {
+        list = list.filter(m => m.group);
+      } else if (selectedRoundFilter === 'r32') {
+        list = list.filter(m => m.round === 'Round of 32');
+      } else if (selectedRoundFilter === 'r16') {
+        list = list.filter(m => m.round === 'Round of 16');
+      } else if (selectedRoundFilter === 'qf') {
+        list = list.filter(m => m.round === 'Quarter-final');
+      } else if (selectedRoundFilter === 'sf') {
+        list = list.filter(m => m.round === 'Semi-final');
+      } else if (selectedRoundFilter === 'final') {
+        list = list.filter(m => m.round === 'Final');
+      }
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(m =>
+        (m.team1Mapped && m.team1Mapped.toLowerCase().includes(q)) ||
+        (m.team2Mapped && m.team2Mapped.toLowerCase().includes(q)) ||
+        (m.group && m.group.toLowerCase().includes(q)) ||
+        (m.ground && m.ground.toLowerCase().includes(q))
+      );
+    }
+
+    return list;
+  }, [apiMatches, selectedRoundFilter, searchQuery]);
+
+  // Group filtered matches by date
+  const groupedMatches = useMemo(() => {
+    const groups = {};
+    filteredMatches.forEach(m => {
+      const dateStr = m.date;
+      if (!groups[dateStr]) {
+        groups[dateStr] = [];
+      }
+      groups[dateStr].push(m);
+    });
+
+    return Object.keys(groups).sort().map(date => ({
+      date,
+      matches: groups[date]
+    }));
+  }, [filteredMatches]);
+
+  const formatIndoDate = (dateStr) => {
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const months = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      ];
+      return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    } catch (_) {
+      return dateStr;
+    }
+  };
+
+  const MatchRow = ({ match }) => {
+    const score = match.score;
+    const hasScore = score && score.ft;
+    const t1 = match.team1Mapped;
+    const t2 = match.team2Mapped;
+    const t1Placeholder = isApiPlaceholder(t1);
+    const t2Placeholder = isApiPlaceholder(t2);
+
+    // Calculate if match is currently live based on time-lapse since kickoff (started and under 135 mins)
+    const isLive = (() => {
+      if (!match.originalTime || match.originalTime.includes('TBD')) return false;
+      try {
+        const timeMatch = match.originalTime.match(/^(\d{2}):(\d{2})\s+UTC([+-]\d+)?$/);
+        if (!timeMatch) return false;
+        const [_, hh, mm, offset] = timeMatch;
+        let utcHourDiff = 0;
+        if (offset) utcHourDiff = parseInt(offset, 10);
+        const [year, month, day] = match.originalDate.split('-').map(Number);
+        const kickoff = new Date(Date.UTC(year, month - 1, day, parseInt(hh, 10) - utcHourDiff, parseInt(mm, 10)));
+        const now = new Date();
+        const diffMs = now.getTime() - kickoff.getTime();
+        const matchDuration = 135 * 60 * 1000; // 2 hours 15 minutes
+        return diffMs >= 0 && diffMs < matchDuration;
+      } catch (e) {
+        return false;
+      }
+    })();
+
+    let statusBadge = null;
+    if (isLive) {
+      statusBadge = (
+        <span className="bg-rose-500/10 text-rose-400 border border-rose-500/25 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 animate-pulse">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+          Live
+        </span>
+      );
+    } else if (hasScore) {
+      statusBadge = (
+        <span className="bg-zinc-900 text-zinc-400 border border-zinc-800 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider">
+          Selesai
+        </span>
+      );
+    } else {
+      statusBadge = (
+        <span className="bg-blue-600/10 text-blue-400 border border-blue-500/25 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider">
+          Jadwal
+        </span>
+      );
+    }
+
+    return (
+      <div className="bg-gradient-to-br from-zinc-950/60 to-zinc-900/30 border border-zinc-800/60 backdrop-blur-md rounded-2xl p-4 flex flex-col gap-3.5 transition-all hover:border-zinc-700/40 hover:shadow-xl hover:shadow-emerald-500/5 duration-300">
+
+        {/* Top Meta Bar */}
+        <div className="flex items-center justify-between border-b border-zinc-900/60 pb-2.5">
+          <span className="text-[9px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md font-black tracking-wider uppercase w-fit">
+            {match.group ? `Grup ${match.group.replace('Group ', '')}` : match.round}
+          </span>
+          {statusBadge}
+        </div>
+
+        {/* Core Match Grid */}
+        <div className="grid grid-cols-12 items-center gap-2 py-1">
+          {/* Team 1 (Right-aligned flag & name) */}
+          <div className="col-span-5 flex items-center justify-end gap-2.5 text-right overflow-hidden">
+            <span className={`text-[12px] md:text-[13px] font-extrabold truncate ${t1Placeholder ? 'text-zinc-650' : 'text-white'}`}>
+              {t1}
+            </span>
+            <div className="flex-shrink-0 scale-90 md:scale-100">
+              <FlagIcon teamName={t1Placeholder ? null : t1} />
+            </div>
+          </div>
+
+          {/* Time or Score (Center) */}
+          <div className="col-span-2 flex flex-col items-center justify-center min-w-[76px]">
+            {hasScore ? (
+              <div className="flex flex-col items-center gap-1">
+                <div className="bg-zinc-900/90 border border-zinc-800 px-3 py-1 rounded-xl flex items-center gap-1.5 font-black text-sm text-white shadow-inner">
+                  <span>{score.ft[0]}</span>
+                  <span className="text-zinc-650 font-normal text-xs">:</span>
+                  <span>{score.ft[1]}</span>
+                </div>
+                {score && (score.et || score.p) && (
+                  <span className="text-[8px] text-zinc-500 font-black uppercase tracking-wider bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-800">
+                    {score.p ? `Pen. ${score.p[0]}-${score.p[1]}` : score.et ? 'AET' : ''}
+                  </span>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center">
+                <span className="text-[11px] font-black text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl tracking-wide shadow-sm">
+                  {match.time || 'TBD'}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Team 2 (Left-aligned flag & name) */}
+          <div className="col-span-5 flex items-center justify-start gap-2.5 text-left overflow-hidden">
+            <div className="flex-shrink-0 scale-90 md:scale-100">
+              <FlagIcon teamName={t2Placeholder ? null : t2} />
+            </div>
+            <span className={`text-[12px] md:text-[13px] font-extrabold truncate ${t2Placeholder ? 'text-zinc-650' : 'text-white'}`}>
+              {t2}
+            </span>
+          </div>
+        </div>
+
+        {/* Bottom Location Bar */}
+        <div className="border-t border-zinc-900/40 pt-2.5 flex items-center gap-1.5 text-[10px] text-zinc-500 font-bold truncate">
+          <span>📍</span>
+          <span className="truncate">{match.ground || 'Stadion TBD'}</span>
+        </div>
+
+      </div>
+    );
+  };
 
   const topScrollRef = useRef(null);
   const bracketScrollRef = useRef(null);
@@ -101,6 +392,7 @@ export const CupResultPage = () => {
         setQuarterWinners(d.qfWinners || {});
         setSemiWinners(d.sfWinners || {});
         setFinalWinner(d.champion || null);
+        setShowKnockoutBracket(d.showKnockoutBracket ?? false);
       }
       setIsLoading(false);
     }, (error) => {
@@ -114,6 +406,87 @@ export const CupResultPage = () => {
   const thirdPlaceAssignment = useMemo(() => {
     return assignThirdPlaceTeams(groupAdvancers);
   }, [groupAdvancers]);
+
+  // Compute group stage standings dynamically from apiMatches with FIFA tiebreakers
+  const groupStandings = useMemo(() => {
+    const standings = {};
+    WORLD_CUP_GROUPS.forEach(g => {
+      standings[g.id] = {};
+      g.teams.forEach(t => {
+        standings[g.id][t] = { name: t, played: 0, points: 0, gd: 0, gf: 0 };
+      });
+    });
+
+    apiMatches.forEach(m => {
+      if (!m.group) return;
+      const groupId = m.group.replace('Group ', '');
+      if (!standings[groupId]) return;
+      const t1 = mapApiToLocalTeam(m.team1);
+      const t2 = mapApiToLocalTeam(m.team2);
+      if (!standings[groupId][t1] || !standings[groupId][t2]) return;
+
+      if (m.score && m.score.ft) {
+        const [s1, s2] = m.score.ft;
+        standings[groupId][t1].played += 1;
+        standings[groupId][t2].played += 1;
+        standings[groupId][t1].gf += s1;
+        standings[groupId][t2].gf += s2;
+        standings[groupId][t1].gd += (s1 - s2);
+        standings[groupId][t2].gd += (s2 - s1);
+        if (s1 > s2) {
+          standings[groupId][t1].points += 3;
+        } else if (s1 < s2) {
+          standings[groupId][t2].points += 3;
+        } else {
+          standings[groupId][t1].points += 1;
+          standings[groupId][t2].points += 1;
+        }
+      }
+    });
+
+    const sortedStandings = {};
+    WORLD_CUP_GROUPS.forEach(g => {
+      sortedStandings[g.id] = Object.values(standings[g.id]).sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        if (b.gd !== a.gd) return b.gd - a.gd;
+        if (b.gf !== a.gf) return b.gf - a.gf;
+
+        // Head-to-Head tiebreaker
+        const h2hMatch = apiMatches.find(m => {
+          if (!m.group || m.group.replace('Group ', '') !== g.id) return false;
+          if (!m.score || !m.score.ft) return false;
+          const t1 = mapApiToLocalTeam(m.team1);
+          const t2 = mapApiToLocalTeam(m.team2);
+          return (t1 === a.name && t2 === b.name) || (t1 === b.name && t2 === a.name);
+        });
+
+        if (h2hMatch) {
+          const [s1, s2] = h2hMatch.score.ft;
+          const t1 = mapApiToLocalTeam(h2hMatch.team1);
+          const t2 = mapApiToLocalTeam(h2hMatch.team2);
+
+          let aScore = 0;
+          let bScore = 0;
+          if (t1 === a.name) {
+            aScore = s1;
+            bScore = s2;
+          } else {
+            aScore = s2;
+            bScore = s1;
+          }
+
+          if (aScore !== bScore) {
+            return bScore - aScore;
+          }
+        }
+
+        // Alphabetical fallback
+        return a.name.localeCompare(b.name);
+      });
+    });
+
+    return sortedStandings;
+  }, [apiMatches]);
 
   const g1 = (id) => groupAdvancers[id]?.[0] ?? null;
   const g2 = (id) => groupAdvancers[id]?.[1] ?? null;
@@ -316,6 +689,7 @@ export const CupResultPage = () => {
   }, [updateSvgPaths]);
 
   const getFilteredGroups = () => {
+    if (!showKnockoutBracket) return WORLD_CUP_GROUPS;
     if (activeGroupTab === 'A-F') return WORLD_CUP_GROUPS.slice(0, 6);
     return WORLD_CUP_GROUPS.slice(6, 12);
   };
@@ -405,7 +779,7 @@ export const CupResultPage = () => {
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        
+
         {/* HEADER BRANDING */}
         <div className="flex flex-col md:flex-row items-center gap-6 justify-between border-b border-zinc-900 pb-8 mb-8">
           <div className="flex items-center gap-4">
@@ -421,10 +795,10 @@ export const CupResultPage = () => {
               <p className="text-[11px] text-zinc-500 mt-1">FIFA World Cup 2026 — Pantau realtime sesuai hasil pertandingan terkini.</p>
             </div>
           </div>
-          
+
           <div className="flex gap-3">
-            <Link 
-              to="/world-cup" 
+            <Link
+              to="/world-cup"
               className="bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 text-blue-400 font-extrabold px-4 py-2 rounded-xl text-xs transition-all flex items-center gap-2"
             >
               <Swords className="w-4 h-4" /> Masuk Predictor
@@ -432,203 +806,321 @@ export const CupResultPage = () => {
           </div>
         </div>
 
-        {/* ── STEP 1: GROUP STANDINGS ── */}
-        <div className="mb-10 mt-2">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7 border-b border-zinc-800 pb-5">
-            <div className="flex items-center gap-3">
-              <span className="w-7 h-7 rounded-lg bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-black text-xs border border-emerald-500/25">1</span>
-              <div>
-                <h2 className="text-base font-bold text-white">Klasemen Fase Grup</h2>
-                <p className="text-[11px] text-zinc-500">Tim lolos terverifikasi peringkat 1, 2, dan 3 terbaik.</p>
-              </div>
-            </div>
-            <div className="flex bg-zinc-900/80 p-1 rounded-lg border border-white/5 self-start sm:self-center">
-              {['A-F', 'G-L'].map(tab => (
-                <button key={tab} onClick={() => setActiveGroupTab(tab)}
-                  className={`px-4 py-1.5 rounded-md text-xs font-bold tracking-wider transition-all ${activeGroupTab === tab ? 'bg-emerald-600 text-black font-extrabold' : 'text-zinc-400 hover:text-zinc-200'}`}>
-                  Grup {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {getFilteredGroups().map(group => {
-              const sel = groupAdvancers[group.id] || [];
-              return (
-                <div key={group.id} className="bg-zinc-950/50 border border-white/5 rounded-2xl p-5 shadow-md">
-                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-900">
-                    <h3 className="text-sm font-extrabold text-emerald-400 tracking-wider">GRUP {group.id}</h3>
-                    <span className="text-[9px] font-bold text-zinc-500 bg-zinc-900 px-2 py-0.5 rounded border border-white/5">
-                      {sel.length} Lolos
-                    </span>
-                  </div>
-                  <div className="space-y-2">
-                    {[
-                      ...sel.map(team => ({ team, rank: sel.indexOf(team) + 1, isSelected: true })),
-                      ...group.teams.filter(t => !sel.includes(t)).map(t => ({ team: t, rank: null, isSelected: false })),
-                    ].map(({ team, rank, isSelected }) => {
-                      return (
-                        <div
-                          key={team}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border select-none transition-all duration-200 ${isSelected
-                            ? rank === 1 ? 'bg-gradient-to-r from-blue-950/15 to-zinc-950 border-blue-500/25 text-white'
-                              : rank === 2 ? 'bg-gradient-to-r from-emerald-950/10 to-zinc-950 border-emerald-500/25 text-white'
-                                : 'bg-gradient-to-r from-amber-950/10 to-zinc-950 border-amber-500/25 text-amber-200'
-                            : 'bg-zinc-950/20 border-white/5 text-zinc-600 opacity-55'
-                            }`}
-                        >
-                          <div className="flex items-center gap-2.5 truncate">
-                            <FlagIcon teamName={team} />
-                            <span className="text-xs font-semibold truncate">{team}</span>
-                          </div>
-                          {isSelected && (
-                            <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full flex-shrink-0 ${rank === 1 ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30' :
-                              rank === 2 ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' :
-                                'bg-amber-600/20 text-amber-400 border border-amber-500/30'
-                              }`}>
-                              R{rank}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        {/* TAB NAVIGATION */}
+        <div className="flex bg-zinc-900/80 border border-white/5 rounded-xl p-1 mb-8 gap-1 w-fit">
+          <button
+            onClick={() => setViewTab('bracket')}
+            className={`px-4 py-2 rounded-lg text-xs font-bold tracking-wide transition-all ${viewTab === 'bracket' ? 'bg-emerald-600 text-black font-extrabold shadow-md shadow-emerald-500/10' : 'text-zinc-400 hover:text-white'}`}
+          >
+            {showKnockoutBracket ? 'Bagan & Klasemen' : 'Klasemen Fase Grup'}
+          </button>
+          <button
+            onClick={() => setViewTab('schedule')}
+            className={`px-4 py-2 rounded-lg text-xs font-bold tracking-wide transition-all ${viewTab === 'schedule' ? 'bg-emerald-600 text-black font-extrabold shadow-md shadow-emerald-500/10' : 'text-zinc-400 hover:text-white'}`}
+          >
+            Jadwal & Live Skor
+          </button>
         </div>
 
-        {/* ── STEP 2: KNOCKOUT BRACKET ── */}
-        <div className="mb-20">
-          <div className="flex items-center gap-3 mb-7 border-b border-zinc-800 pb-5">
-            <span className="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-xs border border-blue-500/25">2</span>
-            <div>
-              <h2 className="text-base font-bold text-white">Bagan Babak Gugur Resmi</h2>
-              <p className="text-[11px] text-zinc-500">Hasil pertandingan babak 32 besar hingga Juara Dunia secara realtime.</p>
-            </div>
-          </div>
-
-          {/* Synced Top Scrollbar */}
-          <div 
-            ref={topScrollRef}
-            onScroll={handleTopScroll}
-            className="w-full overflow-x-auto mb-2 bracket-scroll"
-          >
-            <div style={{ width: `${contentWidth}px`, height: '1px' }} />
-          </div>
-
-          <div
-            ref={bracketScrollRef}
-            onScroll={handleBracketScroll}
-            className="w-full overflow-x-auto pb-4 bracket-scroll"
-          >
-            <div className="bracket-scroll-content flex items-start gap-12 py-8 px-6 min-w-max relative">
-              
-              {/* SVG Connector Lines */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-                <defs>
-                  <linearGradient id="active-grad-left" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.4" />
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.8" />
-                  </linearGradient>
-                  <linearGradient id="active-grad-right" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
-                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.4" />
-                  </linearGradient>
-                </defs>
-                {svgPaths.map((p, idx) => (
-                  <path
-                    key={idx}
-                    d={p.d}
-                    fill="none"
-                    stroke={p.isActive ? '#3b82f6' : '#1f2937'}
-                    strokeWidth={p.isActive ? 2 : 1.25}
-                    strokeDasharray={p.isActive ? 'none' : '4,4'}
-                    className={p.isActive ? 'shadow-md shadow-blue-500/50' : ''}
-                    style={{ transition: 'stroke 0.4s ease, stroke-width 0.4s ease' }}
-                  />
-                ))}
-              </svg>
-
-              {/* Left Bracket */}
-              <BracketColumn title="Babak 32 Besar" titleColor="text-blue-400" matches={r32.left} winnerState={roundOf32Winners} type="r32" />
-              <BracketColumn title="Babak 16 Besar" matches={r16.left} winnerState={roundOf16Winners} type="r16" />
-              <BracketColumn title="Perempat Final" matches={qf.left} winnerState={quarterWinners} type="qf" />
-              <BracketColumn title="Semifinal" matches={[sf.left]} winnerState={semiWinners} type="sf" />
-
-              {/* Centerpiece Winner Trophy */}
-              <div className="flex-shrink-0 w-80 pt-[240px] flex flex-col items-center relative z-20">
-                <div className="w-full flex items-center justify-between bg-zinc-950/80 border border-zinc-900 rounded-full px-5 py-2 mb-4 relative z-10 backdrop-blur-md">
-                  <Trophy className="w-4 h-4 text-amber-400 animate-pulse" />
-                  <h3 className="text-[10px] font-black text-amber-400 uppercase tracking-widest">Grand Final</h3>
-                  <Swords className="w-3.5 h-3.5 text-amber-400" />
+        {viewTab === 'bracket' && (
+          <>
+            {/* ── STEP 1: GROUP STANDINGS ── */}
+            <div className="mb-10 mt-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7 border-b border-zinc-800 pb-5">
+                <div className="flex items-center gap-3">
+                  <span className="w-7 h-7 rounded-lg bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-black text-xs border border-emerald-500/25">1</span>
+                  <div>
+                    <h2 className="text-base font-bold text-white">Klasemen Fase Grup</h2>
+                    <p className="text-[11px] text-zinc-500">Tim lolos terverifikasi peringkat 1, 2, dan 3 terbaik.</p>
+                  </div>
                 </div>
+                {showKnockoutBracket && (
+                  <div className="flex bg-zinc-900/80 p-1 rounded-lg border border-white/5 self-start sm:self-center">
+                    {['A-F', 'G-L'].map(tab => (
+                      <button key={tab} onClick={() => setActiveGroupTab(tab)}
+                        className={`px-4 py-1.5 rounded-md text-xs font-bold tracking-wider transition-all ${activeGroupTab === tab ? 'bg-emerald-600 text-black font-extrabold' : 'text-zinc-400 hover:text-zinc-200'}`}>
+                        Grup {tab}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-                <div className="w-full mb-6">
-                  {finalMatch && (
-                    <div className="bg-gradient-to-b from-amber-500/20 to-zinc-950 p-[1px] rounded-2xl border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
-                      <MatchCard
-                        match={finalMatch}
-                        winnerState={{ F_1: finalWinner }}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <AnimatePresence mode="wait">
-                  {finalWinner ? (
-                    <motion.div
-                      key="winner-banner"
-                      initial={{ opacity: 0, scale: 0.9, y: 15 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      className="w-full flex flex-col items-center gap-4 mt-2"
-                    >
-                      <div className="relative w-full group mb-2">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 rounded-2xl blur-md opacity-45 animate-pulse" />
-                        <div className="relative w-full py-5 px-4 bg-zinc-950/90 rounded-2xl border border-amber-500/30 flex flex-col items-center text-center overflow-hidden">
-                          <img
-                            src={logoWorldCupImg}
-                            alt=""
-                            className="absolute inset-0 w-full h-full object-contain opacity-[0.05] pointer-events-none z-0 select-none scale-110"
-                          />
-                          <div className="relative z-10 flex flex-col items-center">
-                            <div className="absolute top-4 left-1/2 -translate-x-1/2 w-44 h-28 opacity-30 blur-[1px] pointer-events-none select-none z-0">
-                              <FlagIcon teamName={finalWinner} className="w-full h-full object-cover rounded-xl border border-white/5 shadow-2xl" />
-                            </div>
-                            <img src={pialaImg} alt="Piala World Cup" className="relative z-10 w-36 h-36 object-contain drop-shadow-[0_0_12px_rgba(245,158,11,0.5)] animate-bounce" style={{ animationDuration: '3s' }} />
-                            <h2 className="relative z-10 text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 truncate max-w-full mt-[-10px]">
-                              {finalWinner}
-                            </h2>
-                          </div>
-                        </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {getFilteredGroups().map(group => {
+                  const sel = groupAdvancers[group.id] || [];
+                  return (
+                    <div key={group.id} className="bg-zinc-950/50 border border-white/5 rounded-2xl p-5 shadow-md">
+                      <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-900">
+                        <h3 className="text-sm font-extrabold text-emerald-400 tracking-wider">GRUP {group.id}</h3>
+                        <span className="text-[9px] font-bold text-zinc-500 bg-zinc-900 px-2 py-0.5 rounded border border-white/5">
+                          {sel.length} Lolos
+                        </span>
                       </div>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="placeholder"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 0.2 }}
-                      className="flex flex-col items-center justify-center py-6 select-none pointer-events-none"
-                    >
-                      <Trophy className="w-24 h-24 text-zinc-700 stroke-[1]" />
-                      <span className="text-[10px] uppercase tracking-widest text-zinc-650 font-black mt-2">Juara Dunia</span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      {/* Table Header */}
+                      <div className="grid grid-cols-12 text-[9px] text-zinc-550 font-bold uppercase tracking-wider px-3 mb-2 text-center border-b border-zinc-900 pb-1.5">
+                        <div className="col-span-6 text-left">Tim</div>
+                        <div className="col-span-2">M</div>
+                        <div className="col-span-2">SG</div>
+                        <div className="col-span-2">Poin</div>
+                      </div>
+                      <div className="space-y-1.5">
+                        {(groupStandings[group.id] || []).map((teamStats, index) => {
+                          const team = teamStats.name;
+                          const advIdx = sel.indexOf(team);
+                          const isSelected = advIdx !== -1;
+                          const rank = index + 1;
+                          return (
+                            <div
+                              key={team}
+                              className={`grid grid-cols-12 items-center px-3 py-2 rounded-xl border select-none transition-all duration-200 ${isSelected
+                                ? rank === 1 ? 'bg-gradient-to-r from-blue-950/15 to-zinc-950 border-blue-500/25 text-white'
+                                  : rank === 2 ? 'bg-gradient-to-r from-emerald-950/10 to-zinc-950 border-emerald-500/25 text-white'
+                                    : 'bg-gradient-to-r from-amber-950/10 to-zinc-950 border-amber-500/25 text-amber-200'
+                                : 'bg-zinc-950/20 border-white/5 text-zinc-650 opacity-55'
+                                }`}
+                            >
+                              <div className="col-span-6 flex items-center gap-2.5 truncate">
+                                <FlagIcon teamName={team} />
+                                <span className="text-xs font-semibold truncate">{team}</span>
+                              </div>
+                              <div className="col-span-2 text-center text-xs font-bold text-zinc-400">
+                                {teamStats.played}
+                              </div>
+                              <div className={`col-span-2 text-center text-xs font-bold ${teamStats.gd > 0 ? 'text-emerald-500' : teamStats.gd < 0 ? 'text-rose-500' : 'text-zinc-400'}`}>
+                                {teamStats.gd > 0 ? `+${teamStats.gd}` : teamStats.gd}
+                              </div>
+                              <div className="col-span-2 flex items-center justify-center gap-1">
+                                <span className="text-xs font-black">{teamStats.points}</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* ── STEP 2: KNOCKOUT BRACKET ── */}
+            {showKnockoutBracket && (
+              <div className="mb-20">
+                <div className="flex items-center gap-3 mb-7 border-b border-zinc-800 pb-5">
+                  <span className="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-xs border border-blue-500/25">2</span>
+                  <div>
+                    <h2 className="text-base font-bold text-white">Bagan Babak Gugur</h2>
+                    <p className="text-[11px] text-zinc-500">Hasil pertandingan babak 32 besar hingga Juara Dunia secara realtime.</p>
+                  </div>
+                </div>
+
+                <div
+                  ref={topScrollRef}
+                  onScroll={handleTopScroll}
+                  className="w-full overflow-x-auto mb-2 bracket-scroll"
+                >
+                  <div style={{ width: `${contentWidth}px`, height: '1px' }} />
+                </div>
+
+                <div
+                  ref={bracketScrollRef}
+                  onScroll={handleBracketScroll}
+                  className="w-full overflow-x-auto pb-4 bracket-scroll"
+                >
+                  <div className="bracket-scroll-content flex items-start gap-12 py-8 px-6 min-w-max relative">
+
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+                      <defs>
+                        <linearGradient id="active-grad-left" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.4" />
+                          <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.8" />
+                        </linearGradient>
+                        <linearGradient id="active-grad-right" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
+                          <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.4" />
+                        </linearGradient>
+                      </defs>
+                      {svgPaths.map((p, idx) => (
+                        <path
+                          key={idx}
+                          d={p.d}
+                          fill="none"
+                          stroke={p.isActive ? '#3b82f6' : '#1f2937'}
+                          strokeWidth={p.isActive ? 2 : 1.25}
+                          strokeDasharray={p.isActive ? 'none' : '4,4'}
+                          className={p.isActive ? 'shadow-md shadow-blue-500/50' : ''}
+                          style={{ transition: 'stroke 0.4s ease, stroke-width 0.4s ease' }}
+                        />
+                      ))}
+                    </svg>
+
+                    <BracketColumn title="Babak 32 Besar" titleColor="text-blue-400" matches={r32.left} winnerState={roundOf32Winners} type="r32" />
+                    <BracketColumn title="Babak 16 Besar" matches={r16.left} winnerState={roundOf16Winners} type="r16" />
+                    <BracketColumn title="Perempat Final" matches={qf.left} winnerState={quarterWinners} type="qf" />
+                    <BracketColumn title="Semifinal" matches={[sf.left]} winnerState={semiWinners} type="sf" />
+
+                    <div className="flex-shrink-0 w-80 pt-[240px] flex flex-col items-center relative z-20">
+                      <div className="w-full flex items-center justify-between bg-zinc-950/80 border border-zinc-900 rounded-full px-5 py-2 mb-4 relative z-10 backdrop-blur-md">
+                        <Trophy className="w-4 h-4 text-amber-400 animate-pulse" />
+                        <h3 className="text-[10px] font-black text-amber-400 uppercase tracking-widest">Grand Final</h3>
+                        <Swords className="w-3.5 h-3.5 text-amber-400" />
+                      </div>
+
+                      <div className="w-full mb-6">
+                        {finalMatch && (
+                          <div className="bg-gradient-to-b from-amber-500/20 to-zinc-950 p-[1px] rounded-2xl border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
+                            <MatchCard
+                              match={finalMatch}
+                              winnerState={{ F_1: finalWinner }}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      <AnimatePresence mode="wait">
+                        {finalWinner ? (
+                          <motion.div
+                            key="winner-banner"
+                            initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            className="w-full flex flex-col items-center gap-4 mt-2"
+                          >
+                            <div className="relative w-full group mb-2">
+                              <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 rounded-2xl blur-md opacity-45 animate-pulse" />
+                              <div className="relative w-full py-5 px-4 bg-zinc-950/90 rounded-2xl border border-amber-500/30 flex flex-col items-center text-center overflow-hidden">
+                                <img
+                                  src={logoWorldCupImg}
+                                  alt=""
+                                  className="absolute inset-0 w-full h-full object-contain opacity-[0.05] pointer-events-none z-0 select-none scale-110"
+                                />
+                                <div className="relative z-10 flex flex-col items-center">
+                                  <div className="absolute top-4 left-1/2 -translate-x-1/2 w-44 h-28 opacity-30 blur-[1px] pointer-events-none select-none z-0">
+                                    <FlagIcon teamName={finalWinner} className="w-full h-full object-cover rounded-xl border border-white/5 shadow-2xl" />
+                                  </div>
+                                  <img src={pialaImg} alt="Piala World Cup" className="relative z-10 w-36 h-36 object-contain drop-shadow-[0_0_12px_rgba(245,158,11,0.5)] animate-bounce" style={{ animationDuration: '3s' }} />
+                                  <h2 className="relative z-10 text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-500 truncate max-w-full mt-[-10px]">
+                                    {finalWinner}
+                                  </h2>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="placeholder"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.2 }}
+                            className="flex flex-col items-center justify-center py-6 select-none pointer-events-none"
+                          >
+                            <Trophy className="w-24 h-24 text-zinc-700 stroke-[1]" />
+                            <span className="text-[10px] uppercase tracking-widest text-zinc-650 font-black mt-2">Juara Dunia</span>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    <BracketColumn title="Semifinal" matches={[sf.right]} winnerState={semiWinners} type="sf" />
+                    <BracketColumn title="Perempat Final" matches={qf.right} winnerState={quarterWinners} type="qf" />
+                    <BracketColumn title="Babak 16 Besar" matches={r16.right} winnerState={roundOf16Winners} type="r16" />
+                    <BracketColumn title="Babak 32 Besar" titleColor="text-blue-400" matches={r32.right} winnerState={roundOf32Winners} type="r32" />
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {viewTab === 'schedule' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-20"
+          >
+            {/* Live Polling Sync Indicator */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-5 px-1 bg-zinc-950/40 border border-zinc-900/60 rounded-2xl p-3 backdrop-blur-sm">
+              <div className="flex items-center gap-2.5">
+                <span className="relative flex h-2 w-2">
+                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 duration-1000 ${isSilentSyncing ? 'bg-amber-400' : ''}`}></span>
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${isSilentSyncing ? 'bg-amber-400' : 'bg-emerald-500'}`}></span>
+                </span>
+                <span className="text-[10px] text-zinc-400 font-extrabold uppercase tracking-widest">
+                  {isSilentSyncing ? 'Mensinkronkan data pertandingan terbaru...' : 'Sinkronisasi Realtime Otomatis Aktif (1m)'}
+                </span>
+              </div>
+              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
+                Terakhir diperbarui: {lastSyncTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} WIB
+              </span>
+            </div>
+
+            {/* Filter Bar */}
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between border-b border-zinc-800 pb-6 mb-8">
+              <div className="flex flex-wrap items-center gap-1.5 bg-zinc-950/80 p-1 rounded-xl border border-white/5 w-full md:w-auto">
+                {[
+                  { key: 'all', label: 'Semua' },
+                  { key: 'groups', label: 'Fase Grup' },
+                  { key: 'r32', label: '32 Besar' },
+                  { key: 'r16', label: '16 Besar' },
+                  { key: 'qf', label: 'Perempat Final' },
+                  { key: 'sf', label: 'Semifinal' },
+                  { key: 'final', label: 'Final' }
+                ].map(tab => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setSelectedRoundFilter(tab.key)}
+                    className={`px-4 py-1.5 rounded-lg text-[11px] font-bold tracking-wider transition-all ${selectedRoundFilter === tab.key ? 'bg-zinc-850 text-white border border-white/10' : 'text-zinc-400 hover:text-white'}`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
               </div>
 
-              {/* Right Bracket */}
-              <BracketColumn title="Semifinal" matches={[sf.right]} winnerState={semiWinners} type="sf" />
-              <BracketColumn title="Perempat Final" matches={qf.right} winnerState={quarterWinners} type="qf" />
-              <BracketColumn title="Babak 16 Besar" matches={r16.right} winnerState={roundOf16Winners} type="r16" />
-              <BracketColumn title="Babak 32 Besar" titleColor="text-blue-400" matches={r32.right} winnerState={roundOf32Winners} type="r32" />
-
+              {/* Search Bar */}
+              <div className="relative w-full md:w-72">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-550" />
+                <input
+                  type="text"
+                  placeholder="Cari tim atau grup..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-zinc-950/80 border border-white/5 focus:border-zinc-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-550 focus:outline-none transition-colors"
+                />
+              </div>
             </div>
-          </div>
-        </div>
-        
+
+            {isSyncingMatches ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-3">
+                <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+                <span className="text-zinc-500 text-xs font-semibold">Mengambil jadwal terbaru...</span>
+              </div>
+            ) : groupedMatches.length === 0 ? (
+              <div className="text-center py-20 border border-dashed border-zinc-800 rounded-3xl">
+                <Calendar className="w-12 h-12 text-zinc-650 mx-auto mb-3 stroke-[1]" />
+                <p className="text-zinc-450 text-sm font-semibold">Tidak ada pertandingan yang ditemukan</p>
+                <p className="text-zinc-600 text-xs mt-1">Coba gunakan filter lain atau ubah pencarian Anda.</p>
+              </div>
+            ) : (
+              <div className="space-y-8">
+                {groupedMatches.map(group => (
+                  <div key={group.date} className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      <h3 className="text-xs font-black text-zinc-350 uppercase tracking-widest">
+                        {formatIndoDate(group.date)}
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                      {group.matches.map(match => (
+                        <MatchRow key={`${match.team1}-${match.team2}-${match.date}`} match={match} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+
       </div>
       <Footer />
     </div>

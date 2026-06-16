@@ -41,6 +41,64 @@ const THIRD_PLACE_SLOTS = [
 
 const ADMIN_PASS = 'allpit00';
 
+// ── API Match Mappings ────────────────────────────────────────────────────────
+const MAP_API_MATCH_NUM_TO_R32_ID = {
+  73: 'R32_L3',
+  74: 'R32_L1',
+  75: 'R32_L4',
+  76: 'R32_R1',
+  77: 'R32_L2',
+  78: 'R32_R2',
+  79: 'R32_R3',
+  80: 'R32_R4',
+  81: 'R32_L7',
+  82: 'R32_L8',
+  83: 'R32_L5',
+  84: 'R32_L6',
+  85: 'R32_R7',
+  86: 'R32_R5',
+  87: 'R32_R8',
+  88: 'R32_R6'
+};
+
+const MAP_API_MATCH_NUM_TO_R16_ID = {
+  89: 'R16_L1',
+  90: 'R16_L2',
+  91: 'R16_R1',
+  92: 'R16_R2',
+  93: 'R16_L3',
+  94: 'R16_L4',
+  95: 'R16_R3',
+  96: 'R16_R4'
+};
+
+const MAP_API_MATCH_NUM_TO_QF_ID = {
+  97: 'QF_L1',
+  98: 'QF_L2',
+  99: 'QF_R1',
+  100: 'QF_R2'
+};
+
+const MAP_API_MATCH_NUM_TO_SF_ID = {
+  101: 'SF_L',
+  102: 'SF_R'
+};
+
+const FINAL_API_MATCH_NUM = 104;
+
+const mapApiToLocalTeam = (name) => {
+  if (name === 'Bosnia & Herzegovina') return 'Bosnia and Herzegovina';
+  if (name === 'USA') return 'United States';
+  if (name === 'Turkey') return 'Turkiye';
+  if (name === 'Curaçao') return 'Curacao';
+  return name;
+};
+
+const isApiPlaceholder = (name) => {
+  if (!name) return true;
+  return /^[0-9]+[A-L]/i.test(name) || /^[WL][0-9]+/i.test(name);
+};
+
 // ── Backtracking: assign 3rd-place groups ─────────────────────────────────────
 const assignThirdPlaceTeams = (groupAdvancers) => {
   const qualifiedThirds = {};
@@ -139,6 +197,7 @@ export const WorldCupAdminPage = () => {
   const [champion, setChampion] = useState(null);
   const [leaderboardOpened, setLeaderboardOpened] = useState(false);
   const [submissionsLocked, setSubmissionsLocked] = useState(false);
+  const [showKnockoutBracket, setShowKnockoutBracket] = useState(false);
 
   // UI
   const [activeTab, setActiveTab] = useState('groups');
@@ -159,6 +218,184 @@ export const WorldCupAdminPage = () => {
   const g2 = (id) => groupAdvancers[id]?.[1] ?? null;
   const g3 = (slot) => thirdPlace[slot]?.team ?? null;
 
+  // ── Sync from API ──────────────────────────────────────────────────────────
+  const syncWithAPI = useCallback(async (silent = false) => {
+    if (!silent) setStatus('loading');
+    setErrMsg('');
+    try {
+      const res = await fetch('https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json');
+      const data = await res.json();
+      
+      const standings = {};
+      WORLD_CUP_GROUPS.forEach(g => {
+        standings[g.id] = {};
+        g.teams.forEach(t => {
+          standings[g.id][t] = { name: t, points: 0, gd: 0, gf: 0 };
+        });
+      });
+
+      // Process group stage matches
+      data.matches.forEach(m => {
+        if (!m.group) return;
+        const groupId = m.group.replace('Group ', '');
+        if (!standings[groupId]) return;
+        const t1 = mapApiToLocalTeam(m.team1);
+        const t2 = mapApiToLocalTeam(m.team2);
+        if (!standings[groupId][t1] || !standings[groupId][t2]) return;
+
+        if (m.score && m.score.ft) {
+          const [s1, s2] = m.score.ft;
+          standings[groupId][t1].gf += s1;
+          standings[groupId][t2].gf += s2;
+          standings[groupId][t1].gd += (s1 - s2);
+          standings[groupId][t2].gd += (s2 - s1);
+          if (s1 > s2) {
+            standings[groupId][t1].points += 3;
+          } else if (s1 < s2) {
+            standings[groupId][t2].points += 3;
+          } else {
+            standings[groupId][t1].points += 1;
+            standings[groupId][t2].points += 1;
+          }
+        }
+      });
+
+      const nextGroupAdvancers = {};
+      const allThirds = [];
+
+      WORLD_CUP_GROUPS.forEach(g => {
+        const sorted = Object.values(standings[g.id]).sort((a, b) => {
+          if (b.points !== a.points) return b.points - a.points;
+          if (b.gd !== a.gd) return b.gd - a.gd;
+          if (b.gf !== a.gf) return b.gf - a.gf;
+
+          // Head-to-Head tiebreaker
+          const h2hMatch = data.matches.find(m => {
+            if (!m.group || m.group.replace('Group ', '') !== g.id) return false;
+            if (!m.score || !m.score.ft) return false;
+            const t1 = mapApiToLocalTeam(m.team1);
+            const t2 = mapApiToLocalTeam(m.team2);
+            return (t1 === a.name && t2 === b.name) || (t1 === b.name && t2 === a.name);
+          });
+
+          if (h2hMatch) {
+            const [s1, s2] = h2hMatch.score.ft;
+            const t1 = mapApiToLocalTeam(h2hMatch.team1);
+            const t2 = mapApiToLocalTeam(h2hMatch.team2);
+
+            let aScore = 0;
+            let bScore = 0;
+            if (t1 === a.name) {
+              aScore = s1;
+              bScore = s2;
+            } else {
+              aScore = s2;
+              bScore = s1;
+            }
+
+            if (aScore !== bScore) {
+              return bScore - aScore;
+            }
+          }
+
+          // Alphabetical fallback
+          return a.name.localeCompare(b.name);
+        });
+
+        // Top 2 advance
+        nextGroupAdvancers[g.id] = [sorted[0].name, sorted[1].name];
+        allThirds.push({
+          groupId: g.id,
+          name: sorted[2].name,
+          points: sorted[2].points,
+          gd: sorted[2].gd,
+          gf: sorted[2].gf
+        });
+      });
+
+      // Sort 3rd place teams
+      const sortedThirds = allThirds.sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        if (b.gd !== a.gd) return b.gd - a.gd;
+        if (b.gf !== a.gf) return b.gf - a.gf;
+        return a.name.localeCompare(b.name);
+      });
+
+      // Top 8 third-place teams advance
+      sortedThirds.slice(0, 8).forEach(t => {
+        nextGroupAdvancers[t.groupId].push(t.name);
+      });
+
+      setGroupAdvancers(nextGroupAdvancers);
+
+      // Process knockouts
+      const nextR32 = {};
+      const nextR16 = {};
+      const nextQF = {};
+      const nextSF = {};
+      let nextChampion = null;
+
+      const getWinner = (m) => {
+        if (!m.score) return null;
+        const t1 = mapApiToLocalTeam(m.team1);
+        const t2 = mapApiToLocalTeam(m.team2);
+        if (isApiPlaceholder(t1) || isApiPlaceholder(t2)) return null;
+
+        const score = m.score;
+        if (score.p) {
+          return score.p[0] > score.p[1] ? t1 : t2;
+        }
+        if (score.et) {
+          return score.et[0] > score.et[1] ? t1 : t2;
+        }
+        if (score.ft) {
+          if (score.ft[0] === score.ft[1]) return null;
+          return score.ft[0] > score.ft[1] ? t1 : t2;
+        }
+        return null;
+      };
+
+      data.matches.forEach(m => {
+        if (!m.round) return;
+        const winner = getWinner(m);
+        if (!winner) return;
+
+        if (m.round === 'Round of 32') {
+          const matchId = MAP_API_MATCH_NUM_TO_R32_ID[m.num];
+          if (matchId) nextR32[matchId] = winner;
+        } else if (m.round === 'Round of 16') {
+          const matchId = MAP_API_MATCH_NUM_TO_R16_ID[m.num];
+          if (matchId) nextR16[matchId] = winner;
+        } else if (m.round === 'Quarter-final') {
+          const matchId = MAP_API_MATCH_NUM_TO_QF_ID[m.num];
+          if (matchId) nextQF[matchId] = winner;
+        } else if (m.round === 'Semi-final') {
+          const matchId = MAP_API_MATCH_NUM_TO_SF_ID[m.num];
+          if (matchId) nextSF[matchId] = winner;
+        } else if (m.round === 'Final' && m.num === FINAL_API_MATCH_NUM) {
+          nextChampion = winner;
+        }
+      });
+
+      setR32Winners(nextR32);
+      setR16Winners(nextR16);
+      setQfWinners(nextQF);
+      setSfWinners(nextSF);
+      setChampion(nextChampion);
+
+      if (!silent) {
+        setStatus('saved');
+        setTimeout(() => setStatus(null), 2500);
+      }
+    } catch (e) {
+      console.error(e);
+      if (!silent) {
+        setStatus('error');
+        setErrMsg('Gagal sync dari API.');
+      }
+    }
+  }, []);
+
   // ── Load from Firestore ────────────────────────────────────────────────────
   const loadFromFirestore = useCallback(async () => {
     setStatus('loading');
@@ -174,15 +411,18 @@ export const WorldCupAdminPage = () => {
         setChampion(d.champion ?? null);
         setLeaderboardOpened(d.leaderboardOpened ?? true);
         setSubmissionsLocked(d.submissionsLocked ?? false);
+        setShowKnockoutBracket(d.showKnockoutBracket ?? false);
         setLastSaved(d.updatedAt ?? null);
       }
+      // Auto sync from API silently
+      await syncWithAPI(true);
       setStatus(null);
     } catch (e) {
       console.error(e);
       setStatus('error');
       setErrMsg('Gagal load data dari Firestore.');
     }
-  }, []);
+  }, [syncWithAPI]);
 
   useEffect(() => {
     if (authed) loadFromFirestore();
@@ -202,6 +442,7 @@ export const WorldCupAdminPage = () => {
         champion,
         leaderboardOpened,
         submissionsLocked,
+        showKnockoutBracket,
         updatedAt: new Date().toISOString(),
       };
       await setDoc(doc(db, 'worldCupResult', 'official'), payload);
@@ -393,6 +634,15 @@ export const WorldCupAdminPage = () => {
             </AnimatePresence>
 
             <button
+              onClick={() => syncWithAPI(false)}
+              disabled={status === 'loading' || status === 'saving'}
+              className="bg-zinc-900 hover:bg-zinc-800 border border-white/5 text-zinc-400 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-50"
+            >
+              <Loader2 className={`w-3.5 h-3.5 ${status === 'loading' ? 'animate-spin' : ''}`} />
+              Sync API
+            </button>
+
+            <button
               onClick={loadFromFirestore}
               disabled={status === 'loading' || status === 'saving'}
               className="bg-zinc-900 hover:bg-zinc-800 border border-white/5 text-zinc-400 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-50"
@@ -416,10 +666,10 @@ export const WorldCupAdminPage = () => {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
         >
           {/* Leaderboard Lock Switch */}
-          <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 flex items-center justify-between">
+          <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${leaderboardOpened ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-zinc-900 text-zinc-600 border border-zinc-800'}`}>
                 <Star className={`w-4 h-4 ${leaderboardOpened ? 'fill-amber-400 text-amber-400' : 'text-zinc-600'}`} />
@@ -427,26 +677,26 @@ export const WorldCupAdminPage = () => {
               <div>
                 <h3 className="text-xs font-extrabold text-white uppercase">Status Leaderboard</h3>
                 <p className="text-[10px] text-zinc-500 mt-0.5">
-                  {leaderboardOpened ? 'Leaderboard dibuka untuk semua user (Real-Time)' : 'Leaderboard dikunci (Hanya admin yang bisa membuka)'}
+                  {leaderboardOpened ? 'Leaderboard dibuka untuk semua user (Real-Time)' : 'Leaderboard dikunci (Hanya admin)'}
                 </p>
               </div>
             </div>
             <button
               onClick={() => setLeaderboardOpened(!leaderboardOpened)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${leaderboardOpened ? 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20' : 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20'}`}
+              className={`w-full px-4 py-2 rounded-xl text-xs font-bold transition-all border ${leaderboardOpened ? 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20' : 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20'}`}
             >
               {leaderboardOpened ? 'Kunci Leaderboard' : 'Buka Leaderboard'}
             </button>
           </div>
 
           {/* Submission Lock Switch */}
-          <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 flex items-center justify-between">
+          <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${!submissionsLocked ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}`}>
                 <Lock className={`w-4 h-4 ${!submissionsLocked ? 'text-emerald-400' : 'text-rose-400'}`} />
               </div>
               <div>
-                <h3 className="text-xs font-extrabold text-white uppercase">Status Pengisian Bracket</h3>
+                <h3 className="text-xs font-extrabold text-white uppercase">Pengisian Bracket</h3>
                 <p className="text-[10px] text-zinc-500 mt-0.5">
                   {submissionsLocked ? 'Pengisian ditutup (dikunci)' : 'Pengisian dibuka (bisa diisi user)'}
                 </p>
@@ -454,9 +704,30 @@ export const WorldCupAdminPage = () => {
             </div>
             <button
               onClick={() => setSubmissionsLocked(!submissionsLocked)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!submissionsLocked ? 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20' : 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20'}`}
+              className={`w-full px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!submissionsLocked ? 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20' : 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20'}`}
             >
               {submissionsLocked ? 'Buka Pengisian' : 'Tutup Pengisian'}
+            </button>
+          </div>
+
+          {/* Knockout Bracket View Switch */}
+          <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${showKnockoutBracket ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-zinc-900 text-zinc-600 border border-zinc-800'}`}>
+                <Trophy className={`w-4 h-4 ${showKnockoutBracket ? 'text-blue-400' : 'text-zinc-650'}`} />
+              </div>
+              <div>
+                <h3 className="text-xs font-extrabold text-white uppercase">Tampilan Bagan</h3>
+                <p className="text-[10px] text-zinc-500 mt-0.5">
+                  {showKnockoutBracket ? 'Bagan babak gugur ditampilkan ke user' : 'Bagan babak gugur disembunyikan'}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowKnockoutBracket(!showKnockoutBracket)}
+              className={`w-full px-4 py-2 rounded-xl text-xs font-bold transition-all border ${showKnockoutBracket ? 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20' : 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20'}`}
+            >
+              {showKnockoutBracket ? 'Sembunyikan Bagan' : 'Tampilkan Bagan'}
             </button>
           </div>
         </motion.div>
