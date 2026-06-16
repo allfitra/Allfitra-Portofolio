@@ -781,7 +781,7 @@ export const CupResultPage = () => {
       <div className="max-w-7xl mx-auto relative z-10">
 
         {/* HEADER BRANDING */}
-        <div className="flex flex-col md:flex-row items-center gap-6 justify-between border-b border-zinc-900 pb-8 mb-8">
+        <div className="flex flex-col md:flex-row items-center gap-6 justify-between border-b border-zinc-900 pb-8 ">
           <div className="flex items-center gap-4">
             <Link to="/world-cup" className="w-10 h-10 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-white/5 flex items-center justify-center text-zinc-400 hover:text-white transition-all">
               <ArrowLeft className="w-5 h-5" />
@@ -804,6 +804,11 @@ export const CupResultPage = () => {
               <Swords className="w-4 h-4" /> Masuk Predictor
             </Link>
           </div>
+        </div>
+        <div className="flex justify-end mt-2 mb-2">
+          <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
+            Terakhir diperbarui: {lastSyncTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} WIB
+          </span>
         </div>
 
         {/* TAB NAVIGATION */}
@@ -1036,21 +1041,6 @@ export const CupResultPage = () => {
             animate={{ opacity: 1, y: 0 }}
             className="mb-20"
           >
-            {/* Live Polling Sync Indicator */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-5 px-1 bg-zinc-950/40 border border-zinc-900/60 rounded-2xl p-3 backdrop-blur-sm">
-              <div className="flex items-center gap-2.5">
-                <span className="relative flex h-2 w-2">
-                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 duration-1000 ${isSilentSyncing ? 'bg-amber-400' : ''}`}></span>
-                  <span className={`relative inline-flex rounded-full h-2 w-2 ${isSilentSyncing ? 'bg-amber-400' : 'bg-emerald-500'}`}></span>
-                </span>
-                <span className="text-[10px] text-zinc-400 font-extrabold uppercase tracking-widest">
-                  {isSilentSyncing ? 'Mensinkronkan data pertandingan terbaru...' : 'Sinkronisasi Realtime Otomatis Aktif (1m)'}
-                </span>
-              </div>
-              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
-                Terakhir diperbarui: {lastSyncTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} WIB
-              </span>
-            </div>
 
             {/* Filter Bar */}
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between border-b border-zinc-800 pb-6 mb-8">
