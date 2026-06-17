@@ -291,7 +291,7 @@ export const CupPage = () => {
       } else {
         const docs = querySnapshot.docs;
         const hasMatchedLocalDocId = docs.some(d => d.id === localDocId);
-        
+
         if (hasMatchedLocalDocId || (localUsername && localUsername.toLowerCase() === trimmed.toLowerCase())) {
           setUsernameStatus('existing_mine');
           // Use existing matched doc ID if possible, otherwise use the first one (most recent)
@@ -1462,7 +1462,7 @@ export const CupPage = () => {
 
 
         <div className="relative">
-          <div className={officialResult?.submissionsLocked && !isSharedView && !viewingUser ? 'blur-md pointer-events-none select-none' : ''}>
+          <div className={officialResult?.submissionsLocked && !isSharedView && !viewingUser ? 'blur-md pointer-events-none select-none h-[650px] overflow-hidden' : ''}>
             {/* ── STEP 1: GROUP SELECTION ── */}
             <div className="mb-10 mt-2">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-7 border-b border-zinc-800 pb-5">
@@ -1568,7 +1568,7 @@ export const CupPage = () => {
 
             {/* ── STEP 2: BRACKET ── */}
             <AnimatePresence>
-              {isComplete && (
+              {isComplete && !(officialResult?.submissionsLocked && !isSharedView && !viewingUser) && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                   <div className="flex items-center gap-3 border-b border-zinc-800 pb-5">
                     <span className="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-xs border border-blue-500/25">2</span>
@@ -1967,7 +1967,7 @@ export const CupPage = () => {
               )}
             </AnimatePresence>
             {/* ── TRANSPARENCY: 3RD PLACE QUALIFICATION ── */}
-            {isComplete && (
+            {isComplete && !(officialResult?.submissionsLocked && !isSharedView && !viewingUser) && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
