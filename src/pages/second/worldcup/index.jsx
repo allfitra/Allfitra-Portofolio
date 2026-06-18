@@ -2034,13 +2034,22 @@ export const CupPage = () => {
                   <span className="text-[10px] font-bold text-zinc-500 bg-zinc-900 px-3 py-1 rounded-full border border-white/5">Submissions Locked</span>
                 </div>
 
-                <Link
-                  to="/world-cup-table"
-                  className="mb-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-950/5"
-                >
-                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                  Lihat Hasil Resmi
-                </Link>
+                <div className="flex flex-col sm:flex-row gap-3 mb-4 w-full">
+                  <Link
+                    to="/world-cup-table"
+                    className="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-950/5"
+                  >
+                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                    Lihat Hasil Resmi
+                  </Link>
+                  <button
+                    onClick={() => setIsRulesOpen(true)}
+                    className="flex-1 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-amber-950/5"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                    Rules Perhitungan Poin
+                  </button>
+                </div>
 
                 {officialResult?.leaderboardOpened ? (
                   <div className="flex-grow flex flex-col min-h-0 space-y-4 text-left">
