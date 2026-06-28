@@ -340,6 +340,11 @@ const KnockoutPredictorPage = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [saveStatus, setSaveStatus] = useState(null); // 'success' | 'error' | null
     const [errorMsg, setErrorMsg] = useState('');
+    const [toastMsg, setToastMsg] = useState(null);
+    const showToast = (msg) => {
+        setToastMsg(msg);
+        setTimeout(() => setToastMsg(null), 4000);
+    };
 
     // logged-in user session (stored in localStorage to persist on refresh)
     const [session, setSession] = useState(() => {
@@ -587,6 +592,11 @@ const KnockoutPredictorPage = () => {
 
     // ── Submit prediction ───────────────────────────────────────────────────
     const submitPrediction = async () => {
+        const allR32Predicted = R32_MATCHES.every((m) => !!winners[m.id]);
+        if (!allR32Predicted) {
+            setErrorMsg('Harap isi seluruh 16 prediksi Babak 32 Besar terlebih dahulu!');
+            return;
+        }
         if (!inputName.trim()) { setErrorMsg('Nama tidak boleh kosong'); return; }
         if (!inputPassword.trim() || inputPassword.trim().length < 4) { setErrorMsg('Password minimal 4 karakter'); return; }
         setIsSaving(true);
@@ -1007,7 +1017,14 @@ const KnockoutPredictorPage = () => {
                                         </button>
                                         {!locked && (
                                             <button
-                                                onClick={() => openModal('submit')}
+                                                onClick={() => {
+                                                    const allR32Predicted = R32_MATCHES.every((m) => !!winners[m.id]);
+                                                    if (!allR32Predicted) {
+                                                        showToast('Harap isi seluruh 16 pertandingan di Babak 32 Besar sebelum mengirim prediksi!');
+                                                        return;
+                                                    }
+                                                    openModal('submit');
+                                                }}
                                                 className="bg-gradient-to-r from-[#FF2D4B] to-[#FF5470] text-white shadow-[0_0_20px_rgba(255,45,75,0.3)] hover:brightness-110 px-4 py-1.5 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5"
                                             >
                                                 <Send className="w-3.5 h-3.5" /> Submit Prediksi
@@ -1679,6 +1696,19 @@ const KnockoutPredictorPage = () => {
                                 )}
                             </motion.div>
                         </div>
+                    )}
+                </AnimatePresence>
+                <AnimatePresence>
+                    {toastMsg && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] bg-rose-950/95 border border-rose-500/40 backdrop-blur-md px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-rose-200 text-xs font-semibold max-w-sm w-[90%]"
+                        >
+                            <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                            <span>{toastMsg}</span>
+                        </motion.div>
                     )}
                 </AnimatePresence>
             </div>
