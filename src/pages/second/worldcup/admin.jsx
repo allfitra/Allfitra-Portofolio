@@ -198,6 +198,8 @@ export const WorldCupAdminPage = () => {
   const [leaderboardOpened, setLeaderboardOpened] = useState(false);
   const [submissionsLocked, setSubmissionsLocked] = useState(false);
   const [showKnockoutBracket, setShowKnockoutBracket] = useState(false);
+  const [v2LeaderboardOpened, setV2LeaderboardOpened] = useState(false);
+  const [v2SubmissionsLocked, setV2SubmissionsLocked] = useState(false);
 
   // UI
   const [activeTab, setActiveTab] = useState('groups');
@@ -414,6 +416,14 @@ export const WorldCupAdminPage = () => {
         setShowKnockoutBracket(d.showKnockoutBracket ?? false);
         setLastSaved(d.updatedAt ?? null);
       }
+
+      const snap2 = await getDoc(doc(db, 'worldcupv2Result', 'official'));
+      if (snap2.exists()) {
+        const d2 = snap2.data();
+        setV2LeaderboardOpened(d2.leaderboardOpened ?? false);
+        setV2SubmissionsLocked(d2.submissionsLocked ?? false);
+      }
+
       // Auto sync from API silently
       await syncWithAPI(true);
       setStatus(null);
@@ -446,6 +456,14 @@ export const WorldCupAdminPage = () => {
         updatedAt: new Date().toISOString(),
       };
       await setDoc(doc(db, 'worldCupResult', 'official'), payload);
+
+      const payload2 = {
+        leaderboardOpened: v2LeaderboardOpened,
+        submissionsLocked: v2SubmissionsLocked,
+        updatedAt: new Date().toISOString(),
+      };
+      await setDoc(doc(db, 'worldcupv2Result', 'official'), payload2);
+
       setLastSaved(payload.updatedAt);
       setStatus('saved');
       setTimeout(() => setStatus(null), 2500);
@@ -728,6 +746,56 @@ export const WorldCupAdminPage = () => {
               className={`w-full px-4 py-2 rounded-xl text-xs font-bold transition-all border ${showKnockoutBracket ? 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20' : 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20'}`}
             >
               {showKnockoutBracket ? 'Sembunyikan Bagan' : 'Tampilkan Bagan'}
+            </button>
+          </div>
+        </motion.div>
+
+        {/* ── Settings Panel V2 (Knockout Predictor V2 Settings) ── */}
+        <h2 className="text-xs font-black text-amber-400 uppercase tracking-widest mb-4">Pengaturan Knockout Predictor V2</h2>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
+        >
+          {/* V2 Leaderboard Lock Switch */}
+          <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${v2LeaderboardOpened ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-zinc-900 text-zinc-600 border border-zinc-800'}`}>
+                <Star className={`w-4 h-4 ${v2LeaderboardOpened ? 'fill-amber-400 text-amber-400' : 'text-zinc-650'}`} />
+              </div>
+              <div>
+                <h3 className="text-xs font-extrabold text-white uppercase">V2 Leaderboard</h3>
+                <p className="text-[10px] text-zinc-500 mt-0.5">
+                  {v2LeaderboardOpened ? 'Leaderboard V2 dibuka untuk semua user' : 'Leaderboard V2 dikunci (Hanya admin)'}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setV2LeaderboardOpened(!v2LeaderboardOpened)}
+              className={`w-full px-4 py-2 rounded-xl text-xs font-bold transition-all border ${v2LeaderboardOpened ? 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20' : 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20'}`}
+            >
+              {v2LeaderboardOpened ? 'Kunci Leaderboard V2' : 'Buka Leaderboard V2'}
+            </button>
+          </div>
+
+          {/* V2 Submission Lock Switch */}
+          <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${!v2SubmissionsLocked ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}`}>
+                <Lock className={`w-4 h-4 ${!v2SubmissionsLocked ? 'text-emerald-400' : 'text-rose-400'}`} />
+              </div>
+              <div>
+                <h3 className="text-xs font-extrabold text-white uppercase">V2 Pengisian Bracket</h3>
+                <p className="text-[10px] text-zinc-500 mt-0.5">
+                  {v2SubmissionsLocked ? 'Pengisian V2 ditutup (dikunci)' : 'Pengisian V2 dibuka (bisa diisi user)'}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setV2SubmissionsLocked(!v2SubmissionsLocked)}
+              className={`w-full px-4 py-2 rounded-xl text-xs font-bold transition-all border ${!v2SubmissionsLocked ? 'bg-rose-600/10 border-rose-500/30 text-rose-400 hover:bg-rose-600/20' : 'bg-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-600/20'}`}
+            >
+              {v2SubmissionsLocked ? 'Buka Pengisian V2' : 'Tutup Pengisian V2'}
             </button>
           </div>
         </motion.div>

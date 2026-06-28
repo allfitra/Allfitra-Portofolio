@@ -19,6 +19,7 @@ import { MyGalery } from '@/pages/second/galery';
 import { Pitbooth } from '@/pages/second/pitbooth';
 import { FinancialReport } from '@/pages/silent/financial-report';
 import { InvestPage } from '@/pages/finance/invest';
+import KnockoutPredictorPage from '@/pages/second/worldcup/knockout';
 
 export const AppRoutes = () => {
   return (
@@ -35,6 +36,7 @@ export const AppRoutes = () => {
         {/* Second */}
         <Route path="/world/home" element={<BasePage />} />
         <Route path="/world-cup" element={<CupPage />} />
+        <Route path="/world-cup-knockout" element={<KnockoutPredictorPage />} />
         <Route path="/world-cup-table" element={<CupResultPage />} />
         <Route path="/world-cup-admin" element={<WorldCupAdminPage />} />
         {/* <Route path="/blog" element={<BlogPage />} /> */}
