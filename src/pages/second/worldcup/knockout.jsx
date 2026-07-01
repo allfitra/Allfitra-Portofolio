@@ -809,7 +809,7 @@ const KnockoutPredictorPage = () => {
         );
     };
 
-    const CompactMatchNode = ({ matchId, bracketData }) => {
+    const CompactMatchNode = ({ matchId, bracketData, viewerWinners, viewerScores }) => {
         if (!bracketData) return null;
         const roundName = matchId.split('_')[0];
         const roundMatches = bracketData[roundName];
@@ -826,11 +826,63 @@ const KnockoutPredictorPage = () => {
         const isT1Winner = w && w === t1;
         const isT2Winner = w && w === t2;
 
-        const s1 = sc?.s1 ?? '-';
-        const s2 = sc?.s2 ?? '-';
+        const isViewingOthers = !!viewerWinners;
+
+        const s1 = isViewingOthers
+            ? (viewerScores?.[matchId]?.s1 ?? '-')
+            : (sc?.s1 ?? '-');
+        const s2 = isViewingOthers
+            ? (viewerScores?.[matchId]?.s2 ?? '-')
+            : (sc?.s2 ?? '-');
+
+        const realS1 = officialResult?.scores?.[matchId]?.s1;
+        const realS2 = officialResult?.scores?.[matchId]?.s2;
+        const hasRealScore = realS1 !== undefined && realS1 !== null && realS1 !== '' &&
+                             realS2 !== undefined && realS2 !== null && realS2 !== '';
+
+        const getMatchPoints = () => {
+            if (!officialResult) return null;
+            const realW = officialResult.winners?.[matchId];
+            if (!realW) return null; // match not played yet
+
+            const predW = viewerWinners?.[matchId];
+            if (!predW) return 0;
+
+            if (predW === realW) {
+                const rS1 = officialResult.scores?.[matchId]?.s1;
+                const rS2 = officialResult.scores?.[matchId]?.s2;
+                const pS1 = viewerScores?.[matchId]?.s1;
+                const pS2 = viewerScores?.[matchId]?.s2;
+
+                const isExact = rS1 !== undefined && rS2 !== undefined && pS1 !== undefined && pS2 !== undefined &&
+                                String(rS1) === String(pS1) && String(rS2) === String(pS2);
+                if (isExact) return 3;
+
+                const isPenalty = !!officialResult.scores?.[matchId]?.isPenalty;
+                if (isPenalty) return 1;
+
+                return 2;
+            }
+            return 0;
+        };
+
+        const points = isViewingOthers ? getMatchPoints() : null;
+
+        let borderClass = 'border-white/[0.04] bg-[#151B26]';
+        if (isViewingOthers && points !== null) {
+            if (points === 3) {
+                borderClass = 'border-[#FFC845] bg-[#FFC845]/10 shadow-[0_0_8px_rgba(255,200,69,0.15)]';
+            } else if (points === 2) {
+                borderClass = 'border-[#10B981]/50 bg-[#10B981]/5';
+            } else if (points === 1) {
+                borderClass = 'border-[#4FD1FF]/50 bg-[#4FD1FF]/5';
+            } else if (points === 0) {
+                borderClass = 'border-[#FF2D4B]/30 bg-[#FF2D4B]/5';
+            }
+        }
 
         return (
-            <div className="flex items-center gap-1 bg-[#151B26] border border-white/[0.04] p-1 px-1.5 rounded-lg shadow-sm w-[76px] justify-between group hover:border-white/10 transition-colors">
+            <div className={`flex items-center gap-1 p-1 px-1.5 rounded-lg shadow-sm w-[76px] justify-between group hover:border-white/10 transition-colors relative ${borderClass}`}>
                 <div className="flex flex-col gap-1 items-center w-full">
                     <div className={`w-5 h-3.5 rounded-[2px] overflow-hidden border border-white/5 relative ${t1 && w && !isT1Winner ? 'opacity-30' : ''}`}>
                         <FlagIcon teamName={t1} className="w-full h-full object-cover" />
@@ -839,9 +891,19 @@ const KnockoutPredictorPage = () => {
                         <FlagIcon teamName={t2} className="w-full h-full object-cover" />
                     </div>
                 </div>
-                <div className="flex flex-col text-[8px] font-black text-center text-[#FFC845] min-w-[12px] leading-tight font-mono select-none">
-                    <span>{s1}</span>
-                    <span>{s2}</span>
+                <div className="flex flex-col text-[8px] font-black text-right text-[#FFC845] min-w-[12px] leading-tight font-mono select-none">
+                    <div className="flex items-center gap-0.5 justify-end">
+                        <span>{s1}</span>
+                        {isViewingOthers && hasRealScore && (
+                            <span className="text-[6.5px] text-zinc-500 font-normal">({realS1})</span>
+                        )}
+                    </div>
+                    <div className="flex items-center gap-0.5 justify-end">
+                        <span>{s2}</span>
+                        {isViewingOthers && hasRealScore && (
+                            <span className="text-[6.5px] text-zinc-500 font-normal">({realS2})</span>
+                        )}
+                    </div>
                 </div>
             </div>
         );
