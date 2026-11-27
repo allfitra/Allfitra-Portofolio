@@ -1,31 +1,19 @@
 export const OnGoing = () => {
   return (
-    <div className="flex flex-col items-center justify-center gap-8 text-center">
+    <div className="flex flex-col items-center justify-center gap-6 text-center">
 
-      {/* Animated icon area */}
+      {/* Icon area */}
       <div className="relative flex items-center justify-center">
-        {/* Outer glow pulse */}
         <div
-          className="absolute w-24 h-24 rounded-full animate-ping opacity-20"
-          style={{ background: 'var(--accent-cyan)' }}
-        />
-        {/* Middle ring */}
-        <div
-          className="absolute w-20 h-20 rounded-full animate-ping opacity-10"
-          style={{ background: 'var(--accent-purple)', animationDelay: '0.3s' }}
-        />
-        {/* Icon container */}
-        <div
-          className="relative w-16 h-16 rounded-full flex items-center justify-center border"
+          className="relative w-14 h-14 rounded-md flex items-center justify-center border"
           style={{
-            background: 'rgba(0,240,255,0.08)',
-            borderColor: 'var(--accent-cyan)',
-            boxShadow: '0 0 20px rgba(0,240,255,0.2)'
+            background: 'var(--accent-subtle)',
+            borderColor: 'var(--accent-border)',
           }}
         >
           <svg
-            className="w-8 h-8"
-            style={{ color: 'var(--accent-cyan)' }}
+            className="w-7 h-7"
+            style={{ color: 'var(--accent-primary)' }}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -38,12 +26,12 @@ export const OnGoing = () => {
       </div>
 
       {/* Text content */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <h2
           className="text-2xl md:text-3xl font-black tracking-tight"
           style={{ color: 'var(--text-primary)' }}
         >
-          Something's <span style={{ color: 'var(--accent-cyan)' }}>cooking</span> 🍳
+          Something's <span style={{ color: 'var(--accent-primary)' }}>cooking</span>
         </h2>
         <p
           className="text-sm md:text-base max-w-xs"
@@ -54,16 +42,16 @@ export const OnGoing = () => {
         </p>
       </div>
 
-      {/* Animated progress dots */}
+      {/* Progress blocks */}
       <div className="flex items-center gap-2">
         {[0, 1, 2, 3].map((i) => (
           <div
             key={i}
-            className="w-2 h-2 rounded-full animate-bounce"
+            className="w-2 h-2 rounded-sm animate-bounce"
             style={{
-              background: i % 2 === 0 ? 'var(--accent-cyan)' : 'var(--accent-purple)',
+              background: 'var(--accent-primary)',
               animationDelay: `${i * 0.15}s`,
-              opacity: 0.7
+              opacity: 0.8
             }}
           />
         ))}

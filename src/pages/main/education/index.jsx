@@ -51,8 +51,8 @@ const EducationCard = ({ education }) => {
 
         {/* Logo */}
         <div
-          className="p-3 rounded-2xl flex-shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3"
-          style={{ background: 'rgba(157,78,221,0.1)', border: '1px solid rgba(157,78,221,0.2)' }}
+          className="p-3 rounded-md flex-shrink-0 transition-transform duration-200 group-hover:scale-105"
+          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
         >
           <img src={education.icon} alt="school-logo" className="h-14 w-14 object-contain" />
         </div>
@@ -60,12 +60,16 @@ const EducationCard = ({ education }) => {
         {/* Info */}
         <div className="flex flex-col w-full gap-2">
           <div className="flex flex-wrap justify-between items-start gap-2">
-            <h2 className="text-xl font-bold transition-colors duration-300 group-hover:text-[var(--accent-cyan)]" style={{ color: 'var(--text-primary)' }}>
+            <h2 className="text-xl font-bold transition-colors duration-200 group-hover:text-[var(--accent-primary)]" style={{ color: 'var(--text-primary)' }}>
               {education.school}
             </h2>
             <span
-              className="text-xs font-semibold px-3 py-1 rounded-full shadow-[0_0_15px_rgba(0,240,255,0.15)]"
-              style={{ background: 'rgba(0,240,255,0.1)', color: 'var(--accent-cyan)', border: '1px solid rgba(0,240,255,0.2)' }}
+              className="text-xs font-semibold px-2.5 py-1 rounded"
+              style={{
+                background: 'var(--accent-subtle)',
+                color: 'var(--accent-primary)',
+                border: '1px solid var(--accent-border)',
+              }}
             >
               {education.date}
             </span>
@@ -74,17 +78,21 @@ const EducationCard = ({ education }) => {
           <p className="text-base font-medium" style={{ color: 'var(--text-secondary)' }}>
             {education.degree}
           </p>
-          <p className="text-sm font-bold" style={{ color: 'var(--accent-purple)' }}>
+          <p className="text-sm font-bold" style={{ color: 'var(--accent-primary)' }}>
             GPA: {education.gpa}
           </p>
 
           {education.thesis && (
             <div
-              className="mt-3 p-4 rounded-xl"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)' }}
+              className="mt-3 p-4 rounded-md"
+              style={{
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--glass-border)',
+                borderLeft: '3px solid var(--accent-primary)',
+              }}
             >
               <span
-                className="text-xs uppercase tracking-widest font-bold block mb-2"
+                className="text-xs uppercase tracking-widest font-bold block mb-1.5"
                 style={{ color: 'var(--text-tertiary)' }}
               >
                 Thesis
@@ -100,11 +108,11 @@ const EducationCard = ({ education }) => {
               href="https://unj.ac.id/"
               target="_blank"
               rel="noreferrer"
-              className="text-sm font-semibold px-5 py-2 rounded-full transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(157,78,221,0.3)]"
+              className="text-sm font-semibold px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[var(--accent-primary)] hover:text-white"
               style={{
-                background: 'rgba(157,78,221,0.1)',
-                color: 'var(--accent-purple)',
-                border: '1px solid rgba(157,78,221,0.25)',
+                background: 'var(--accent-subtle)',
+                color: 'var(--accent-primary)',
+                border: '1px solid var(--accent-border)',
               }}
             >
               Visit Website →

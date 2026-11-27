@@ -36,49 +36,52 @@ export const Navbar = () => {
   return (
     <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none">
       <nav
-        className="glass-pill flex items-center px-4 py-2 pointer-events-auto gap-4 md:gap-8 transition-all duration-300"
+        className="glass-pill flex items-center px-4 py-2 pointer-events-auto gap-4 md:gap-8 transition-all duration-200"
         style={{
-          background: isScrolled
-            ? (isDark ? '#17171d' : '#ffffff')
-            : (isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)'),
-          borderColor: isScrolled
-            ? (isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)')
-            : (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'),
-          boxShadow: isScrolled ? '0 8px 32px rgba(0,0,0,0.4)' : '0 4px 20px rgba(0,0,0,0.25)',
+          background: 'var(--card-bg)',
+          borderColor: isScrolled ? 'var(--accent-border)' : 'var(--glass-border)',
+          boxShadow: 'var(--glass-shadow)',
         }}
       >
         <Link to="/" className="flex items-center justify-center pl-2 pr-4">
-          <img className="h-8 w-auto md:h-10 transition-transform duration-300 hover:scale-110" src={afLogo} alt="Allfitra" />
+          <img className="h-8 w-auto md:h-9 transition-transform duration-200 hover:scale-105" src={afLogo} alt="Allfitra" />
         </Link>
 
-        <div className="hidden md:flex items-center gap-2 relative">
+        <div className="hidden md:flex items-center gap-1 relative">
           {navigation.map((item, index) => {
             const isActive = location.pathname === item.href;
-            const activeColor = isDark ? 'white' : '#1a1a2e';
-            const inactiveColor = 'var(--text-secondary)';
             return (
               <Link
                 key={item.name}
                 to={item.href}
-                className="relative px-4 py-2 text-sm font-medium transition-colors duration-300 rounded-full"
+                className="relative px-4 py-1.5 text-sm font-medium transition-colors duration-200 rounded"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                style={{ color: isActive || hoveredIndex === index ? activeColor : inactiveColor }}
+                style={{
+                  color: isActive
+                    ? 'var(--accent-primary)'
+                    : hoveredIndex === index
+                      ? 'var(--text-primary)'
+                      : 'var(--text-secondary)',
+                }}
               >
                 {isActive && (
                   <motion.div
                     layoutId="navbar-active"
                     className="absolute inset-0 rounded-full"
-                    style={{ background: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)' }}
-                    transition={{ type: "spring", bounce: 0.25, stiffness: 130, damping: 9, duration: 0.3 }}
+                    style={{
+                      background: 'var(--accent-subtle)',
+                      border: '1px solid var(--accent-border)',
+                    }}
+                    transition={{ type: "spring", bounce: 0.15, stiffness: 160, damping: 16 }}
                   />
                 )}
                 {hoveredIndex === index && !isActive && (
                   <motion.div
                     layoutId="navbar-hover"
                     className="absolute inset-0 rounded-full"
-                    style={{ background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' }}
-                    transition={{ type: "spring", bounce: 0.25, stiffness: 130, damping: 9, duration: 0.3 }}
+                    style={{ background: 'var(--bg-tertiary)' }}
+                    transition={{ type: "spring", bounce: 0.15, stiffness: 160, damping: 16 }}
                   />
                 )}
                 <span className="relative z-10">{item.name}</span>
@@ -90,24 +93,25 @@ export const Navbar = () => {
         <div className="flex items-center justify-center pl-2">
           <button
             onClick={changeTheme}
-            className="p-2 rounded-full transition-all duration-300"
+            className="p-2 rounded-full border transition-colors duration-200"
             style={{
-              background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
-              color: isDark ? '#f0f0ff' : '#1a1a2e',
+              background: 'var(--bg-secondary)',
+              borderColor: 'var(--glass-border)',
+              color: 'var(--text-primary)',
             }}
             aria-label="Toggle Theme"
           >
-            {isDark ? <MoonIcon size={20} /> : <SunIcon size={20} />}
+            {isDark ? <MoonIcon size={18} /> : <SunIcon size={18} />}
           </button>
         </div>
       </nav>
 
       {/* Mobile Bottom Nav */}
       <nav
-        className="glass-pill fixed bottom-6 left-1/2 -translate-x-1/2 md:hidden flex items-center px-2 py-2 pointer-events-auto gap-1 z-50"
+        className="glass-pill fixed bottom-5 left-1/2 -translate-x-1/2 md:hidden flex items-center px-2 py-1.5 pointer-events-auto gap-1 z-50"
         style={{
-          background: isDark ? 'rgba(15,15,18,0.88)' : 'rgba(240,240,245,0.90)',
-          borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+          background: 'var(--card-bg)',
+          borderColor: 'var(--glass-border)',
         }}
       >
         {navigation.map((item) => {
@@ -116,28 +120,17 @@ export const Navbar = () => {
             <Link
               key={item.name}
               to={item.href}
-              className="px-3 py-2 rounded-full text-xs font-medium transition-all duration-300"
+              className="px-3 py-1.5 rounded text-xs font-medium transition-colors duration-200"
               style={{
-                background: isActive ? (isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)') : 'transparent',
-                color: isActive ? (isDark ? 'white' : '#1a1a2e') : 'var(--text-secondary)',
+                background: isActive ? 'var(--accent-subtle)' : 'transparent',
+                border: isActive ? '1px solid var(--accent-border)' : '1px solid transparent',
+                color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
               }}
             >
               {item.name}
             </Link>
           );
         })}
-
-        {/* <button
-          onClick={changeTheme}
-          className="ml-2 p-2 rounded-full transition-all duration-300"
-          style={{
-            background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
-            color: isDark ? '#f0f0ff' : '#1a1a2e',
-          }}
-          aria-label="Toggle Theme"
-        >
-          {isDark ? <MoonIcon size={16} /> : <SunIcon size={16} />}
-        </button> */}
       </nav>
     </div>
   );

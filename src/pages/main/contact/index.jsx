@@ -34,7 +34,7 @@ export const ContactPage = () => {
           </div>
 
           <div
-            className="w-full rounded-3xl p-6 flex flex-col gap-6"
+            className="w-full rounded-md p-6 flex flex-col gap-6"
             style={{
               background: 'var(--card-bg)',
               border: '1px solid var(--glass-border)',

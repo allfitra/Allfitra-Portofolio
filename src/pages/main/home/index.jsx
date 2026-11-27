@@ -66,8 +66,8 @@ export const HomePage = () => {
               <div
                 className="absolute inset-0 rounded-full border border-[var(--accent-cyan)] opacity-20 animate-spin-slow"
                 style={{ animationDuration: '20s' }}
-              />
-              <div
+            />
+            <div
                 className="absolute inset-3 md:inset-5 rounded-full border border-[var(--accent-purple)] opacity-30 animate-spin-slow"
                 style={{ animationDuration: '15s', animationDirection: 'reverse' }}
               />

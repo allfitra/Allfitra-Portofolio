@@ -23,7 +23,7 @@ export const ProjectPage = () => {
               </h2>
               <div
                 className="flex-1 h-px"
-                style={{ background: 'linear-gradient(to right, var(--glass-border), transparent)' }}
+                style={{ background: 'var(--glass-border)' }}
               />
             </div>
 
@@ -42,10 +42,10 @@ export const ProjectPage = () => {
 const ProjectCard = ({ project }) => {
   return (
     <div className="card-panel hover-glow group flex flex-col h-full p-6">
-      {/* Accent line at top */}
+      {/* Solid accent line at top */}
       <div
-        className="w-16 h-1.5 rounded-full mb-5 transition-transform duration-300 group-hover:scale-x-110 origin-left"
-        style={{ background: 'linear-gradient(90deg, var(--accent-cyan), var(--accent-purple))' }}
+        className="w-12 h-1 mb-5 transition-transform duration-200 group-hover:scale-x-125 origin-left"
+        style={{ background: 'var(--accent-primary)' }}
       />
 
       <h3
@@ -72,7 +72,7 @@ const ProjectCard = ({ project }) => {
             <div
               key={i}
               title={tool.name}
-              className="p-2 rounded-xl transition-transform duration-300 hover:-translate-y-1"
+              className="p-2 rounded transition-transform duration-200 hover:-translate-y-0.5"
               style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
             >
               <img src={tool.logo} alt={tool.name} className="h-5 w-5 object-contain" />
@@ -89,17 +89,11 @@ const ProjectCard = ({ project }) => {
               target="_blank"
               rel="noopener noreferrer"
               title={action.label}
-              className="p-2.5 rounded-xl transition-all duration-300 hover:scale-110"
-              style={{ background: 'rgba(255,16,83,0.1)', color: 'var(--accent-pink)' }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = 'var(--accent-pink)';
-                e.currentTarget.style.color = 'white';
-                e.currentTarget.style.boxShadow = '0 4px 15px rgba(255,16,83,0.4)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = 'rgba(255,16,83,0.1)';
-                e.currentTarget.style.color = 'var(--accent-pink)';
-                e.currentTarget.style.boxShadow = 'none';
+              className="p-2.5 rounded transition-colors duration-200 hover:bg-[var(--accent-primary)] hover:text-white"
+              style={{
+                background: 'var(--accent-subtle)',
+                color: 'var(--accent-primary)',
+                border: '1px solid var(--accent-border)',
               }}
             >
               <action.icon className="h-4 w-4" />

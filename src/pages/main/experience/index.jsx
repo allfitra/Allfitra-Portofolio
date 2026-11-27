@@ -9,7 +9,6 @@ export const ExperiencePage = () => {
 
         {/* Header Section */}
         <div className="text-center mb-10 relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] bg-[var(--accent-purple)] opacity-10 blur-[80px] rounded-full pointer-events-none"></div>
           <h1 className="text-5xl md:text-6xl font-black mb-3 relative z-10">
             Work <span className="text-gradient">Experience</span>.
           </h1>
@@ -21,11 +20,11 @@ export const ExperiencePage = () => {
         {/* Custom Timeline Container */}
         <div className="relative max-w-5xl mx-auto w-full px-4 sm:px-6">
 
-          {/* Glowing Vertical Line */}
+          {/* Solid Vertical Line */}
           <div
-            className="absolute left-[38px] md:left-1/2 top-0 bottom-0 w-[2px] transform md:-translate-x-1/2"
+            className="absolute left-[38px] md:left-1/2 top-0 bottom-0 w-[1px] transform md:-translate-x-1/2"
             style={{
-              background: 'linear-gradient(to bottom, transparent, var(--accent-purple), var(--accent-pink), transparent)'
+              background: 'var(--glass-border)'
             }}
           ></div>
 
@@ -49,30 +48,44 @@ const ExperienceCard = ({ experience, index }) => {
     <div className={`relative flex flex-col md:flex-row items-start md:items-center justify-between group ${isEven ? 'md:flex-row-reverse' : ''}`}>
 
       {/* Icon Node */}
-      <div className="absolute left-[38px] md:left-1/2 w-14 h-14 rounded-full border-[3px] border-[var(--glass-border)] transform -translate-x-1/2 z-10 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:border-[var(--accent-purple)] group-hover:shadow-[0_0_20px_rgba(157,78,221,0.5)]"
-        style={{ background: 'var(--card-bg)' }}>
+      <div
+        className="absolute left-[38px] md:left-1/2 w-12 h-12 rounded-md border-2 border-[var(--glass-border)] transform -translate-x-1/2 z-10 flex items-center justify-center transition-colors duration-200 group-hover:border-[var(--accent-primary)]"
+        style={{ background: 'var(--card-bg)' }}
+      >
         <img
           src={experience.icon}
           alt={experience.company_name}
-          className="w-8 h-8 object-contain rounded-full"
+          className="w-7 h-7 object-contain rounded-sm"
         />
       </div>
 
       {/* Date floating label for Desktop */}
       <div className={`hidden md:block w-5/12 ${isEven ? 'text-right pr-56' : 'text-left pl-56'}`}>
-        <span className="inline-block px-4 py-2 rounded-full text-sm font-bold shadow-lg shadow-[var(--glass-shadow)]"
-          style={{ background: 'var(--pill-bg)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)' }}>
+        <span
+          className="inline-block px-3.5 py-1.5 rounded text-sm font-semibold"
+          style={{
+            background: 'var(--card-bg)',
+            color: 'var(--text-secondary)',
+            border: '1px solid var(--glass-border)',
+          }}
+        >
           {experience.date}
         </span>
       </div>
 
       {/* Content Card */}
       <div className="w-full md:w-5/12 pl-24 md:pl-0 relative z-20">
-        <div className="card-panel hover-glow p-6 sm:p-8 transition-transform duration-300 hover:-translate-y-2">
+        <div className="card-panel hover-glow p-6 sm:p-8">
 
           {/* Mobile Date (Visible only on mobile) */}
-          <span className="md:hidden inline-block px-3 py-1 mb-4 rounded-full text-xs font-bold"
-            style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)', border: '1px solid var(--glass-border)' }}>
+          <span
+            className="md:hidden inline-block px-3 py-1 mb-4 rounded text-xs font-semibold"
+            style={{
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-secondary)',
+              border: '1px solid var(--glass-border)',
+            }}
+          >
             {experience.date}
           </span>
 
@@ -80,11 +93,11 @@ const ExperienceCard = ({ experience, index }) => {
             {experience.title}
           </h3>
 
-          <h4 className="text-base font-semibold mb-5 flex items-center flex-wrap gap-2" style={{ color: 'var(--accent-cyan)' }}>
+          <h4 className="text-base font-semibold mb-5 flex items-center flex-wrap gap-2" style={{ color: 'var(--accent-primary)' }}>
             {experience.company_name}
             {experience.type_job && (
               <>
-                <span className="w-1 h-1 rounded-full bg-[var(--text-tertiary)]"></span>
+                <span className="w-1 h-1 bg-[var(--text-tertiary)]"></span>
                 <span style={{ color: 'var(--text-secondary)' }}>{experience.type_job}</span>
               </>
             )}
@@ -93,7 +106,7 @@ const ExperienceCard = ({ experience, index }) => {
           <ul className="space-y-3">
             {experience.points.map((point, i) => (
               <li key={i} className="flex items-start gap-3 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: 'var(--accent-purple)' }}></span>
+                <span className="mt-2 w-1.5 h-1.5 flex-shrink-0" style={{ background: 'var(--accent-primary)' }}></span>
                 <span>{point}</span>
               </li>
             ))}
@@ -105,11 +118,11 @@ const ExperienceCard = ({ experience, index }) => {
                 href={experience.website}
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm font-semibold px-5 py-2 rounded-full transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(157,78,221,0.3)]"
+                className="text-sm font-semibold px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[var(--accent-primary)] hover:text-white"
                 style={{
-                  background: 'rgba(157,78,221,0.1)',
-                  color: 'var(--accent-purple)',
-                  border: '1px solid rgba(157,78,221,0.25)',
+                  background: 'var(--accent-subtle)',
+                  color: 'var(--accent-primary)',
+                  border: '1px solid var(--accent-border)',
                 }}
               >
                 Visit Website →
