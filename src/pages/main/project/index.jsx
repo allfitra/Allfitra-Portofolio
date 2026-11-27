@@ -5,8 +5,8 @@ import { ProjectData } from './data/database';
 export const ProjectPage = () => {
   return (
     <MainLayout title="Project">
-      <div className="py-10 fade-in-up">
-        <div className="text-center mb-14">
+      <div className=" fade-in-up">
+        <div className="text-center mb-3">
           <h1 className="text-5xl md:text-6xl font-black mb-3">
             My <span className="text-gradient">Projects</span>.
           </h1>

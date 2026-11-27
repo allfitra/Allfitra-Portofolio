@@ -5,11 +5,11 @@ import { experiences } from './data/database';
 export const ExperiencePage = () => {
   return (
     <MainLayout title="Experience">
-      <div className="flex flex-col py-5 fade-in-up">
+      <div className="flex flex-col fade-in-up">
 
         {/* Header Section */}
         <div className="text-center mb-10 relative">
-          <h1 className="text-5xl md:text-6xl font-black mb-3 relative z-10">
+          <h1 className="text-5xl md:text-6xl font-black mb-1 relative z-10">
             Work <span className="text-gradient">Experience</span>.
           </h1>
           <p className="text-lg relative z-10" style={{ color: 'var(--text-secondary)' }}>

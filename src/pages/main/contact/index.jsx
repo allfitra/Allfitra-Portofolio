@@ -9,7 +9,7 @@ import { cvLink, stackImagesData } from './data/database';
 export const ContactPage = () => {
   return (
     <MainLayout title="Contact">
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-32 md:py-10 md:min-h-[75vh] fade-in-up">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-32 md:py-3 md:max-h-[75vh] fade-in-up">
 
         {/* Stacked Images Visual */}
         <div className="relative flex-shrink-0">

@@ -5,7 +5,7 @@ import { graduateAvatar } from '@/assets/Content';
 export const EducationPage = () => {
   return (
     <MainLayout title="Education">
-      <div className="flex flex-col lg:flex-row items-start justify-center gap-5 md:pt-10 fade-in-up">
+      <div className="flex flex-col lg:flex-row items-start justify-center gap-5 fade-in-up">
 
         {/* Sticky Visual */}
         <div className="relative hidden md:block lg:sticky lg:top-40 flex-shrink-0 flex justify-center">
@@ -22,9 +22,9 @@ export const EducationPage = () => {
         </div>
 
         {/* Content */}
-        <div className="flex flex-col w-full max-w-2xl mb-10 md:mb-5">
-          <div className="mb-10">
-            <h1 className="text-5xl md:text-6xl font-black mb-3">
+        <div className="flex flex-col w-full max-w-2xl mb-10 md:mb-0">
+          <div className="mb-5">
+            <h1 className="text-5xl md:text-6xl font-black mb-1">
               My <span className="text-gradient-cyan">Education</span>.
             </h1>
             <p className="text-lg text-center md:text-start" style={{ color: 'var(--text-secondary)' }}>
