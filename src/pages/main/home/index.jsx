@@ -12,7 +12,7 @@ import GlassIcons from '@/utils/FramerMotion/glass-icon';
 export const HomePage = () => {
   return (
     <MainLayout title="Home">
-      <div className="flex flex-col-reverse md:flex-row items-center justify-center gap-10 md:gap-24 min-h-[75vh] fade-in-up">
+      <div className="flex flex-col-reverse md:flex-row items-center justify-center gap-10 md:gap-24 max-h-[75vh] fade-in-up">
 
         {/* Text Content */}
         <div className="flex flex-col gap-5 max-w-xl z-10 text-center md:text-left px-4">

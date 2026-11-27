@@ -51,7 +51,7 @@ const EducationCard = ({ education }) => {
 
         {/* Logo */}
         <div
-          className="p-3 rounded-md flex-shrink-0 transition-transform duration-200 group-hover:scale-105"
+          className="p-3 rounded-full flex-shrink-0 transition-transform duration-200 group-hover:scale-105"
           style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)' }}
         >
           <img src={education.icon} alt="school-logo" className="h-14 w-14 object-contain" />

@@ -49,13 +49,13 @@ const ExperienceCard = ({ experience, index }) => {
 
       {/* Icon Node */}
       <div
-        className="absolute left-[38px] md:left-1/2 w-12 h-12 rounded-md border-2 border-[var(--glass-border)] transform -translate-x-1/2 z-10 flex items-center justify-center transition-colors duration-200 group-hover:border-[var(--accent-primary)]"
+        className="absolute left-[38px] md:left-1/2 w-14 h-14 rounded-full border-2 border-[var(--glass-border)] transform -translate-x-1/2 z-10 flex items-center justify-center p-1 overflow-hidden transition-colors duration-200 group-hover:border-[var(--accent-primary)]"
         style={{ background: 'var(--card-bg)' }}
       >
         <img
           src={experience.icon}
           alt={experience.company_name}
-          className="w-7 h-7 object-contain rounded-sm"
+          className="w-full h-full object-cover rounded-full bg-white"
         />
       </div>
 
